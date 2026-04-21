@@ -1,19 +1,32 @@
 import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 
-export default function Login() {
+const Login=()=> {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate('');
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log("Intentando iniciar sesión con:");
-        console.log("Email:", email);
-        console.log("Password:", password);
+        setError('');
+        if (email === '' || password === '') {
+            setError('Por favor complete todos los campos');
+            return;
+        }
+        
+        if (email !== 'admin@gmail.com' || password !== '123') {
+            setError('Email o contrraseña incorectos. admin@gmail.com 123');
+            return;
+        }else {
+            navigate('/dashboard');
+        }
     };
 
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <h2>Iniciar Sesión</h2>
+            {error && <p style={{color:'red'}}>{error}</p>}
             <div>
                 <label>Email</label>
                 <input
@@ -36,3 +49,5 @@ export default function Login() {
         </form>
     );
 }
+
+export default Login;
