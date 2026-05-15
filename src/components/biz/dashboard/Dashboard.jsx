@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import AppointmentsContainer from "../../appointments/components/appointmentsContainer/AppointmentsContainer";
+import AppointmentsContainer from "../appointmets/appointmentsContainer/AppointmentsContainer";
 import "./dashboard.css";
 
 const Dashboard = () => {
