@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import AppointmentsContainer from '../../../appointments/components/appointmentsContainer/AppointmentsContainer';
+import AppointmentsContainer from '../../biz/appointmets/appointmentsContainer/AppointmentsContainer';
 import './login.css';
 
 export default function Login() {
