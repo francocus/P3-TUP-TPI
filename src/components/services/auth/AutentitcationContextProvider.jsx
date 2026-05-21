@@ -1,31 +1,57 @@
 import { useMemo, useState } from 'react';
 import { AuthenticationContext } from './authentication.context';
-import { loginUser, registerUser } from './auth.service';
 
 const tokenStorageKey = 'auth-token';
 const userStorageKey = 'auth-user';
+const apiBaseUrl = 'http://localhost:4000/api/users';
 
 const storedToken = localStorage.getItem(tokenStorageKey);
 const storedUser = localStorage.getItem(userStorageKey);
+
+const parseJsonResponse = async (response) => {
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Ocurrio un error en la solicitud.');
+  }
+
+  return data;
+};
 
 export const AuthenticationContextProvider = ({ children }) => {
   const [token, setToken] = useState(storedToken);
   const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
 
   const handleUserLogin = async (credentials) => {
-    const response = await loginUser(credentials);
+    const response = await fetch(`${apiBaseUrl}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
 
-    localStorage.setItem(tokenStorageKey, response.token);
-    localStorage.setItem(userStorageKey, JSON.stringify(response.user));
+    const data = await parseJsonResponse(response);
 
-    setToken(response.token);
-    setUser(response.user);
+    localStorage.setItem(tokenStorageKey, data.token);
+    localStorage.setItem(userStorageKey, JSON.stringify(data.user));
 
-    return response;
+    setToken(data.token);
+    setUser(data.user);
+
+    return data;
   };
 
   const handleUserRegister = async (userData) => {
-    return registerUser(userData);
+    const response = await fetch(`${apiBaseUrl}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    return parseJsonResponse(response);
   };
 
   const handleUserLogout = () => {
