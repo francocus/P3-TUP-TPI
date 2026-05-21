@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { AuthenticationContext } from '../services/auth/authentication.context';
+import { AuthenticationContext } from '../../services/auth/authentication.context';
+import AppointmentsContainer from '../../biz/appointmets/appointmentsContainer/AppointmentsContainer';
 import './login.css';
 
 export default function Login() {
@@ -48,7 +49,7 @@ export default function Login() {
     }
 
     if (isRegistering && password !== confirmPassword) {
-      setError('Las contrasenas no coinciden.');
+      setError('Las contraseñas no coinciden.');
       return;
     }
 
@@ -87,10 +88,10 @@ export default function Login() {
   const passwordsMatch =
     password !== '' && confirmPassword !== '' && password === confirmPassword;
   const passwordMessage = !passwordsStarted
-    ? 'Usa la misma contrasena dos veces para confirmar el registro.'
+    ? 'Usa la misma contraseña dos veces para confirmar el registro.'
     : passwordsMatch
-      ? 'Las contrasenas coinciden.'
-      : 'Las contrasenas aun no coinciden.';
+      ? 'Las contraseñas coinciden.'
+      : 'Las contraseñas aun no coinciden.';
 
   return (
     <main className={`auth-shell ${isRegistering ? 'is-registering' : ''}`}>
@@ -106,16 +107,16 @@ export default function Login() {
                 <div>
                   <p className="auth-eyebrow">Legal Manager</p>
                   <span className="auth-brand__caption">
-                    Acceso seguro para estudios juridicos
+                    Acceso seguro para estudios jurídicos
                   </span>
                 </div>
               </div>
 
               <div className="auth-copy">
-                <h1>Iniciar sesion</h1>
+                <h1>Iniciar sesión</h1>
                 <p>
-                  Acceso unificado para clientes, abogados y administracion del
-                  estudio juridico.
+                  Acceso unificado para clientes, abogados y administración del
+                  estudio jurídico.
                 </p>
               </div>
 
@@ -133,11 +134,11 @@ export default function Login() {
 
               <Form className="auth-form" onSubmit={handleSubmit} noValidate>
                 <Form.Group className="auth-field">
-                  <Form.Label>Correo electronico</Form.Label>
+                  <Form.Label>Correo electrónico</Form.Label>
                   <Form.Control
                     className="auth-control"
                     type="email"
-                    placeholder="admin@gmail.com"
+                    placeholder="abogado@legalmanager.com"
                     autoComplete="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
@@ -145,34 +146,22 @@ export default function Login() {
                 </Form.Group>
 
                 <Form.Group className="auth-field">
-                  <Form.Label>Contrasena</Form.Label>
+                  <Form.Label>Contraseña</Form.Label>
                   <Form.Control
                     className="auth-control"
                     type="password"
-                    placeholder="Ingresa tu contrasena"
+                    placeholder="Ingresa tu contraseña"
                     autoComplete="current-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 </Form.Group>
 
-                <div className="auth-meta">
-                  <span>Backend: /api/users/login</span>
-                  <span>Sesion con token JWT</span>
-                </div>
 
                 <Button className="auth-submit" type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Procesando...' : 'Entrar al panel'}
+                  {isSubmitting ? 'Procesando...' : 'Iniciar sesión'}
                 </Button>
 
-                <button
-                  type="button"
-                  className="auth-text-switch"
-                  onClick={togglePanel}
-                  disabled={isSubmitting}
-                >
-                  No tienes cuenta? Registrate aqui
-                </button>
               </Form>
             </section>
 
@@ -191,8 +180,8 @@ export default function Login() {
               <div className="auth-copy">
                 <h1>Crear cuenta</h1>
                 <p>
-                  Alta de usuarios para el estudio con identificacion personal y
-                  confirmacion segura de contrasena.
+                  Alta de usuarios para el estudio con identificación personal y
+                  confirmación segura de contraseña.
                 </p>
               </div>
 
@@ -253,7 +242,7 @@ export default function Login() {
                 </Form.Group>
 
                 <Form.Group className="auth-field">
-                  <Form.Label>Crea una contrasena</Form.Label>
+                  <Form.Label>Crea una contraseña</Form.Label>
                   <Form.Control
                     className="auth-control"
                     type="password"
@@ -265,7 +254,7 @@ export default function Login() {
                 </Form.Group>
 
                 <Form.Group className="auth-field">
-                  <Form.Label>Confirmar contrasena</Form.Label>
+                  <Form.Label>Confirmar contraseña</Form.Label>
                   <Form.Control
                     className="auth-control"
                     type="password"
@@ -294,7 +283,7 @@ export default function Login() {
                   onClick={togglePanel}
                   disabled={isSubmitting}
                 >
-                  Ya tienes cuenta? Inicia sesion
+                  Ya tienes cuenta? Inicia sesión
                 </button>
               </Form>
             </section>
@@ -336,7 +325,7 @@ export default function Login() {
               </div>
 
               <Button className="auth-switch" variant="outline-light" onClick={togglePanel}>
-                Registrar nuevo usuario
+                Registrarse
               </Button>
             </section>
 

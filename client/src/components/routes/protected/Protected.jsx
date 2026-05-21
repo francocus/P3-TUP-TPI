@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthenticationContext } from '../services/auth/authentication.context';
+import { AuthenticationContext } from '../../services/auth/authentication.context';
 
-const ProtectedRoute = ({ children }) => {
+const Protected = ({ children }) => {
   const { isAuthenticated } = useContext(AuthenticationContext);
 
   if (!isAuthenticated) {
@@ -12,4 +12,4 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-export default ProtectedRoute;
+export default Protected;
