@@ -250,6 +250,12 @@
   color: #ffd8d8;
 }
 
+.auth-alert--success.alert {
+  border: 1px solid rgba(101, 214, 173, 0.18);
+  background: rgba(27, 92, 64, 0.24);
+  color: #dcfff0;
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;

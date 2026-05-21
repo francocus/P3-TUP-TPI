@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { AuthenticationContext } from '../services/auth/authentication.context';
 import './login.css';
 
 export default function Login() {
@@ -10,30 +11,35 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('cliente');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { handleUserLogin, handleUserRegister } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
-  const clearForm = () => {
+  const resetRegisterFields = () => {
     setName('');
     setDni('');
-    setEmail('');
-    setPassword('');
     setConfirmPassword('');
+    setRole('cliente');
   };
 
   const togglePanel = () => {
     setIsRegistering((current) => !current);
     setError('');
-    clearForm();
+    setSuccess('');
+    resetRegisterFields();
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
+    setSuccess('');
 
     const requiredFields = isRegistering
-      ? [name, dni, email, password, confirmPassword]
+      ? [name, dni, email, password, confirmPassword, role]
       : [email, password];
 
     if (requiredFields.some((field) => field.trim() === '')) {
@@ -46,19 +52,35 @@ export default function Login() {
       return;
     }
 
-    if (isRegistering) {
-      localStorage.setItem('token', 'usuario-autenticado');
+    try {
+      setIsSubmitting(true);
+
+      if (isRegistering) {
+        await handleUserRegister({
+          name,
+          dni,
+          email,
+          password,
+          role,
+        });
+
+        setSuccess('Usuario creado correctamente. Ahora puedes iniciar sesion.');
+        setIsRegistering(false);
+        resetRegisterFields();
+        return;
+      }
+
+      await handleUserLogin({
+        email,
+        password,
+      });
+
       navigate('/dashboard');
-      return;
+    } catch (submitError) {
+      setError(submitError.message || 'Ocurrio un error al procesar la solicitud.');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (email !== 'admin@gmail.com' || password !== '123') {
-      setError('Email o contrasena incorrectos.');
-      return;
-    }
-
-    localStorage.setItem('token', 'usuario-autenticado');
-    navigate('/dashboard');
   };
 
   const passwordsStarted = password !== '' || confirmPassword !== '';
@@ -97,6 +119,12 @@ export default function Login() {
                 </p>
               </div>
 
+              {success && !isRegistering && (
+                <Alert variant="success" className="auth-alert auth-alert--success">
+                  {success}
+                </Alert>
+              )}
+
               {error && !isRegistering && (
                 <Alert variant="danger" className="auth-alert">
                   {error}
@@ -129,15 +157,20 @@ export default function Login() {
                 </Form.Group>
 
                 <div className="auth-meta">
-                  <span>Demo: admin@gmail.com</span>
-                  <span>Rol demo: sysadmin</span>
+                  <span>Backend: /api/users/login</span>
+                  <span>Sesion con token JWT</span>
                 </div>
 
-                <Button className="auth-submit" type="submit">
-                  Entrar al panel
+                <Button className="auth-submit" type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Procesando...' : 'Entrar al panel'}
                 </Button>
 
-                <button type="button" className="auth-text-switch" onClick={togglePanel}>
+                <button
+                  type="button"
+                  className="auth-text-switch"
+                  onClick={togglePanel}
+                  disabled={isSubmitting}
+                >
                   No tienes cuenta? Registrate aqui
                 </button>
               </Form>
@@ -194,6 +227,19 @@ export default function Login() {
                   />
                 </Form.Group>
 
+                <Form.Group className="auth-field">
+                  <Form.Label>Rol</Form.Label>
+                  <Form.Select
+                    className="auth-control"
+                    value={role}
+                    onChange={(event) => setRole(event.target.value)}
+                  >
+                    <option value="cliente">Cliente</option>
+                    <option value="abogado">Abogado</option>
+                    <option value="sysadmin">Sysadmin</option>
+                  </Form.Select>
+                </Form.Group>
+
                 <Form.Group className="auth-field auth-field--wide">
                   <Form.Label>Correo electronico</Form.Label>
                   <Form.Control
@@ -238,11 +284,16 @@ export default function Login() {
                   {passwordMessage}
                 </div>
 
-                <Button className="auth-submit" type="submit">
-                  Crear usuario
+                <Button className="auth-submit" type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Procesando...' : 'Crear usuario'}
                 </Button>
 
-                <button type="button" className="auth-text-switch" onClick={togglePanel}>
+                <button
+                  type="button"
+                  className="auth-text-switch"
+                  onClick={togglePanel}
+                  disabled={isSubmitting}
+                >
                   Ya tienes cuenta? Inicia sesion
                 </button>
               </Form>
