@@ -1,7 +1,8 @@
 import { useState } from "react";
 import AppointmentsSearch from "../appointmentsSearch/AppointmentsSearch";
-import AppointmentItem from "../appointmentItem/appointmentItem";
+import AppointmentItem from "../appointmentItem/AppointmentItem";
 import { APPOINTMENTS } from "../data/appointments";
+import "../appointments.css";
 
 const AppointmentsContainer = () => {
   const [searchAppointment, setSearchAppointment] = useState("");

@@ -16,6 +16,7 @@
   place-items: center;
   padding: 32px;
   overflow: hidden;
+  background-color: var(--auth-bg);
 }
 
 .auth-shell::before,
@@ -464,8 +465,8 @@
   padding: 0.78rem 1.15rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--auth-text);
+  background: linear-gradient(135deg, #edf2f7, #b8c4d0);
+  color: #0c1218;
   font-weight: 700;
   transition:
     transform 240ms ease,
