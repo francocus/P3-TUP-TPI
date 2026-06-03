@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AuthenticationContext } from '../../services/auth/authentication.context';
-import AppointmentsContainer from '../../biz/appointmets/appointmentsContainer/AppointmentsContainer';
 import './login.css';
 
 export default function Login() {
