@@ -18,6 +18,11 @@ export default function Login() {
 
   const { handleUserLogin, handleUserRegister } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const dashboardByRole = {
+    sysadmin: '/dashboard/sysadmin',
+    abogado: '/dashboard/abogado',
+    cliente: '/dashboard/cliente',
+  };
 
   const resetRegisterFields = () => {
     setName('');
@@ -70,12 +75,13 @@ export default function Login() {
         return;
       }
 
-      await handleUserLogin({
+      const data = await handleUserLogin({
         email,
         password,
       });
 
-      navigate('/dashboard');
+      const destination = dashboardByRole[data?.user?.role] ?? '/dashboard';
+      navigate(destination);
     } catch (submitError) {
       setError(submitError.message || 'Ocurrio un error al procesar la solicitud.');
     } finally {
