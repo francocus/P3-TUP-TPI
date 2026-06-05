@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "test": "jest",
     "dev": "node --watch src/index.js",
     "check": "node --input-type=module -e \"await import('./src/db.js'); await import('./src/models/user/User.js'); console.log('Backend cargado correctamente')\""
   },
@@ -22,5 +23,8 @@
     "mysql2": "^3.22.3",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2"
   }
 }
