@@ -29,26 +29,52 @@ try {
   await sequelize.sync();
 
   const adminEmail = 'admin@gmail.com';
-  const existingAdmin = await User.findOne({
-    where: {
-      email: adminEmail,
-    },
-  });
-
-  if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-
-    await User.create({
+  const seedUsers = [
+    {
       name: 'Administrador General',
       dni: '30000000',
       email: adminEmail,
-      password: hashedPassword,
+      password: 'admin123',
       role: 'sysadmin',
-      active: true,
+    },
+    {
+      name: 'Abogado Demo',
+      dni: '30000001',
+      email: 'abogado@gmail.com',
+      password: 'abogado123',
+      role: 'abogado',
+    },
+    {
+      name: 'Cliente Demo',
+      dni: '30000002',
+      email: 'cliente@gmail.com',
+      password: 'cliente123',
+      role: 'cliente',
+    },
+  ];
+
+  for (const seedUser of seedUsers) {
+    const existingUser = await User.findOne({
+      where: {
+        email: seedUser.email,
+      },
     });
 
-    console.log('Cuenta admin inicial creada correctamente.');
+    if (!existingUser) {
+      const hashedPassword = await bcrypt.hash(seedUser.password, 10);
+
+      await User.create({
+        name: seedUser.name,
+        dni: seedUser.dni,
+        email: seedUser.email,
+        password: hashedPassword,
+        role: seedUser.role,
+        active: true,
+      });
+    }
   }
+
+  console.log('Usuarios iniciales verificados correctamente.');
 
   app.listen(port, () => {
     console.log(`Servidor backend escuchando en http://localhost:${port}`);

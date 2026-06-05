@@ -17,6 +17,11 @@
   padding: 32px;
   overflow: hidden;
   background-color: var(--auth-bg);
+  background:
+    radial-gradient(circle at top left, rgba(104, 126, 154, 0.20), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(61, 84, 107, 0.18), transparent 22%),
+    radial-gradient(circle at 52% 108%, rgba(96, 79, 130, 0.12), transparent 26%),
+    var(--auth-bg);
 }
 
 .auth-shell::before,
@@ -48,7 +53,7 @@
   position: relative;
   width: min(1120px, 100%);
   min-height: 650px;
-  border-radius: 32px;
+  border-radius: 30px;
   background:
     radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent 30%),
     linear-gradient(145deg, rgba(15, 20, 28, 0.98), rgba(8, 11, 17, 0.98));
@@ -303,13 +308,45 @@
   box-shadow: none;
 }
 
+.auth-control.form-select {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.04);
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(247, 250, 252, 0.72) 50%),
+    linear-gradient(135deg, rgba(247, 250, 252, 0.72) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 14px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  color: var(--auth-text);
+  padding: 0.78rem 2.4rem 0.78rem 0.95rem;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
 .auth-control.form-control::placeholder {
   color: rgba(205, 214, 224, 0.38);
+}
+
+.auth-control.form-select option {
+  background-color: #111822;
+  color: #eef2f6;
 }
 
 .auth-control.form-control:focus {
   color: var(--auth-text);
   background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(200, 211, 223, 0.42);
+  box-shadow: 0 0 0 0.22rem rgba(176, 188, 202, 0.12);
+}
+
+.auth-control.form-select:focus {
+  color: var(--auth-text);
+  background-color: rgba(255, 255, 255, 0.07);
   border-color: rgba(200, 211, 223, 0.42);
   box-shadow: 0 0 0 0.22rem rgba(176, 188, 202, 0.12);
 }
@@ -342,7 +379,7 @@
   border: 0;
   border-radius: 18px;
   padding: 0.82rem 1.05rem;
-  background: linear-gradient(135deg, #edf2f7, #b8c4d0);
+  background: linear-gradient(135deg, #f0f5fa, #c2d0dc);
   color: #0c1218;
   font-weight: 800;
   letter-spacing: 0.01em;
@@ -355,7 +392,7 @@
 
 .auth-submit.btn:hover,
 .auth-submit.btn:focus-visible {
-  background: linear-gradient(135deg, #f6f8fb, #c4ced8);
+  background: linear-gradient(135deg, #fafcfe, #cedae4);
   color: #0c1218;
   transform: translateY(-2px);
   box-shadow: 0 22px 34px rgba(0, 0, 0, 0.32);
@@ -465,7 +502,7 @@
   padding: 0.78rem 1.15rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  background: linear-gradient(135deg, #edf2f7, #b8c4d0);
+  background: linear-gradient(135deg, #f0f5fa, #c2d0dc);
   color: #0c1218;
   font-weight: 700;
   transition:
