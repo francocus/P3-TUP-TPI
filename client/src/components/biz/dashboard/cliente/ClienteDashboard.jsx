@@ -1,10 +1,8 @@
 import { useContext } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import "./cliente.css";
-import AppointmentsContainer from "../../appointments/appointmentsContainer/AppointmentsContainer";
-import CasesContainer from "../../cases/casesContainer/CasesContainer";
 
 const ClienteDashboard = () => {
   const navigate = useNavigate();
@@ -30,14 +28,41 @@ const ClienteDashboard = () => {
           </div>
 
           <div className="dashboard-actions">
+            <nav className="dashboard-nav" aria-label="Navegación del cliente">
+              <NavLink
+                to="."
+                end
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Inicio
+              </NavLink>
+              <NavLink
+                to="appointments"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Mis Turnos
+              </NavLink>
+              <NavLink
+                to="cases"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Mi Expediente
+              </NavLink>
+            </nav>
+
             <Button className="dashboard-logout" onClick={handleLogout}>
-              Cerrar sesion
+              Cerrar sesión
             </Button>
           </div>
         </header>
 
-        <AppointmentsContainer />
-        <CasesContainer />
+        <Outlet />
       </section>
     </main>
   );

@@ -52,7 +52,12 @@ const UsersContainer = () => {
             <UsersSearch onSearch={handleSearch} />
           </div>
 
-          <button type="button" className="users-create" title="Crear perfil" aria-label="Crear perfil">
+          <button
+            type="button"
+            className="users-create"
+            title="Crear perfil"
+            aria-label="Crear perfil"
+          >
             +
           </button>
         </div>

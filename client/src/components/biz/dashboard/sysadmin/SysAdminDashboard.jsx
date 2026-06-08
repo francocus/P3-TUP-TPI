@@ -1,9 +1,8 @@
 import { useContext } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import "./sysdamin.css";
-import UsersContainer from "../../users/usersContainer/UsersContainer";
 
 const SysAdminDashboard = () => {
   const navigate = useNavigate();
@@ -23,19 +22,55 @@ const SysAdminDashboard = () => {
             <span className="dashboard-brand__mark">LM</span>
             <div>
               <p className="dashboard-eyebrow">Legal Manager</p>
-              <h1>Panel SysAdmin</h1>
+              <h1>Panel admin</h1>
               {user?.name && <span className="dashboard-user">{user.name}</span>}
             </div>
           </div>
 
           <div className="dashboard-actions">
+            <nav className="dashboard-nav" aria-label="Navegación del sysadmin">
+              <NavLink
+                to="."
+                end
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Inicio
+              </NavLink>
+              <NavLink
+                to="cases"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Expedientes
+              </NavLink>
+              <NavLink
+                to="appointments"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Turnos
+              </NavLink>
+              <NavLink
+                to="users"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Usuarios
+              </NavLink>
+            </nav>
+
             <Button className="dashboard-logout" onClick={handleLogout}>
-              Cerrar sesion
+              Cerrar sesión
             </Button>
           </div>
         </header>
-        
-        <UsersContainer/>
+
+        <Outlet />
 
       </section>
     </main>
