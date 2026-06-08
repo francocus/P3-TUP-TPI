@@ -7,22 +7,22 @@
 .appointments-search.form-control {
   max-width: 420px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.06);
-  color: #f2f5f8;
+  border: 1px solid rgba(156, 184, 210, 0.24);
+  background: rgba(7, 11, 17, 0.82);
+  color: #ffffff;
   padding: 0.78rem 0.95rem;
   box-shadow: none;
 }
 
 .appointments-search.form-control::placeholder {
-  color: rgba(205, 214, 224, 0.38);
+  color: rgba(225, 232, 241, 0.44);
 }
 
 .appointments-search.form-control:focus {
-  color: #f2f5f8;
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(227, 235, 243, 0.50);
-  box-shadow: 0 0 0 0.22rem rgba(176, 188, 202, 0.14);
+  color: #ffffff;
+  background: rgba(10, 16, 24, 0.92);
+  border-color: rgba(182, 204, 223, 0.52);
+  box-shadow: 0 0 0 0.22rem rgba(92, 138, 180, 0.20);
 }
 
 .appointments-list {
@@ -42,8 +42,8 @@
   border-radius: 20px;
   background:
     radial-gradient(circle at top right, rgba(201, 208, 216, 0.10), transparent 32%),
-    rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+    rgba(12, 16, 22, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   border-left-width: 4px;
   border-left-color: rgba(201, 208, 216, 0.30);
   box-shadow:
@@ -81,7 +81,7 @@
 .appointment-item__label {
   display: block;
   margin-bottom: 4px;
-  color: #8994a2;
+  color: #b7cada;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -90,14 +90,14 @@
 
 .appointment-item h2 {
   margin: 0;
-  color: #f2f5f8;
+  color: #ffffff;
   font-size: 1.12rem;
   line-height: 1.2;
 }
 
 .appointment-item p {
   margin: 0;
-  color: #a7b0bc;
+  color: #e0e7ef;
   line-height: 1.45;
 }
 
@@ -107,7 +107,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.10);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #e7edf4;
+  color: #ffffff;
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -128,7 +128,7 @@
 .appointment-item__status.is-finished {
   background: rgba(126, 144, 167, 0.16);
   border-color: rgba(126, 144, 167, 0.34);
-  color: #e7edf4;
+  color: #ffffff;
 }
 
 .appointment-item__status.is-cancelled {
@@ -139,7 +139,7 @@
 
 .appointments-empty {
   margin: 22px 0 0;
-  color: #a7b0bc;
+  color: #e0e7ef;
 }
 
 @media (max-width: 620px) {
