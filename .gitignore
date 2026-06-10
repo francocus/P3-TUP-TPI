@@ -11,8 +11,8 @@ node_modules/
 dist
 dist-ssr
 *.local
-backend/.env
-backend/*.db
+api/.env
+api/*.db
 _ref_api/
 _ref_front/
 
