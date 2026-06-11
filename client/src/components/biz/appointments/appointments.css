@@ -128,7 +128,44 @@
   padding: 14px;
   background: rgba(8, 12, 18, 0.44);
   border-right: 1px solid rgba(255, 255, 255, 0.09);
-  overflow: hidden;
+  
+  /* 1. Cambiamos overflow hidden por auto en el eje Y */
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  /* Soporte de estilo para Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 300ms ease;
+}
+
+.appointments-sidebar:hover {
+  scrollbar-color: rgba(156, 184, 210, 0.25) transparent;
+}
+
+/* 2. Estilos personalizados del Scrollbar para WebKit (Chrome, Edge, Safari) */
+.appointments-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.appointments-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 8px; 
+  margin-bottom: 8px;
+}
+
+.appointments-sidebar::-webkit-scrollbar-thumb {
+  /* Usamos un tono sutil basado en el color de tus textos secundarios (#b7cada) */
+  background: transparent;  
+  border-radius: 8px;
+}
+
+.appointments-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 184, 210, 0.25);
+}
+
+.appointments-sidebar:hover::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 184, 210, 0.45);
 }
 
 .mini-calendar {
