@@ -20,7 +20,7 @@
 .dashboard-card {
   width: 100%;
   min-height: 100vh;
-  padding: clamp(18px, 3vw, 28px) 0;
+  padding: 0 0 clamp(18px, 3vw, 28px);
   background: transparent;
 }
 
@@ -28,8 +28,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding-bottom: 24px;
+  gap: 14px;
+  min-height: 72px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--dashboard-border);
 }
 
@@ -45,7 +47,7 @@
 .dashboard-brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .dashboard-user {
@@ -58,14 +60,14 @@
 .dashboard-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .dashboard-nav {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 6px;
+  padding: 4px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -75,10 +77,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 124px;
-  padding: 0.65rem 0.95rem;
+  min-width: 104px;
+  min-height: 40px;
+  padding: 0.45rem 0.8rem;
   border-radius: 999px;
   color: var(--dashboard-muted);
+  font-size: 0.92rem;
   font-weight: 700;
   text-decoration: none;
   transition:
@@ -100,11 +104,11 @@
 }
 
 .dashboard-brand__mark {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: inline-grid;
   place-items: center;
-  border-radius: 16px;
+  border-radius: 14px;
   background: linear-gradient(145deg, rgba(239, 243, 247, 0.95), rgba(171, 183, 195, 0.30));
   color: #0c1016;
   font-size: 0.9rem;
@@ -116,25 +120,26 @@
 .dashboard-eyebrow {
   margin: 0;
   color: #eef3f8;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .dashboard-header h1 {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   color: var(--dashboard-text);
-  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
   line-height: 1;
 }
 
 .dashboard-logout.btn {
   border: 0;
-  border-radius: 18px;
-  padding: 0.78rem 1.05rem;
+  border-radius: 14px;
+  padding: 0.56rem 0.9rem;
   background: linear-gradient(135deg, #e7f2fb, #bfd5e7);
   color: #0c1218;
+  font-size: 0.92rem;
   font-weight: 800;
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.28);
 }
@@ -283,7 +288,7 @@
 
   .dashboard-card {
     min-height: 100svh;
-    padding-top: 18px;
+    padding-top: 0;
   }
 
   .dashboard-header {
