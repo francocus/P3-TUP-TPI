@@ -4,7 +4,56 @@ import morgan from 'morgan';
 import bcrypt from 'bcrypt';
 import { sequelize } from './db.js';
 import userRoutes from './routes/users.routes.js';
+import caseRoutes from './routes/cases.routes.js';
+import appointmentRoutes from './routes/appointments.routes.js';
 import { User } from './models/user/User.js';
+import { Case } from './models/case/Case.js';
+import { Appointment } from './models/appointment/Appointment.js';
+
+User.hasMany(Case, {
+  foreignKey: 'clientId',
+  as: 'clientCases',
+});
+
+User.hasMany(Case, {
+  foreignKey: 'lawyerId',
+  as: 'lawyerCases',
+});
+
+Case.belongsTo(User, {
+  foreignKey: 'clientId',
+  as: 'client',
+});
+
+Case.belongsTo(User, {
+  foreignKey: 'lawyerId',
+  as: 'lawyer',
+});
+
+User.hasMany(Appointment, {
+  foreignKey: 'clientId',
+  as: 'clientAppointments',
+});
+
+User.hasMany(Appointment, {
+  foreignKey: 'lawyerId',
+  as: 'lawyerAppointments',
+});
+
+Appointment.belongsTo(User, {
+  foreignKey: 'clientId',
+  as: 'client',
+});
+
+Appointment.belongsTo(User, {
+  foreignKey: 'lawyerId',
+  as: 'lawyer',
+});
+
+Appointment.belongsTo(Case, {
+  foreignKey: 'caseId',
+  as: 'case',
+});
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -24,6 +73,8 @@ try {
   });
 
   app.use('/api/users', userRoutes);
+  app.use('/api/cases', caseRoutes);
+  app.use('/api/appointments', appointmentRoutes);
 
   await sequelize.authenticate();
   await sequelize.sync();
@@ -74,7 +125,7 @@ try {
     }
   }
 
-  console.log('Usuarios iniciales verificados correctamente.');
+  console.log('Base de datos conectada y sincronizada correctamente.');
 
   app.listen(port, () => {
     console.log(`Servidor backend escuchando en http://localhost:${port}`);
