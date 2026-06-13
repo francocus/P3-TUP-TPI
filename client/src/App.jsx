@@ -1,16 +1,17 @@
 import { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/auth/login/login';
-import Protected from './components/routes/protected/Protected';
-import ProtectedByRole from './components/routes/protectedByRole/ProtectedByRole';
-import NotFound from './components/routes/notFound/notFound';
+import Login from './components/auth/login/Login.jsx';
+import Register from './components/auth/register/Register.jsx';
+import Protected from './components/routes/protected/Protected.jsx';
+import ProtectedByRole from './components/routes/ProtectedByRole/ProtectedByRole.jsx';
+import NotFound from './components/routes/notFound/notFound.jsx';
 import { AuthenticationContext } from './components/services/auth/authentication.context';
-import AppointmentsContainer from './components/biz/appointments/appointmentsContainer/AppointmentsContainer';
-import CasesContainer from './components/biz/cases/casesContainer/CasesContainer';
-import UsersContainer from './components/biz/users/usersContainer/UsersContainer';
-import SysAdminDashboard from './components/biz/dashboard/sysadmin/SysAdminDashboard';
-import AbogadoDashboard from './components/biz/dashboard/abogado/AbogadoDashboard';
-import ClienteDashboard from './components/biz/dashboard/cliente/ClienteDashboard';
+import AppointmentsContainer from './components/biz/appointments/appointmentsContainer/AppointmentsContainer.jsx';
+import CasesContainer from './components/biz/cases/casesContainer/CasesContainer.jsx';
+import UsersContainer from './components/biz/users/usersContainer/UsersContainer.jsx';
+import SysAdminDashboard from './components/biz/dashboard/sysadmin/SysAdminDashboard.jsx';
+import LawyerDashboard from './components/biz/dashboard/lawyer/LawyerDashboard.jsx';
+import ClientDashboard from './components/biz/dashboard/client/ClientDashboard.jsx';
 
 const dashboardByRole = {
   sysadmin: '/dashboard/sysadmin',
@@ -133,6 +134,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
           element={
@@ -158,7 +160,7 @@ function App() {
           path="/dashboard/abogado"
           element={
             <ProtectedByRole allowedRoles={['abogado']}>
-              <AbogadoDashboard />
+              <LawyerDashboard />
             </ProtectedByRole>
           }
         >
@@ -170,7 +172,7 @@ function App() {
           path="/dashboard/cliente"
           element={
             <ProtectedByRole allowedRoles={['cliente']}>
-              <ClienteDashboard />
+              <ClientDashboard />
             </ProtectedByRole>
           }
         >

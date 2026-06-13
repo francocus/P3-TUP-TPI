@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
-import "./cliente.css";
+import "./lawyer.css";
 
-const ClienteDashboard = () => {
+const LawyerDashboard = () => {
   const navigate = useNavigate();
   const { user, handleUserLogout } = useContext(AuthenticationContext);
 
@@ -22,13 +22,13 @@ const ClienteDashboard = () => {
             <span className="dashboard-brand__mark">LM</span>
             <div>
               <p className="dashboard-eyebrow">Legal Manager</p>
-              <h1>Mi panel</h1>
+              <h1>Panel del estudio</h1>
               {user?.name && <span className="dashboard-user">{user.name}</span>}
             </div>
           </div>
 
           <div className="dashboard-actions">
-            <nav className="dashboard-nav" aria-label="Navegación del cliente">
+            <nav className="dashboard-nav" aria-label="Navegación del abogado">
               <NavLink
                 to="."
                 end
@@ -44,7 +44,7 @@ const ClienteDashboard = () => {
                   `dashboard-nav__link${isActive ? " is-active" : ""}`
                 }
               >
-                Mis Turnos
+                Agenda / Turnos
               </NavLink>
               <NavLink
                 to="cases"
@@ -52,7 +52,7 @@ const ClienteDashboard = () => {
                   `dashboard-nav__link${isActive ? " is-active" : ""}`
                 }
               >
-                Mi Expediente
+                Expedientes
               </NavLink>
             </nav>
 
@@ -68,4 +68,4 @@ const ClienteDashboard = () => {
   );
 };
 
-export default ClienteDashboard;
+export default LawyerDashboard;

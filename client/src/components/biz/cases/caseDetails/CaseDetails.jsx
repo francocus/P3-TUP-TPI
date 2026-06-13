@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Alert, Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { initialCaseForm } from './NewCase.data';
+import { initialCaseForm } from '../newCase/NewCase.data';
 
 const statusOptions = [
   { value: 'activo', label: 'Activo' },
@@ -9,10 +9,15 @@ const statusOptions = [
   { value: 'archivado', label: 'Archivado' },
 ];
 
-const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentUser }) => {
-  const [form, setForm] = useState(initialCaseForm);
+const CaseDetails = ({ legalCase, onEditCase, onFormClosed, clients = [], lawyers = [], currentUser }) => {
+  const [form, setForm] = useState(legalCase ?? initialCaseForm);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setForm(legalCase ?? initialCaseForm);
+    setMessage('');
+  }, [legalCase]);
 
   useEffect(() => {
     if (currentUser?.role === 'abogado') {
@@ -32,14 +37,11 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
 
   const handleGoBack = () => {
     setMessage('');
-    setForm({
-      ...initialCaseForm,
-      lawyerId: currentUser?.role === 'abogado' ? String(currentUser.id) : '',
-    });
+    setForm(legalCase ?? initialCaseForm);
     onFormClosed?.();
   };
 
-  const handleAddCase = async (event) => {
+  const handleEditCase = async (event) => {
     event.preventDefault();
     setMessage('');
 
@@ -62,14 +64,10 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
         lawyerId: currentUser?.role === 'abogado' ? Number(currentUser.id) : Number(form.lawyerId),
       };
 
-      await onAddCase?.(payload);
-      setForm({
-        ...initialCaseForm,
-        lawyerId: currentUser?.role === 'abogado' ? String(currentUser.id) : '',
-      });
+      await onEditCase?.(payload);
       onFormClosed?.();
     } catch (error) {
-      setMessage(error.message || 'No se pudo crear el expediente.');
+      setMessage(error.message || 'No se pudo actualizar el expediente.');
     } finally {
       setLoading(false);
     }
@@ -88,11 +86,12 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
       <Modal.Header className="cases-modal__header" closeButton closeVariant="white">
         <div>
           <p className="cases-modal__eyebrow">Administracion de expedientes</p>
-          <Modal.Title>Nuevo expediente</Modal.Title>
+          <Modal.Title>Editar expediente</Modal.Title>
+          <p className="cases-modal__subtitle">Expediente seleccionado: {legalCase?.caseNumber}</p>
         </div>
       </Modal.Header>
 
-      <Form className="cases-form text-white" onSubmit={handleAddCase}>
+      <Form className="cases-form text-white" onSubmit={handleEditCase}>
         <Modal.Body className="cases-modal__body">
           {message ? (
             <Alert className="mb-3" variant="danger">
@@ -105,7 +104,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="caseNumber">
                 <Form.Label>Numero de expediente</Form.Label>
                 <Form.Control
-                  value={form.caseNumber}
+                  value={form.caseNumber ?? ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'caseNumber')}
                   type="text"
                   placeholder="Ingresar numero de expediente"
@@ -119,7 +118,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="title">
                 <Form.Label>Titulo</Form.Label>
                 <Form.Control
-                  value={form.title}
+                  value={form.title ?? ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'title')}
                   type="text"
                   placeholder="Ingresar titulo"
@@ -133,7 +132,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="area">
                 <Form.Label>Area</Form.Label>
                 <Form.Control
-                  value={form.area}
+                  value={form.area ?? ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'area')}
                   type="text"
                   placeholder="Ingresar area"
@@ -143,7 +142,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
             <Col md={6}>
               <Form.Group className="mb-3" controlId="status">
                 <Form.Label>Estado</Form.Label>
-                <Form.Select value={form.status} onChange={(event) => handleChangeFormAttribute(event, 'status')}>
+                <Form.Select value={form.status ?? 'activo'} onChange={(event) => handleChangeFormAttribute(event, 'status')}>
                   {statusOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -159,7 +158,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="startDate">
                 <Form.Label>Fecha de inicio</Form.Label>
                 <Form.Control
-                  value={form.startDate}
+                  value={form.startDate ?? ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'startDate')}
                   type="date"
                 />
@@ -169,7 +168,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="lastUpdate">
                 <Form.Label>Ultima actualizacion</Form.Label>
                 <Form.Control
-                  value={form.lastUpdate}
+                  value={form.lastUpdate ?? ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'lastUpdate')}
                   type="date"
                 />
@@ -182,7 +181,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="description">
                 <Form.Label>Descripcion</Form.Label>
                 <Form.Control
-                  value={form.description}
+                  value={form.description ?? ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'description')}
                   as="textarea"
                   rows={3}
@@ -197,7 +196,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="notes">
                 <Form.Label>Notas</Form.Label>
                 <Form.Control
-                  value={form.notes}
+                  value={form.notes ?? ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'notes')}
                   as="textarea"
                   rows={2}
@@ -212,7 +211,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
               <Form.Group className="mb-3" controlId="clientId">
                 <Form.Label>Cliente</Form.Label>
                 <Form.Select
-                  value={form.clientId}
+                  value={form.clientId ? String(form.clientId) : ''}
                   onChange={(event) => handleChangeFormAttribute(event, 'clientId')}
                 >
                   <option value="">Seleccionar cliente</option>
@@ -232,7 +231,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
                   <Form.Control value={currentUser?.name ?? ''} readOnly />
                 ) : (
                   <Form.Select
-                    value={form.lawyerId}
+                    value={form.lawyerId ? String(form.lawyerId) : ''}
                     onChange={(event) => handleChangeFormAttribute(event, 'lawyerId')}
                   >
                     <option value="">Seleccionar abogado</option>
@@ -264,7 +263,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
             disabled={loading}
             className="cases-form__button cases-form__button--primary"
           >
-            {loading ? 'Agregando...' : 'Agregar expediente'}
+            {loading ? 'Guardando...' : 'Guardar cambios'}
           </Button>
         </Modal.Footer>
       </Form>
@@ -272,4 +271,4 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
   );
 };
 
-export default NewCase;
+export default CaseDetails;

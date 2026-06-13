@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { initialUserForm } from './NewUser.data';
+import { initialUserForm } from '../newUser/NewUser.data';
 
-const NewUser = ({ onAddUser, onFormClosed }) => {
-  const [form, setForm] = useState(initialUserForm);
+const UserDetails = ({ user, onEditUser, onFormClosed }) => {
+  const [form, setForm] = useState(user ?? initialUserForm);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setForm(user ?? initialUserForm);
+    setMessage('');
+  }, [user]);
 
   const handleChangeFormAttribute = (event, attr) => {
     setForm((prevForm) => ({
@@ -16,26 +21,25 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
 
   const handleGoBack = () => {
     setMessage('');
-    setForm(initialUserForm);
+    setForm(user ?? initialUserForm);
     onFormClosed?.();
   };
 
-  const handleAddUser = async (event) => {
+  const handleEditUser = async (event) => {
     event.preventDefault();
     setMessage('');
 
-    if (!form.name.trim() || !form.dni.trim() || !form.email.trim() || !form.password.trim()) {
-      setMessage('Completá nombre, DNI, correo electrónico y contraseña.');
+    if (!form.name.trim() || !form.dni.trim() || !form.email.trim()) {
+      setMessage('Completá nombre, DNI y correo electrónico.');
       return;
     }
 
     try {
       setLoading(true);
-      await onAddUser?.(form);
-      setForm(initialUserForm);
+      await onEditUser?.(form);
       onFormClosed?.();
     } catch (error) {
-      setMessage(error.message || 'No se pudo crear el usuario.');
+      setMessage(error.message || 'No se pudo actualizar el usuario.');
     } finally {
       setLoading(false);
     }
@@ -54,11 +58,12 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
       <Modal.Header className="users-modal__header" closeButton closeVariant="white">
         <div>
           <p className="users-modal__eyebrow">Administración de usuarios</p>
-          <Modal.Title>Nuevo usuario</Modal.Title>
+          <Modal.Title>Editar usuario</Modal.Title>
+          <p className="users-modal__subtitle">Perfil seleccionado: {user?.name}</p>
         </div>
       </Modal.Header>
 
-      <Form className="users-form text-white" onSubmit={handleAddUser}>
+      <Form className="users-form text-white" onSubmit={handleEditUser}>
         <Modal.Body className="users-modal__body">
           {message && (
             <Alert className="mb-3" variant="danger">
@@ -113,7 +118,7 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
                   value={form.password}
                   onChange={(event) => handleChangeFormAttribute(event, 'password')}
                   type="password"
-                  placeholder="Ingresar contraseña"
+                  placeholder="Dejar vacío si no cambia"
                 />
               </Form.Group>
             </Col>
@@ -150,7 +155,7 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
             Cancelar
           </Button>
           <Button variant="primary" type="submit" disabled={loading} className="users-form__button users-form__button--primary">
-            {loading ? 'Agregando...' : 'Agregar usuario'}
+            {loading ? 'Guardando...' : 'Guardar cambios'}
           </Button>
         </Modal.Footer>
       </Form>
@@ -158,4 +163,4 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
   );
 };
 
-export default NewUser;
+export default UserDetails;

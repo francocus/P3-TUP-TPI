@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import os from 'node:os';
+import path from 'node:path';
 import { Sequelize } from 'sequelize';
 
 const dialect = process.env.DB_DIALECT || 'sqlite';

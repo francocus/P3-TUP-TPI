@@ -1,4 +1,4 @@
-import { Form } from "react-bootstrap";
+import { Form } from 'react-bootstrap';
 
 const AppointmentsSearch = ({ onSearch }) => {
   return (
@@ -7,7 +7,7 @@ const AppointmentsSearch = ({ onSearch }) => {
         className="appointments-search"
         type="text"
         placeholder="Buscar turno..."
-        onChange={(event) => onSearch(event.target.value)} 
+        onChange={(event) => onSearch(event.target.value)}
       />
     </Form.Group>
   );

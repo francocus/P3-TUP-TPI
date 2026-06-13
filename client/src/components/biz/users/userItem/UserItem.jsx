@@ -26,32 +26,9 @@ const getRoleLabel = (role) => {
   }
 };
 
-const EditIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M3 17.25V21h3.75L17.8 9.95l-3.75-3.75L3 17.25zm2.92 2.83H5v-.92l8.84-8.84.92.92-8.84 8.84zM20.71 7.04a1 1 0 0 0 0-1.42l-2.33-2.33a1 1 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-  </svg>
-);
-
-const DeleteIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M9 3.75A1.75 1.75 0 0 1 10.75 2h2.5A1.75 1.75 0 0 1 15 3.75V4h4a1 1 0 1 1 0 2h-1.06l-.8 11.2A2.75 2.75 0 0 1 14.39 20H9.61a2.75 2.75 0 0 1-2.75-2.8L6.06 6H5a1 1 0 1 1 0-2h4v-.25zM11 4h2v-.25a.25.25 0 0 0-.25-.25h-1.5a.25.25 0 0 0-.25.25V4zm-1.93 2 .73 10.2c.02.4.35.71.75.71h3.9c.4 0 .73-.31.75-.7L15.93 6H9.07z" />
-  </svg>
-);
-
-const UserItem = ({
-  id,
-  name,
-  dni,
-  email,
-  role,
-  active,
-  isSelected,
-  canDelete = true,
-  onEdit,
-  onDelete,
-}) => {
+const UserItem = ({ id, name, dni, email, role, active, onEdit, onDelete, isCurrentUser }) => {
   return (
-    <tr className={`user-row${isSelected ? ' is-selected' : ''}`}>
+    <tr className="user-row">
       <td className="user-cell user-cell--main">
         <div className="user-main">
           <span className="user-main__name">{name}</span>
@@ -69,7 +46,7 @@ const UserItem = ({
 
       <td className="user-cell">
         <span className={`user-chip user-chip--status ${getActiveClass(active)}`}>
-          {active ? 'Activo' : 'Inactivo'}
+          {active ? 'activo' : 'inactivo'}
         </span>
       </td>
 
@@ -82,17 +59,21 @@ const UserItem = ({
             aria-label="Editar usuario"
             onClick={() => onEdit?.({ id, name, dni, email, role, active })}
           >
-            <EditIcon />
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
+            </svg>
           </button>
           <button
             className="user-action user-action--delete"
             type="button"
-            title="Eliminar usuario"
+            title={isCurrentUser ? 'No puedes eliminar tu propio usuario' : 'Eliminar usuario'}
             aria-label="Eliminar usuario"
-            onClick={() => canDelete && onDelete?.(id)}
-            disabled={!canDelete}
+            onClick={() => onDelete?.(id)}
+            disabled={isCurrentUser}
           >
-            <DeleteIcon />
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M9 3.75h6l1 1.5H20v1.5H4v-1.5h4l1-1.5Zm1.5 5.25h1.5v7.5h-1.5v-7.5Zm4.5 0h1.5v7.5H15v-7.5Zm-8.25 0h1.5v7.5h-1.5v-7.5Zm1.5 11.25h9A1.75 1.75 0 0 0 19 18v-8.25H5V18c0 .97.78 1.75 1.75 1.75Z" />
+            </svg>
           </button>
         </div>
       </td>
