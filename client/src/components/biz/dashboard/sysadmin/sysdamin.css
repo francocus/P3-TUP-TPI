@@ -7,7 +7,8 @@
   --dashboard-muted: #d2dce7;
   --dashboard-muted-soft: #b3bfcc;
   --dashboard-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
-  min-height: 100vh;
+  min-height: 100dvh;
+  height: auto;
   padding: 0;
   color: var(--dashboard-text);
   background:
@@ -19,8 +20,9 @@
 
 .dashboard-card {
   width: 100%;
-  min-height: 100vh;
-  padding: 0 0 clamp(18px, 3vw, 28px);
+  min-height: 100dvh;
+  height: auto;
+  padding: 0 0 clamp(28px, 4vw, 48px);
   background: transparent;
 }
 
@@ -159,6 +161,27 @@
   box-sizing: border-box;
 }
 
+.dashboard-message {
+  width: min(1120px, 100%);
+  margin: 18px auto 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  font-weight: 700;
+}
+
+.dashboard-message--error {
+  background: rgba(217, 93, 93, 0.16);
+  border-color: rgba(217, 93, 93, 0.34);
+  color: #ffe0e0;
+}
+
+.dashboard-message--info {
+  background: rgba(69, 118, 236, 0.16);
+  border-color: rgba(69, 118, 236, 0.34);
+  color: #d9e7ff;
+}
+
 .dashboard-overview {
   display: grid;
   gap: 22px;
@@ -242,7 +265,7 @@
 
 .users-panel {
   margin-top: 24px;
-  padding-bottom: 28px;
+  padding-bottom: 40px;
 }
 
 .appointments-search.form-control {

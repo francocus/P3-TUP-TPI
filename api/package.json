@@ -5,9 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest",
+    "test": "node src/utils/validators.test.js",
     "dev": "node --watch src/index.js",
-    "check": "node --input-type=module -e \"await import('./src/db.js'); await import('./src/models/user/User.js'); console.log('Backend cargado correctamente')\""
+    "check": "node --input-type=module -e \"await import('./src/db.js'); await import('./src/models/user/User.js'); await import('./src/models/case/Case.js'); await import('./src/models/appointment/Appointment.js'); console.log('Backend cargado correctamente')\""
   },
   "keywords": [],
   "author": "",

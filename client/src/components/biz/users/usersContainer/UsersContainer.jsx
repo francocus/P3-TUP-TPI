@@ -1,36 +1,147 @@
-import { useState } from "react";
-import UsersSearch from "../usersSearch/UsersSearch";
-import UserItem from "../userItem/UserItem";
-import { USERS } from "../data/users";
-import "../users.css";
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { Alert, Button } from 'react-bootstrap';
+import { AuthenticationContext } from '../../../services/auth/authentication.context';
+import DeleteModal from '../deleteUserModal/DeleteUserModal';
+import NewUser from '../newUser/NewUser';
+import UserDetails from '../userDetails/userDetails';
+import UserItem from '../userItem/UserItem';
+import UsersSearch from '../usersSearch/UsersSearch';
+import '../users.css';
+
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
+
+const buildHeaders = (token) => ({
+  Authorization: `Bearer ${token}`,
+  'Content-Type': 'application/json',
+});
+
+const getErrorMessage = async (response) => {
+  try {
+    const payload = await response.json();
+    return payload?.message || 'No se pudo completar la operacion.';
+  } catch (_error) {
+    return 'No se pudo completar la operacion.';
+  }
+};
 
 const UsersContainer = () => {
-  const [searchUser, setSearchUser] = useState("");
+  const { token, user: currentUser } = useContext(AuthenticationContext);
+  const [users, setUsers] = useState([]);
+  const [searchUser, setSearchUser] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [showNewUser, setShowNewUser] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setMessage('');
+      const response = await fetch(`${API_URL}/users`, {
+        headers: buildHeaders(token),
+      });
+
+      if (!response.ok) {
+        throw new Error(await getErrorMessage(response));
+      }
+
+      const data = await response.json();
+      setUsers(data.users ?? []);
+    } catch (error) {
+      setMessage(error.message || 'No se pudieron cargar los usuarios.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchUsers();
+    }
+  }, [token]);
 
   const handleSearch = (searchValue) => {
     setSearchUser(searchValue);
   };
 
-  const usersMapped = USERS
-    .filter((user) =>
-      user.name.toUpperCase().includes(searchUser.toUpperCase()) ||
-      user.dni.toUpperCase().includes(searchUser.toUpperCase()) ||
-      user.email.toUpperCase().includes(searchUser.toUpperCase()) ||
-      user.role.toUpperCase().includes(searchUser.toUpperCase())
-    )
-    .map((user) => {
-      return (
-        <UserItem
-          key={user.id}
-          id={user.id}
-          name={user.name}
-          dni={user.dni}
-          email={user.email}
-          role={user.role}
-          active={user.active}
-        />
-      );
+  const handleOpenNewUser = () => {
+    setUserToEdit(null);
+    setUserToDelete(null);
+    setShowNewUser(true);
+  };
+
+  const handleCloseForms = () => {
+    setShowNewUser(false);
+    setUserToEdit(null);
+    setUserToDelete(null);
+    setMessage('');
+  };
+
+  const handleAddUser = async (form) => {
+    const response = await fetch(`${API_URL}/users`, {
+      method: 'POST',
+      headers: buildHeaders(token),
+      body: JSON.stringify(form),
     });
+
+    if (!response.ok) {
+      throw new Error(await getErrorMessage(response));
+    }
+
+    await fetchUsers();
+    handleCloseForms();
+  };
+
+  const handleEditUser = async (form) => {
+    const response = await fetch(`${API_URL}/users/${form.id}`, {
+      method: 'PUT',
+      headers: buildHeaders(token),
+      body: JSON.stringify(form),
+    });
+
+    if (!response.ok) {
+      throw new Error(await getErrorMessage(response));
+    }
+
+    await fetchUsers();
+    handleCloseForms();
+  };
+
+  const handleDeleteUser = async (id) => {
+    if (id === currentUser?.id) {
+      return;
+    }
+
+    const response = await fetch(`${API_URL}/users/${id}`, {
+      method: 'DELETE',
+      headers: buildHeaders(token),
+    });
+
+    if (!response.ok) {
+      throw new Error(await getErrorMessage(response));
+    }
+
+    await fetchUsers();
+    setUserToDelete(null);
+  };
+
+  const filteredUsers = useMemo(() => {
+    const query = searchUser.trim().toUpperCase();
+
+    return users.filter((userEntry) => {
+      const matchesQuery =
+        userEntry.name?.toUpperCase().includes(query) ||
+        userEntry.dni?.toUpperCase().includes(query) ||
+        userEntry.email?.toUpperCase().includes(query) ||
+        userEntry.role?.toUpperCase().includes(query);
+
+      const matchesRole = roleFilter === 'all' ? true : userEntry.role === roleFilter;
+
+      return matchesQuery && matchesRole;
+    });
+  }, [roleFilter, searchUser, users]);
 
   return (
     <section className="users-panel">
@@ -41,42 +152,95 @@ const UsersContainer = () => {
         </div>
 
         <div className="users-header__controls">
-          <select className="users-filter">
-            <option>Todos los roles</option>
-            <option>Cliente</option>
-            <option>Abogado</option>
-            <option>Sys Admin</option>
+          <select
+            className="users-filter"
+            value={roleFilter}
+            onChange={(event) => setRoleFilter(event.target.value)}
+          >
+            <option value="all">Todos los roles</option>
+            <option value="cliente">Cliente</option>
+            <option value="abogado">Abogado</option>
+            <option value="sysadmin">Sys Admin</option>
           </select>
 
           <div className="users-search-wrap">
             <UsersSearch onSearch={handleSearch} />
           </div>
 
-          <button
+          <Button
             type="button"
             className="users-create"
             title="Crear perfil"
             aria-label="Crear perfil"
+            onClick={handleOpenNewUser}
           >
-            +
-          </button>
+            <span className="users-create__text">Crear perfil</span>
+          </Button>
         </div>
       </header>
 
-      {usersMapped.length > 0 ? (
+      {message && (
+        <Alert className="users-alert" variant="danger">
+          {message}
+        </Alert>
+      )}
+
+      {showNewUser && <NewUser onAddUser={handleAddUser} onFormClosed={handleCloseForms} />}
+
+      {userToEdit && (
+        <UserDetails user={userToEdit} onEditUser={handleEditUser} onFormClosed={handleCloseForms} />
+      )}
+
+      {userToDelete && (
+        <DeleteModal
+          show={Boolean(userToDelete)}
+          user={userToDelete}
+          onHide={() => setUserToDelete(null)}
+          onDeleteUser={handleDeleteUser}
+        />
+      )}
+
+      {loading ? (
+        <p className="users-empty">Cargando usuarios...</p>
+      ) : filteredUsers.length > 0 ? (
         <div className="users-table-wrap">
           <table className="users-table">
             <thead>
               <tr>
                 <th>Usuario / DNI</th>
                 <th>Rol</th>
-                <th>Estudio Vinculado</th>
                 <th>Contacto</th>
                 <th>Estado</th>
                 <th className="users-table__actions-head">Acciones Admin</th>
               </tr>
             </thead>
-            <tbody>{usersMapped}</tbody>
+            <tbody>
+              {filteredUsers.map((userEntry) => (
+                <UserItem
+                  key={userEntry.id}
+                  id={userEntry.id}
+                  name={userEntry.name}
+                  dni={userEntry.dni}
+                  email={userEntry.email}
+                  role={userEntry.role}
+                  active={userEntry.active}
+                  isCurrentUser={userEntry.id === currentUser?.id}
+                  onEdit={(selectedUser) => {
+                    setShowNewUser(false);
+                    setUserToDelete(null);
+                    setUserToEdit(selectedUser);
+                  }}
+                  onDelete={(id) => {
+                    const selectedUser = filteredUsers.find((entry) => entry.id === id);
+                    if (selectedUser) {
+                      setShowNewUser(false);
+                      setUserToEdit(null);
+                      setUserToDelete(selectedUser);
+                    }
+                  }}
+                />
+              ))}
+            </tbody>
           </table>
         </div>
       ) : (

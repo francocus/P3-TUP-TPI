@@ -1,14 +1,26 @@
 export const CASES = [
   {
     id: 1,
-    caseNumber: "EXP-2026-001",
-    title: "Reclamo laboral por despido",
-    clientName: "Juan Perez",
-    lawyerName: "Dra. Garcia",
-    type: "laboral",
-    status: "activo",
-    startDate: "2026-05-10",
-    lastUpdate: "2026-06-01",
-    description: "Expediente por reclamo de indemnizacion laboral."
-  }
+    caseNumber: 'EXP-2026-001',
+    title: 'Reclamo laboral por despido',
+    clientName: 'Juan Perez',
+    lawyerName: 'Dra. Garcia',
+    type: 'laboral',
+    status: 'activo',
+    startDate: '2026-05-10',
+    lastUpdate: '2026-06-01',
+    description: 'Expediente por reclamo de indemnizacion laboral.',
+  },
+  {
+    id: 2,
+    caseNumber: 'EXP-2026-002',
+    title: 'Divorcio contencioso',
+    clientName: 'Maria Lopez',
+    lawyerName: 'Dr. Smith',
+    type: 'familia',
+    status: 'pendiente',
+    startDate: '2026-04-18',
+    lastUpdate: '2026-05-28',
+    description: 'Seguimiento de acuerdo y medidas provisionales.',
+  },
 ];

@@ -1,15 +1,12 @@
+import assert from 'node:assert/strict';
+import { validateEmail } from './validators.js';
+
+assert.equal(validateEmail('estudio@cuscianna.com'), true);
+assert.equal(validateEmail('abogado.asociado@gmail.com'), true);
+assert.equal(validateEmail('correoInvalido.com'), false);
+assert.equal(validateEmail('usuario@estudio'), false);
+assert.equal(validateEmail('@estudio.com'), false);
+
+console.log('Validators OK');
+
 const { validateEmail } = require('./validators');
-
-describe('Suite de Pruebas Unitarias - Control de Formato de Email', () => {
-  
-  test('Debería validar con TRUE las estructuras de correos correctas', () => {
-    expect(validateEmail('estudio@cuscianna.com')).toBe(true);
-    expect(validateEmail('abogado.asociado@gmail.com')).toBe(true);
-  });
-
-  test('Debería retornar FALSE ante patrones de entrada inválidos', () => {
-    expect(validateEmail('correoInvalido.com')).toBe(false);
-    expect(validateEmail('usuario@estudio')).toBe(false);
-    expect(validateEmail('@estudio.com')).toBe(false);
-  });
-});
