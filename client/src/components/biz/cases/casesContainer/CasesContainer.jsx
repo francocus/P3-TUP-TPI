@@ -1,54 +1,54 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { AuthenticationContext } from '../../../services/auth/authentication.context';
-import { Alert, Button } from 'react-bootstrap';
-import DeleteCaseModal from '../deleteCaseModal/DeleteCaseModal';
-import CaseDetails from '../caseDetails/CaseDetails';
-import NewCase from '../newCase/NewCase';
-import CasesItem from '../casesItem/CasesItem';
-import CasesSearch from '../casesSearch/CasesSearch';
+import { useContext, useEffect, useState } from "react";
+import { AuthenticationContext } from "../../../services/auth/authentication.context";
+import { Alert, Button } from "react-bootstrap";
+import DeleteCaseModal from "../deleteCaseModal/DeleteCaseModal";
+import CaseDetails from "../caseDetails/CaseDetails";
+import NewCase from "../newCase/NewCase";
+import CasesItem from "../casesItem/CasesItem";
+import CasesSearch from "../casesSearch/CasesSearch";
 import "../cases.css";
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
 
 const buildHeaders = (token) => ({
   Authorization: `Bearer ${token}`,
-  'Content-Type': 'application/json',
+  "Content-Type": "application/json",
 });
 
 const getErrorMessage = async (response) => {
   try {
     const payload = await response.json();
-    return payload?.message || 'No se pudo completar la operacion.';
+    return payload?.message || "No se pudo completar la operacion.";
   } catch (_error) {
-    return 'No se pudo completar la operacion.';
+    return "No se pudo completar la operacion.";
   }
 };
 
 const normalizeCaseEntry = (legalCase) => ({
   id: legalCase.id,
-  caseNumber: legalCase.caseNumber ?? '',
-  title: legalCase.title ?? '',
-  area: legalCase.area ?? '',
-  status: legalCase.status ?? 'activo',
-  startDate: legalCase.startDate ?? '',
-  lastUpdate: legalCase.lastUpdate ?? '',
-  description: legalCase.description ?? '',
-  notes: legalCase.notes ?? '',
-  clientId: legalCase.clientId ?? legalCase.client?.id ?? '',
-  lawyerId: legalCase.lawyerId ?? legalCase.lawyer?.id ?? '',
-  clientName: legalCase.client?.name ?? 'Sin cliente',
-  lawyerName: legalCase.lawyer?.name ?? 'Sin abogado',
+  caseNumber: legalCase.caseNumber ?? "",
+  title: legalCase.title ?? "",
+  area: legalCase.area ?? "",
+  status: legalCase.status ?? "activo",
+  startDate: legalCase.startDate ?? "",
+  lastUpdate: legalCase.lastUpdate ?? "",
+  description: legalCase.description ?? "",
+  notes: legalCase.notes ?? "",
+  clientId: legalCase.clientId ?? legalCase.client?.id ?? "",
+  lawyerId: legalCase.lawyerId ?? legalCase.lawyer?.id ?? "",
+  clientName: legalCase.client?.name ?? "Sin cliente",
+  lawyerName: legalCase.lawyer?.name ?? "Sin abogado",
 });
 
 const CasesContainer = () => {
   const { token, user: currentUser } = useContext(AuthenticationContext);
   const [cases, setCases] = useState([]);
   const [users, setUsers] = useState([]);
-  const [searchCase, setSearchCase] = useState('');
+  const [searchCase, setSearchCase] = useState("");
   const [showNewCase, setShowNewCase] = useState(false);
   const [caseToEdit, setCaseToEdit] = useState(null);
   const [caseToDelete, setCaseToDelete] = useState(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const fetchCases = async () => {
@@ -78,24 +78,22 @@ const CasesContainer = () => {
   };
 
   useEffect(() => {
-    if (!token) {
-      return undefined;
-    }
+    if (!token) return;
 
     const loadCases = async () => {
       try {
         setLoading(true);
-        setMessage('');
-        await Promise.all([fetchCases(), fetchUsers()]);
+        setMessage("");
+        await fetchCases();
+        if (currentUser?.role === "sysadmin") await fetchUsers();
       } catch (error) {
-        setMessage(error.message || 'No se pudieron cargar los expedientes.');
+        setMessage(error.message || "No se pudieron cargar los expedientes.");
       } finally {
         setLoading(false);
       }
     };
 
     loadCases();
-    return undefined;
   }, [token]);
 
   const handleSearch = (searchValue) => {
@@ -112,7 +110,7 @@ const CasesContainer = () => {
     setShowNewCase(false);
     setCaseToEdit(null);
     setCaseToDelete(null);
-    setMessage('');
+    setMessage("");
   };
 
   const handleAddCase = async (form) => {
@@ -123,7 +121,7 @@ const CasesContainer = () => {
     };
 
     const response = await fetch(`${API_URL}/cases`, {
-      method: 'POST',
+      method: "POST",
       headers: buildHeaders(token),
       body: JSON.stringify(payload),
     });
@@ -144,7 +142,7 @@ const CasesContainer = () => {
     };
 
     const response = await fetch(`${API_URL}/cases/${form.id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: buildHeaders(token),
       body: JSON.stringify(payload),
     });
@@ -159,7 +157,7 @@ const CasesContainer = () => {
 
   const handleDeleteCase = async (id) => {
     const response = await fetch(`${API_URL}/cases/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: buildHeaders(token),
     });
 
@@ -171,26 +169,24 @@ const CasesContainer = () => {
     setCaseToDelete(null);
   };
 
-  const filteredCases = useMemo(() => {
-    const query = searchCase.trim().toLowerCase();
+  // Opción: Sin useMemo, pero manteniendo el uso como arreglo
+  const query = searchCase.trim().toLowerCase();
 
-    return cases.filter((legalCase) => {
-      const matchesQuery =
-        legalCase.caseNumber.toLowerCase().includes(query) ||
-        legalCase.title.toLowerCase().includes(query) ||
-        legalCase.area.toLowerCase().includes(query) ||
-        legalCase.clientName.toLowerCase().includes(query) ||
-        legalCase.lawyerName.toLowerCase().includes(query) ||
-        legalCase.status.toLowerCase().includes(query) ||
-        legalCase.description.toLowerCase().includes(query) ||
-        legalCase.notes.toLowerCase().includes(query);
+  const filteredCases = cases.filter((legalCase) => {
+    return (
+      legalCase.caseNumber.toLowerCase().includes(query) ||
+      legalCase.title.toLowerCase().includes(query) ||
+      legalCase.area.toLowerCase().includes(query) ||
+      legalCase.clientName.toLowerCase().includes(query) ||
+      legalCase.lawyerName.toLowerCase().includes(query) ||
+      legalCase.status.toLowerCase().includes(query) ||
+      legalCase.description.toLowerCase().includes(query) ||
+      legalCase.notes.toLowerCase().includes(query)
+    );
+  });
 
-      return matchesQuery;
-    });
-  }, [cases, searchCase]);
-
-  const clients = useMemo(() => users.filter((userEntry) => userEntry.role === 'cliente'), [users]);
-  const lawyers = useMemo(() => users.filter((userEntry) => userEntry.role === 'abogado'), [users]);
+  const clients = users.filter((userEntry) => userEntry.role === "cliente");
+  const lawyers = users.filter((userEntry) => userEntry.role === "abogado");
 
   return (
     <section className="cases-panel">
@@ -283,7 +279,9 @@ const CasesContainer = () => {
                 });
               }}
               onDelete={(id) => {
-                const selectedCase = filteredCases.find((entry) => entry.id === id);
+                const selectedCase = filteredCases.find(
+                  (entry) => entry.id === id,
+                );
                 if (selectedCase) {
                   setShowNewCase(false);
                   setCaseToEdit(null);

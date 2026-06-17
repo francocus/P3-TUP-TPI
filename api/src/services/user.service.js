@@ -152,6 +152,25 @@ export const listUsers = async (req, res) => {
   }
 };
 
+export const listLawyers = async (req, res) => {
+  try {
+    const lawyers = await User.findAll({
+      where: {
+        role: 'abogado',
+        active: true,
+      },
+      order: [['name', 'ASC']],
+    });
+
+    return res.json({
+      lawyers: lawyers.map(buildSafeUser),
+    });
+  } catch (error) {
+    console.log('Error al obtener abogados:', error);
+    return res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+};
+
 export const getUserById = async (req, res) => {
   try {
     if (!assertAdminRole(req.user.role)) {
