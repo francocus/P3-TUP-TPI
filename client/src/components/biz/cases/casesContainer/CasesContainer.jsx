@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import { Alert, Button } from "react-bootstrap";
-import DeleteCaseModal from "../deleteCaseModal/DeleteCaseModal";
+import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
 import CaseDetails from "../caseDetails/CaseDetails";
 import NewCase from "../newCase/NewCase";
 import CasesItem from "../casesItem/CasesItem";
@@ -201,15 +201,17 @@ const CasesContainer = () => {
             <CasesSearch onSearch={handleSearch} />
           </div>
 
-          <Button
-            type="button"
-            className="cases-create"
-            title="Crear expediente"
-            aria-label="Crear expediente"
-            onClick={handleOpenNewCase}
-          >
-            <span className="cases-create__text">Crear expediente</span>
-          </Button>
+          {currentUser?.role === "abogado" || currentUser?.role === "sysadmin" ? (
+            <Button
+              type="button"
+              className="cases-create"
+              title="Crear expediente"
+              aria-label="Crear expediente"
+              onClick={handleOpenNewCase}
+            >
+              <span className="cases-create__text">Crear expediente</span>
+            </Button>
+          ) : null}
         </div>
       </header>
 
@@ -240,14 +242,16 @@ const CasesContainer = () => {
         />
       ) : null}
 
-      {caseToDelete ? (
-        <DeleteCaseModal
+      {caseToDelete && (
+        <DeleteModal
           show={Boolean(caseToDelete)}
-          legalCase={caseToDelete}
           onHide={() => setCaseToDelete(null)}
-          onDeleteCase={handleDeleteCase}
+          onConfirm={() => handleDeleteCase(caseToDelete.id)}
+          title="Eliminar expediente"
+          message="¿Estás seguro que deseas eliminar el expediente"
+          itemName={caseToDelete?.caseNumber}
         />
-      ) : null}
+      )}
 
       {loading ? (
         <p className="cases-empty">Cargando expedientes...</p>
@@ -269,6 +273,7 @@ const CasesContainer = () => {
               lastUpdate={legalCase.lastUpdate}
               description={legalCase.description}
               notes={legalCase.notes}
+              currentUser={currentUser}
               onEdit={(selectedCase) => {
                 setShowNewCase(false);
                 setCaseToDelete(null);
@@ -294,6 +299,7 @@ const CasesContainer = () => {
       ) : (
         <p className="cases-empty">No se encontraron expedientes.</p>
       )}
+
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { normalizeText } from "../data/appointments.data";
+import { normalizeText } from "../calendar/Calendar.data";
 
 const getAppointmentAccent = (appointment) => {
   const normalizedStatus = normalizeText(appointment.status);

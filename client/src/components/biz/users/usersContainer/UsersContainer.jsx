@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { AuthenticationContext } from '../../../services/auth/authentication.context';
-import DeleteModal from '../deleteUserModal/DeleteUserModal';
+import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
 import NewUser from '../newUser/NewUser';
 import UserDetails from '../userDetails/userDetails';
 import UserItem from '../userItem/UserItem';
@@ -127,19 +127,17 @@ const UsersContainer = () => {
     setUserToDelete(null);
   };
 
-  const filteredCases = cases.filter((legalCase) => {
-    const matchesQuery =
-      legalCase.caseNumber.toLowerCase().includes(query) ||
-      legalCase.title.toLowerCase().includes(query) ||
-      legalCase.area.toLowerCase().includes(query) ||
-      legalCase.clientName.toLowerCase().includes(query) ||
-      legalCase.lawyerName.toLowerCase().includes(query) ||
-      legalCase.status.toLowerCase().includes(query) ||
-      legalCase.description.toLowerCase().includes(query) ||
-      legalCase.notes.toLowerCase().includes(query);
-
-    return matchesQuery;
-  }); 
+  const filteredUsers = users.filter((user) => {
+    if (roleFilter !== "all" && user.role !== roleFilter) {
+      return false;
+    }
+    const lowerSearch = searchUser.toLowerCase();
+    const matchesSearch =
+      (user.name && user.name.toLowerCase().includes(lowerSearch)) ||
+      (user.email && user.email.toLowerCase().includes(lowerSearch)) ||
+      (user.dni && String(user.dni).toLowerCase().includes(lowerSearch));
+    return matchesSearch;
+  });
 
   return (
     <section className="users-panel">
@@ -198,9 +196,11 @@ const UsersContainer = () => {
       {userToDelete && (
         <DeleteModal
           show={Boolean(userToDelete)}
-          user={userToDelete}
           onHide={() => setUserToDelete(null)}
-          onDeleteUser={handleDeleteUser}
+          onConfirm={() => handleDeleteUser(userToDelete.id)}
+          title="Eliminar usuario"
+          message="¿Estás seguro que deseas eliminar al usuario"
+          itemName={userToDelete?.name}
         />
       )}
 
@@ -254,6 +254,6 @@ const UsersContainer = () => {
       )}
     </section>
   );
-};;
+};
 
 export default UsersContainer;

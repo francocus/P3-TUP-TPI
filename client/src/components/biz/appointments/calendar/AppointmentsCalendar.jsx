@@ -1,4 +1,4 @@
-import { DAY_NAMES, pad } from "../data/appointments.data";
+import { DAY_NAMES, pad } from "../calendar/Calendar.data";
 import AppointmentChip from "./AppointmentChip";
 import MonthView from "./MonthView";
 import WeekView from "./WeekView";

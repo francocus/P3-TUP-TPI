@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
-import "./client.css";
+import "../dashboard.css";
 
 const ClientDashboard = () => {
   const navigate = useNavigate();
