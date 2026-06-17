@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { AuthenticationContext } from './authentication.context';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
@@ -84,17 +84,14 @@ export const AuthenticationContextProvider = ({ children }) => {
     setUser(null);
   };
 
-  const contextValue = useMemo(
-    () => ({
-      token,
-      user,
-      isAuthenticated: Boolean(token),
-      handleUserLogin,
-      handleUserRegister,
-      handleUserLogout,
-    }),
-    [token, user]
-  );
+  const contextValue = {
+    token,
+    user,
+    isAuthenticated: Boolean(token),
+    handleUserLogin,
+    handleUserRegister,
+    handleUserLogout,
+  };
 
   return (
     <AuthenticationContext.Provider value={contextValue}>

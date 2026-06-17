@@ -4,6 +4,7 @@ import {
   createAdminUser,
   deleteUser,
   getUserById,
+  listLawyers,
   listUsers,
   loginUser,
   registerUser,
@@ -15,6 +16,7 @@ const router = Router();
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.use(verifyToken);
+router.get('/lawyers', listLawyers);
 router.get('/', listUsers);
 router.get('/:id', getUserById);
 router.post('/', createAdminUser);

@@ -4,6 +4,7 @@ import {
   createAppointment,
   deleteAppointment,
   getAppointmentById,
+  listAvailability,
   listAppointments,
   updateAppointment,
 } from '../services/appointment.service.js';
@@ -13,6 +14,7 @@ const router = Router();
 router.use(verifyToken);
 
 router.get('/', listAppointments);
+router.get('/availability', listAvailability);
 router.get('/:id', getAppointmentById);
 router.post('/', createAppointment);
 router.put('/:id', updateAppointment);

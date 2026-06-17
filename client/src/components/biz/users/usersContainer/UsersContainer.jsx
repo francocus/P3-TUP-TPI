@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { AuthenticationContext } from '../../../services/auth/authentication.context';
 import DeleteModal from '../deleteUserModal/DeleteUserModal';
@@ -27,18 +27,18 @@ const getErrorMessage = async (response) => {
 const UsersContainer = () => {
   const { token, user: currentUser } = useContext(AuthenticationContext);
   const [users, setUsers] = useState([]);
-  const [searchUser, setSearchUser] = useState('');
-  const [roleFilter, setRoleFilter] = useState('all');
+  const [searchUser, setSearchUser] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
   const [showNewUser, setShowNewUser] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      setMessage('');
+      setMessage("");
       const response = await fetch(`${API_URL}/users`, {
         headers: buildHeaders(token),
       });
@@ -50,7 +50,7 @@ const UsersContainer = () => {
       const data = await response.json();
       setUsers(data.users ?? []);
     } catch (error) {
-      setMessage(error.message || 'No se pudieron cargar los usuarios.');
+      setMessage(error.message || "No se pudieron cargar los usuarios.");
     } finally {
       setLoading(false);
     }
@@ -76,12 +76,12 @@ const UsersContainer = () => {
     setShowNewUser(false);
     setUserToEdit(null);
     setUserToDelete(null);
-    setMessage('');
+    setMessage("");
   };
 
   const handleAddUser = async (form) => {
     const response = await fetch(`${API_URL}/users`, {
-      method: 'POST',
+      method: "POST",
       headers: buildHeaders(token),
       body: JSON.stringify(form),
     });
@@ -96,7 +96,7 @@ const UsersContainer = () => {
 
   const handleEditUser = async (form) => {
     const response = await fetch(`${API_URL}/users/${form.id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: buildHeaders(token),
       body: JSON.stringify(form),
     });
@@ -115,7 +115,7 @@ const UsersContainer = () => {
     }
 
     const response = await fetch(`${API_URL}/users/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: buildHeaders(token),
     });
 
@@ -127,21 +127,19 @@ const UsersContainer = () => {
     setUserToDelete(null);
   };
 
-  const filteredUsers = useMemo(() => {
-    const query = searchUser.trim().toUpperCase();
+  const filteredCases = cases.filter((legalCase) => {
+    const matchesQuery =
+      legalCase.caseNumber.toLowerCase().includes(query) ||
+      legalCase.title.toLowerCase().includes(query) ||
+      legalCase.area.toLowerCase().includes(query) ||
+      legalCase.clientName.toLowerCase().includes(query) ||
+      legalCase.lawyerName.toLowerCase().includes(query) ||
+      legalCase.status.toLowerCase().includes(query) ||
+      legalCase.description.toLowerCase().includes(query) ||
+      legalCase.notes.toLowerCase().includes(query);
 
-    return users.filter((userEntry) => {
-      const matchesQuery =
-        userEntry.name?.toUpperCase().includes(query) ||
-        userEntry.dni?.toUpperCase().includes(query) ||
-        userEntry.email?.toUpperCase().includes(query) ||
-        userEntry.role?.toUpperCase().includes(query);
-
-      const matchesRole = roleFilter === 'all' ? true : userEntry.role === roleFilter;
-
-      return matchesQuery && matchesRole;
-    });
-  }, [roleFilter, searchUser, users]);
+    return matchesQuery;
+  }); 
 
   return (
     <section className="users-panel">
@@ -185,10 +183,16 @@ const UsersContainer = () => {
         </Alert>
       )}
 
-      {showNewUser && <NewUser onAddUser={handleAddUser} onFormClosed={handleCloseForms} />}
+      {showNewUser && (
+        <NewUser onAddUser={handleAddUser} onFormClosed={handleCloseForms} />
+      )}
 
       {userToEdit && (
-        <UserDetails user={userToEdit} onEditUser={handleEditUser} onFormClosed={handleCloseForms} />
+        <UserDetails
+          user={userToEdit}
+          onEditUser={handleEditUser}
+          onFormClosed={handleCloseForms}
+        />
       )}
 
       {userToDelete && (
@@ -231,7 +235,9 @@ const UsersContainer = () => {
                     setUserToEdit(selectedUser);
                   }}
                   onDelete={(id) => {
-                    const selectedUser = filteredUsers.find((entry) => entry.id === id);
+                    const selectedUser = filteredUsers.find(
+                      (entry) => entry.id === id,
+                    );
                     if (selectedUser) {
                       setShowNewUser(false);
                       setUserToEdit(null);
@@ -248,6 +254,6 @@ const UsersContainer = () => {
       )}
     </section>
   );
-};
+};;
 
 export default UsersContainer;

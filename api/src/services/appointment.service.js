@@ -1,8 +1,10 @@
 import { Appointment } from '../models/appointment/Appointment.js';
 import { Case } from '../models/case/Case.js';
 import { User } from '../models/user/User.js';
+import { Op } from 'sequelize';
 
 const writableRoles = ['sysadmin', 'abogado', 'cliente'];
+const appointmentSlots = ['09:00', '10:30', '12:00', '14:00', '15:30', '17:00'];
 
 const buildAppointmentInclude = [
   {
@@ -37,6 +39,28 @@ const buildScope = (user) => {
 const parseId = (value) => Number.parseInt(value, 10);
 
 const assertWritableRole = (role) => writableRoles.includes(role);
+
+const getAvailableSlots = async (lawyerId, date, appointmentId = null) => {
+  const busyAppointments = await Appointment.findAll({
+    where: {
+      lawyerId,
+      date,
+      status: {
+        [Op.ne]: 'cancelado',
+      },
+      ...(appointmentId ? { id: { [Op.ne]: appointmentId } } : {}),
+    },
+    attributes: ['time'],
+  });
+
+  const busySlots = new Set(busyAppointments.map((appointment) => appointment.time));
+  return appointmentSlots.filter((slot) => !busySlots.has(slot));
+};
+
+const assertAvailableSlot = async (lawyerId, date, time, appointmentId = null) => {
+  const availableSlots = await getAvailableSlots(lawyerId, date, appointmentId);
+  return availableSlots.includes(time);
+};
 
 export const listAppointments = async (req, res) => {
   try {
@@ -76,6 +100,27 @@ export const getAppointmentById = async (req, res) => {
     return res.json({ appointment });
   } catch (error) {
     console.log('Error al obtener turno:', error);
+    return res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+};
+
+export const listAvailability = async (req, res) => {
+  try {
+    const lawyerId = parseId(req.query.lawyerId);
+    const { date } = req.query;
+
+    if (Number.isNaN(lawyerId) || !date) {
+      return res.status(400).json({ message: 'Debe indicar abogado y fecha.' });
+    }
+
+    const lawyer = await User.findByPk(lawyerId);
+    if (!lawyer || lawyer.role !== 'abogado') {
+      return res.status(400).json({ message: 'El abogado indicado no es valido.' });
+    }
+
+    return res.json({ slots: await getAvailableSlots(lawyerId, date) });
+  } catch (error) {
+    console.log('Error al obtener disponibilidad:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -127,6 +172,10 @@ export const createAppointment = async (req, res) => {
     const lawyer = await User.findByPk(assignedLawyerId);
     if (!lawyer || lawyer.role !== 'abogado') {
       return res.status(400).json({ message: 'El abogado indicado no es valido.' });
+    }
+
+    if (!(await assertAvailableSlot(lawyer.id, date, time))) {
+      return res.status(409).json({ message: 'El horario seleccionado no esta disponible.' });
     }
 
     let linkedCaseId = caseId || null;
@@ -189,9 +238,25 @@ export const updateAppointment = async (req, res) => {
       return res.status(404).json({ message: 'Turno no encontrado.' });
     }
 
+    if (req.user.role === 'cliente') {
+      if (req.body.status !== 'cancelado' || Object.keys(req.body).some((key) => key !== 'status')) {
+        return res.status(403).json({ message: 'Solo puede cancelar sus turnos.' });
+      }
+      appointment.status = 'cancelado';
+      await appointment.save();
+      const cancelledAppointment = await Appointment.findByPk(appointment.id, {
+        include: buildAppointmentInclude,
+      });
+      return res.json({
+        message: 'Turno cancelado correctamente.',
+        appointment: cancelledAppointment,
+      });
+    }
+
     if (req.body.title) appointment.title = req.body.title.trim();
-    if (req.body.date) appointment.date = req.body.date;
-    if (req.body.time) appointment.time = req.body.time;
+    const nextLawyerId = req.body.lawyerId || appointment.lawyerId;
+    const nextDate = req.body.date || appointment.date;
+    const nextTime = req.body.time || appointment.time;
     if (req.body.endTime !== undefined) appointment.endTime = req.body.endTime?.trim() || null;
     if (req.body.reason) appointment.reason = req.body.reason.trim();
     if (req.body.status) appointment.status = req.body.status;
@@ -214,6 +279,13 @@ export const updateAppointment = async (req, res) => {
       }
       appointment.lawyerId = lawyer.id;
     }
+
+    if ((req.body.lawyerId || req.body.date || req.body.time) && !(await assertAvailableSlot(nextLawyerId, nextDate, nextTime, appointment.id))) {
+      return res.status(409).json({ message: 'El horario seleccionado no esta disponible.' });
+    }
+
+    if (req.body.date) appointment.date = req.body.date;
+    if (req.body.time) appointment.time = req.body.time;
 
     if (req.body.caseId !== undefined) {
       if (req.body.caseId === null || req.body.caseId === '') {
@@ -245,7 +317,7 @@ export const updateAppointment = async (req, res) => {
 
 export const deleteAppointment = async (req, res) => {
   try {
-    if (!assertWritableRole(req.user.role)) {
+    if (req.user.role !== 'sysadmin') {
       return res.status(403).json({ message: 'No tiene permisos para eliminar turnos.' });
     }
 

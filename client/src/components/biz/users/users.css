@@ -746,20 +746,29 @@ border: 0;
   
 }
 
-.users-modal__footer .btn-primary,
-.users-delete-modal__footer .users-delete-modal__danger {
+.users-modal__footer .btn-primary {
   background: linear-gradient(135deg, #e7f2fb, #bfd5e7);
   border: 1px solid transparent;
   color: #0d141c;
 }
 
 .users-modal__footer .btn-primary:hover,
-.users-modal__footer .btn-primary:focus-visible,
-.users-delete-modal__footer .users-delete-modal__danger:hover,
-.users-delete-modal__footer .users-delete-modal__danger:focus-visible {
+.users-modal__footer .btn-primary:focus-visible {
   background: linear-gradient(135deg, #f4f8fc, #d2e1ed);
   color: #0d141c;
   
+}
+
+.users-delete-modal__footer .users-delete-modal__danger {
+  background: linear-gradient(135deg, #ef7373, #c64c4c);
+  border: 1px solid transparent;
+  color: #ffffff;
+}
+
+.users-delete-modal__footer .users-delete-modal__danger:hover,
+.users-delete-modal__footer .users-delete-modal__danger:focus-visible {
+  background: linear-gradient(135deg, #f08484, #d35a5a);
+  color: #ffffff;
 }
 
 .users-modal__footer .btn-secondary {

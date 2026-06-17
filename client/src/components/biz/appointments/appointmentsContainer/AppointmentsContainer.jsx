@@ -1,105 +1,43 @@
-import { useMemo, useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Alert, Button } from "react-bootstrap";
+import { AuthenticationContext } from "../../../services/auth/authentication.context";
+import AppointmentsCalendar from "../calendar/AppointmentsCalendar";
+import MiniCalendar from "../calendar/MiniCalendar";
+import { getStatusClass } from "../appointmentDetails/AppointmentDetails";
 import AppointmentsSearch from "../appointmentsSearch/AppointmentsSearch";
-import AppointmentItem from "../appointmentItem/AppointmentItem";
-import { APPOINTMENTS } from "../data/appointments";
+import {
+  addDays,
+  addMonths,
+  formatMonthTitle,
+  getDateKey,
+  getMonday,
+  MONTH_NAMES,
+  normalizeText,
+  pad,
+  parseDate,
+} from "../data/appointments.data";
+import NewAppointment from "../newAppointment/NewAppointment";
 import "../appointments.css";
 
-const DAY_NAMES = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"];
-const WEEK_DAY_NAMES = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab"];
-const MONTH_NAMES = [
-  "Enero",
-  "Febrero",
-  "Marzo",
-  "Abril",
-  "Mayo",
-  "Junio",
-  "Julio",
-  "Agosto",
-  "Septiembre",
-  "Octubre",
-  "Noviembre",
-  "Diciembre",
-];
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
 
-const pad = (value) => String(value).padStart(2, "0");
+const buildHeaders = (token) => ({
+  Authorization: `Bearer ${token}`,
+  "Content-Type": "application/json",
+});
 
-const parseDate = (date) => {
-  const [year, month, day] = date.split("-").map(Number);
-  return new Date(year, month - 1, day);
-};
-
-const getDateKey = (date) =>
-  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-
-const addDays = (date, amount) => {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + amount);
-  return nextDate;
-};
-
-const addMonths = (date, amount) => {
-  const nextDate = new Date(date);
-  nextDate.setMonth(nextDate.getMonth() + amount);
-  return nextDate;
-};
-
-const getMonday = (date) => {
-  const nextDate = new Date(date);
-  const day = nextDate.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  nextDate.setDate(nextDate.getDate() + diff);
-  return nextDate;
-};
-
-const getSunday = (date) => {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() - nextDate.getDay());
-  return nextDate;
-};
-
-const formatMonthTitle = (date) =>
-  `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
-
-const normalizeText = (value) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-
-const getAppointmentDate = (appointment) => parseDate(appointment.date);
-
-const getStatusClass = (status) => {
-  const normalizedStatus = normalizeText(status).replace(/\s+/g, "-");
-
-  switch (normalizedStatus) {
-    case "confirmado":
-      return "is-confirmed";
-    case "pendiente":
-      return "is-pending";
-    case "cancelado":
-    case "canceled":
-      return "is-cancelled";
-    case "finalizado":
-    case "completado":
-      return "is-finished";
-    default:
-      return "";
+const getErrorMessage = async (response) => {
+  try {
+    const payload = await response.json();
+    return payload?.message || "No se pudo completar la operacion.";
+  } catch (_error) {
+    return "No se pudo completar la operacion.";
   }
 };
 
-const getAppointmentAccent = (appointment) => {
-  const normalizedStatus = normalizeText(appointment.status);
-
-  if (normalizedStatus === "pendiente") return "is-warning";
-  if (normalizedStatus === "cancelado") return "is-danger";
-  if (normalizedStatus === "finalizado" || normalizedStatus === "completado") {
-    return "is-muted";
-  }
-
-  return "is-primary";
+const addHour = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return `${pad(hours + 1)}:${pad(minutes)}`;
 };
 
 const getAppointmentMinutes = (appointment) => {
@@ -107,171 +45,109 @@ const getAppointmentMinutes = (appointment) => {
   return hours * 60 + minutes;
 };
 
-const isSameDate = (firstDate, secondDate) =>
-  getDateKey(firstDate) === getDateKey(secondDate);
-
-const AppointmentChip = ({ appointment, compact = false, selected, onSelect }) => {
-  const accentClass = getAppointmentAccent(appointment);
-  const statusClass = getStatusClass(appointment.status);
-
-  return (
-    <button
-      type="button"
-      className={`appointment-chip ${accentClass} ${selected ? "is-selected" : ""} ${
-        compact ? "is-compact" : ""
-      }`}
-      onClick={() => onSelect(appointment)}
-      aria-label={`Ver detalle del turno de ${appointment.clientName}`}
-    >
-      <span className="appointment-chip__time">
-        {appointment.time} - {appointment.endTime}
-      </span>
-      <span className={`appointment-chip__client ${accentClass}`}>{appointment.clientName}</span>
-    </button>
-  );
-};
-
-const AppointmentDetails = ({ appointment, onClose }) => {
-  if (!appointment) {
-    return (
-      <aside className="appointment-details appointment-details--empty">
-        <span className="appointment-details__eyebrow">Detalle del turno</span>
-        <p>Selecciona una cita para ver cliente, expediente, ubicacion y notas.</p>
-      </aside>
-    );
-  }
-
-  return (
-    <aside className="appointment-details">
-      <div className="appointment-details__header">
-        <div>
-          <span className="appointment-details__eyebrow">Detalle del turno</span>
-          <h3>{appointment.clientName}</h3>
-        </div>
-        <button type="button" className="appointment-details__close" onClick={onClose} aria-label="Cerrar detalle">
-          x
-        </button>
-      </div>
-
-      <span className={`appointment-details__status ${getStatusClass(appointment.status)}`}>
-        {appointment.status}
-      </span>
-
-      <dl className="appointment-details__grid">
-        <div>
-          <dt>Fecha</dt>
-          <dd>{appointment.date}</dd>
-        </div>
-        <div>
-          <dt>Horario</dt>
-          <dd>
-            {appointment.time} - {appointment.endTime}
-          </dd>
-        </div>
-        <div>
-          <dt>Expediente</dt>
-          <dd>{appointment.caseNumber}</dd>
-        </div>
-        <div>
-          <dt>Materia</dt>
-          <dd>{appointment.area}</dd>
-        </div>
-        <div>
-          <dt>Ubicacion</dt>
-          <dd>{appointment.location}</dd>
-        </div>
-        <div>
-          <dt>Motivo</dt>
-          <dd>{appointment.reason}</dd>
-        </div>
-      </dl>
-
-      <p className="appointment-details__notes">{appointment.notes}</p>
-    </aside>
-  );
-};
+const mapAppointment = (appointment) => ({
+  ...appointment,
+  dateObject: parseDate(appointment.date),
+  clientName: appointment.client?.name ?? "Cliente",
+  lawyerName: appointment.lawyer?.name ?? "Abogado",
+  caseNumber: appointment.case?.caseNumber ?? "Sin expediente",
+  endTime: appointment.endTime || addHour(appointment.time),
+});
 
 const AppointmentsContainer = () => {
-  const today = useMemo(() => new Date(), []);
+  const { token, user } = useContext(AuthenticationContext);
+  const [today] = useState(() => new Date());
   const [viewMode, setViewMode] = useState("week");
   const [cursorDate, setCursorDate] = useState(today);
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [searchAppointment, setSearchAppointment] = useState("");
+  const [appointments, setAppointments] = useState([]);
+  const [lawyers, setLawyers] = useState([]);
+  const [showRequest, setShowRequest] = useState(false);
+  const [appointmentToEdit, setAppointmentToEdit] = useState(null);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const appointments = useMemo(
-    () =>
-      APPOINTMENTS.map((appointment) => ({
-        ...appointment,
-        dateObject: getAppointmentDate(appointment),
-      })).sort((firstAppointment, secondAppointment) => {
-        const dateDiff = firstAppointment.dateObject - secondAppointment.dateObject;
-        return dateDiff || getAppointmentMinutes(firstAppointment) - getAppointmentMinutes(secondAppointment);
-      }),
-    []
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      setMessage("");
+      const response = await fetch(`${API_URL}/appointments`, {
+        headers: buildHeaders(token),
+      });
+      if (!response.ok) throw new Error(await getErrorMessage(response));
+      const data = await response.json();
+      setAppointments(
+        (data.appointments ?? [])
+          .map(mapAppointment)
+          .sort(
+            (a, b) =>
+              a.dateObject - b.dateObject ||
+              getAppointmentMinutes(a) - getAppointmentMinutes(b),
+          ),
+      );
+    } catch (error) {
+      setMessage(error.message || "No se pudieron cargar los turnos.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) fetchAppointments();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchLawyers = async () => {
+      const response = await fetch(`${API_URL}/users/lawyers`, {
+        headers: buildHeaders(token),
+      });
+      if (response.ok) setLawyers((await response.json()).lawyers ?? []);
+    };
+    if (token && ["cliente", "sysadmin"].includes(user?.role)) fetchLawyers();
+  }, [token, user]);
+
+  const searchValue = normalizeText(searchAppointment.trim());
+  
+  const filteredAppointments = searchValue
+    ? appointments.filter((appointment) =>
+        normalizeText(
+          [
+            appointment.clientName,
+            appointment.lawyerName,
+            appointment.reason,
+            appointment.status,
+            appointment.caseNumber,
+          ].join(" "),
+        ).includes(searchValue),
+      )
+    : appointments;
+    
+  const appointmentsByDate = filteredAppointments.reduce(
+    (grouped, appointment) => ({
+      ...grouped,
+      [appointment.date]: [...(grouped[appointment.date] ?? []), appointment],
+    }),
+    {},
   );
-
-  const filteredAppointments = useMemo(() => {
-    const searchValue = normalizeText(searchAppointment.trim());
-
-    if (!searchValue) return appointments;
-
-    return appointments.filter((appointment) => {
-      const searchable = [
-        appointment.clientName,
-        appointment.lawyerName,
-        appointment.reason,
-        appointment.status,
-        appointment.caseNumber,
-        appointment.area,
-      ].join(" ");
-
-      return normalizeText(searchable).includes(searchValue);
-    });
-  }, [appointments, searchAppointment]);
-
-  const appointmentsByDate = useMemo(
-    () =>
-      filteredAppointments.reduce((groupedAppointments, appointment) => {
-        groupedAppointments[appointment.date] = groupedAppointments[appointment.date] ?? [];
-        groupedAppointments[appointment.date].push(appointment);
-        return groupedAppointments;
-      }, {}),
-    [filteredAppointments]
-  );
-
+  const selectedDayAppointments =
+    appointmentsByDate[getDateKey(selectedDate)] ?? [];
   const weekStart = getMonday(cursorDate);
-  const weekDays = Array.from({ length: 6 }, (_, index) => addDays(weekStart, index));
-  const monthStart = new Date(cursorDate.getFullYear(), cursorDate.getMonth(), 1);
-  const monthGridStart = getSunday(monthStart);
-  const monthDays = Array.from({ length: 35 }, (_, index) => addDays(monthGridStart, index));
-  const miniCalendarDays = Array.from({ length: 35 }, (_, index) => addDays(monthGridStart, index));
-  const selectedDateKey = getDateKey(selectedDate);
-  const selectedDayAppointments = appointmentsByDate[selectedDateKey] ?? [];
+  const weekEnd = addDays(weekStart, 6);
   const visibleTitle =
     viewMode === "day"
-      ? `${DAY_NAMES[selectedDate.getDay()]} ${pad(selectedDate.getDate())} ${
-          MONTH_NAMES[selectedDate.getMonth()]
-        } ${selectedDate.getFullYear()}`
+      ? `${pad(selectedDate.getDate())} ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
       : viewMode === "month"
-      ? formatMonthTitle(cursorDate)
-      : `${pad(weekDays[0].getDate())} - ${pad(weekDays[5].getDate())} ${
-          MONTH_NAMES[weekDays[5].getMonth()]
-        } ${weekDays[5].getFullYear()}`;
+        ? formatMonthTitle(cursorDate)
+        : `${pad(weekStart.getDate())} - ${pad(weekEnd.getDate())} ${MONTH_NAMES[weekEnd.getMonth()]} ${weekEnd.getFullYear()}`;
 
   const movePeriod = (amount) => {
     const nextDate =
-      viewMode === "month" ? addMonths(cursorDate, amount) : addDays(cursorDate, amount * (viewMode === "day" ? 1 : 7));
-    setCursorDate(nextDate);
-    setSelectedDate(nextDate);
-    setSelectedAppointment(null);
-  };
-
-  const moveMiniCalendarMonth = (amount) => {
-    const nextDate = addMonths(cursorDate, amount);
-    setCursorDate(nextDate);
-    setSelectedDate(nextDate);
-    setSelectedAppointment(null);
+      viewMode === "month"
+        ? addMonths(cursorDate, amount)
+        : addDays(cursorDate, amount * (viewMode === "day" ? 1 : 7));
+    selectDate(nextDate);
   };
 
   const selectDate = (date) => {
@@ -286,236 +162,225 @@ const AppointmentsContainer = () => {
     setCursorDate(appointment.dateObject);
   };
 
-  const renderDayAppointments = (date, compact = false) => {
-    const dateAppointments = appointmentsByDate[getDateKey(date)] ?? [];
-
-    if (!dateAppointments.length) {
-      return compact ? null : <p className="appointments-calendar__empty">Sin turnos</p>;
-    }
-
-    return dateAppointments.map((appointment) => (
-      <AppointmentChip
-        key={appointment.id}
-        appointment={appointment}
-        compact={compact}
-        selected={selectedAppointment?.id === appointment.id}
-        onSelect={selectAppointment}
-      />
-    ));
+  const updateAppointment = async (appointment, payload) => {
+    const response = await fetch(`${API_URL}/appointments/${appointment.id}`, {
+      method: "PUT",
+      headers: buildHeaders(token),
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw new Error(await getErrorMessage(response));
+    await fetchAppointments();
   };
 
+  const handleStatus = async (appointment, status) => {
+    try {
+      await updateAppointment(appointment, { status });
+      setSelectedAppointment(null);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
+  const handleRequest = async (form) => {
+    const response = await fetch(`${API_URL}/appointments`, {
+      method: "POST",
+      headers: buildHeaders(token),
+      body: JSON.stringify(form),
+    });
+    if (!response.ok) throw new Error(await getErrorMessage(response));
+    await fetchAppointments();
+  };
+
+  const handleEdit = async (appointment, form) => {
+    await updateAppointment(appointment, form);
+    setAppointmentToEdit(null);
+    setSelectedAppointment(null);
+  };
+
+  const calendarControls = (
+    <div className="appointments-calendar-controls">
+      <label className="appointments-search-field">
+        <span>Buscar turno</span>
+        <AppointmentsSearch onSearch={setSearchAppointment} />
+      </label>
+      <div className="appointments-period-controls">
+        <button type="button" onClick={() => movePeriod(-1)}>
+          {"<"}
+        </button>
+        <button type="button" onClick={() => selectDate(today)}>
+          Hoy
+        </button>
+        <button type="button" onClick={() => movePeriod(1)}>
+          {">"}
+        </button>
+      </div>
+      <div className="appointments-view-toggle">
+        {["day", "week", "month"].map((mode) => (
+          <button
+            key={mode}
+            type="button"
+            className={viewMode === mode ? "is-active" : ""}
+            onClick={() => setViewMode(mode)}
+          >
+            {mode === "day" ? "Dia" : mode === "week" ? "Semana" : "Mes"}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
-    <section className="appointments-panel">
+    <section
+      className={`appointments-panel ${user?.role === "sysadmin" ? "appointments-panel--admin" : ""}`}
+    >
       <div className="appointments-toolbar">
         <div>
-          <p className="appointments-toolbar__eyebrow">Agenda profesional</p>
-          <h2>{visibleTitle}</h2>
+          <p className="appointments-toolbar__eyebrow">
+            {user?.role === "sysadmin"
+              ? "Gestion de turnos"
+              : "Agenda profesional"}
+          </p>
+          <h2>
+            {user?.role === "sysadmin" ? "Gestion de Turnos" : visibleTitle}
+          </h2>
         </div>
-
-        <div className="appointments-toolbar__actions">
-          <label className="appointments-search-field">
-            <span>Buscar turno</span>
-            <input
-              type="search"
-              value={searchAppointment}
-              placeholder="Cliente, expediente o motivo"
-              onChange={(event) => setSearchAppointment(event.target.value)}
-            />
-          </label>
-
-          <div className="appointments-period-controls" aria-label="Cambiar periodo">
-            <button type="button" onClick={() => movePeriod(-1)} aria-label="Periodo anterior">
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setCursorDate(today);
-                setSelectedDate(today);
-                setSelectedAppointment(null);
-              }}
-            >
-              Hoy
-            </button>
-            <button type="button" onClick={() => movePeriod(1)} aria-label="Periodo siguiente">
-              ›
-            </button>
-          </div>
-
-          <div className="appointments-view-toggle" aria-label="Vista de agenda">
-            {["day", "week", "month"].map((mode) => (
-              <button
-                key={mode}
+        {user?.role !== "sysadmin" && (
+          <div className="appointments-toolbar__actions">
+            {user?.role === "cliente" && (
+              <Button
                 type="button"
-                className={viewMode === mode ? "is-active" : ""}
-                onClick={() => setViewMode(mode)}
+                className="appointments-create"
+                onClick={() => setShowRequest(true)}
               >
-                {mode === "day" ? "Dia" : mode === "week" ? "Semana" : "Mes"}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="appointments-calendar">
-        <aside className="appointments-sidebar">
-          <div className="mini-calendar">
-            <div className="mini-calendar__header">
-              <strong>{formatMonthTitle(cursorDate)}</strong>
-              <div>
-                <button type="button" onClick={() => moveMiniCalendarMonth(-1)} aria-label="Mes anterior">
-                  ‹
-                </button>
-                <button type="button" onClick={() => moveMiniCalendarMonth(1)} aria-label="Mes siguiente">
-                  ›
-                </button>
-              </div>
-            </div>
-
-            <div className="mini-calendar__grid">
-              {DAY_NAMES.map((dayName) => (
-                <span key={dayName} className="mini-calendar__day-name">
-                  {dayName}
-                </span>
-              ))}
-              {miniCalendarDays.map((date) => {
-                const dateKey = getDateKey(date);
-                const hasAppointments = Boolean(appointmentsByDate[dateKey]?.length);
-                const isCurrentMonth = date.getMonth() === cursorDate.getMonth();
-
-                return (
-                  <button
-                    key={dateKey}
-                    type="button"
-                    className={`${isSameDate(date, selectedDate) ? "is-selected" : ""} ${
-                      isSameDate(date, today) ? "is-today" : ""
-                    } ${hasAppointments ? "has-appointments" : ""} ${!isCurrentMonth ? "is-muted" : ""}`}
-                    onClick={() => selectDate(date)}
-                  >
-                    {date.getDate()}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="appointments-day-list">
-            <span className="appointments-day-list__label">Turnos del {pad(selectedDate.getDate())}</span>
-            {selectedDayAppointments.length > 0 ? (
-              selectedDayAppointments.map((appointment) => (
-                <AppointmentChip
-                  key={appointment.id}
-                  appointment={appointment}
-                  compact
-                  selected={selectedAppointment?.id === appointment.id}
-                  onSelect={selectAppointment}
-                />
-              ))
-            ) : (
-              <p>No hay turnos cargados.</p>
+                Solicitar turno
+              </Button>
             )}
+            {calendarControls}
           </div>
-
-          <AppointmentDetails appointment={selectedAppointment} onClose={() => setSelectedAppointment(null)} />
-        </aside>
-
-        <div className="appointments-board">
-          {viewMode === "day" && (
-            <div className="appointments-day-view">
-              <div className="appointments-day-view__header">
-                <span>{DAY_NAMES[selectedDate.getDay()]}</span>
-                <strong>{pad(selectedDate.getDate())}</strong>
-              </div>
-              <div className="appointments-day-view__list">{renderDayAppointments(selectedDate)}</div>
-            </div>
-          )}
-
-          {viewMode === "week" && (
-            <div className="appointments-week-view">
-              <div className="appointments-week-view__header">
-                {weekDays.map((date, index) => (
-                  <button
-                    key={getDateKey(date)}
-                    type="button"
-                    className={isSameDate(date, selectedDate) ? "is-selected" : ""}
-                    onClick={() => selectDate(date)}
-                  >
-                    <span>{WEEK_DAY_NAMES[index]}</span>
-                    <strong>{pad(date.getDate())}</strong>
-                  </button>
-                ))}
-              </div>
-
-              <div className="appointments-week-view__grid">
-                {weekDays.map((date) => (
-                  <div key={getDateKey(date)} className="appointments-week-view__column">
-                    <div className="appointments-week-view__appointments">{renderDayAppointments(date)}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {viewMode === "month" && (
-            <div className="appointments-month-view">
-              <div className="appointments-month-view__header">
-                {DAY_NAMES.map((dayName) => (
-                  <span key={dayName}>{dayName}</span>
-                ))}
-              </div>
-
-              <div className="appointments-month-view__grid">
-                {monthDays.map((date) => {
-                  const dateKey = getDateKey(date);
-                  const dayAppointments = appointmentsByDate[dateKey] ?? [];
-                  const isCurrentMonth = date.getMonth() === cursorDate.getMonth();
-
-                  return (
-                    <button
-                      key={dateKey}
-                      type="button"
-                      className={`appointments-month-cell ${isSameDate(date, selectedDate) ? "is-selected" : ""} ${
-                        isSameDate(date, today) ? "is-today" : ""
-                      } ${!isCurrentMonth ? "is-outside-month" : ""}`}
-                      onClick={() => selectDate(date)}
-                    >
-                      <span className="appointments-month-cell__date">
-                        {date.getDate() === 1 ? `${date.getDate()} ${MONTH_NAMES[date.getMonth()].slice(0, 3)}` : date.getDate()}
-                      </span>
-                      <span className="appointments-month-cell__events">
-                        {dayAppointments.slice(0, 3).map((appointment) => (
-                          <span
-                            key={appointment.id}
-                            role="button"
-                            tabIndex={0}
-                            className={`appointments-month-event ${getAppointmentAccent(appointment)}`}
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              selectAppointment(appointment);
-                            }}
-                            onKeyDown={(event) => {
-                              if (event.key === "Enter" || event.key === " ") {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                selectAppointment(appointment);
-                              }
-                            }}
-                          >
-                            {appointment.time} {appointment.clientName}
-                          </span>
-                        ))}
-                        {dayAppointments.length > 3 && (
-                          <span className="appointments-month-event is-more">+{dayAppointments.length - 3} mas</span>
-                        )}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
+        )}
       </div>
+
+      {message && (
+        <Alert className="users-alert" variant="danger">
+          {message}
+        </Alert>
+      )}
+
+      {user?.role === "sysadmin" && (
+        <div className="appointments-table-wrap">
+          <table className="appointments-table">
+            <thead>
+              <tr>
+                <th>Cliente / Abogado</th>
+                <th>Fecha</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th>Acciones Admin</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAppointments.map((appointment) => (
+                <tr key={appointment.id} className="appointment-admin-row">
+                  <td className="appointment-admin-cell appointment-admin-cell--main">
+                    <div className="appointment-admin-main">
+                      <span className="appointment-admin-main__name">
+                        {appointment.clientName}
+                      </span>
+                      <span className="appointment-admin-main__lawyer">
+                        {appointment.lawyerName}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="appointment-admin-cell appointment-admin-cell--muted">
+                    {appointment.date} {appointment.time}
+                  </td>
+                  <td className="appointment-admin-cell appointment-admin-cell--muted">
+                    {appointment.reason}
+                  </td>
+                  <td className="appointment-admin-cell">
+                    <span
+                      className={`appointment-details__status ${getStatusClass(appointment.status)}`}
+                    >
+                      {appointment.status}
+                    </span>
+                  </td>
+                  <td className="appointment-admin-cell appointment-admin-cell--actions">
+                    <div className="appointment-admin-actions">
+                      <button
+                        type="button"
+                        className="appointment-admin-action appointment-admin-action--edit"
+                        title="Editar turno"
+                        aria-label="Editar turno"
+                        onClick={() => setAppointmentToEdit(appointment)}
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {user?.role === "sysadmin" && calendarControls}
+
+      {loading ? (
+        <p className="appointments-calendar__empty">Cargando turnos...</p>
+      ) : (
+        <div className="appointments-calendar">
+          <MiniCalendar
+            cursorDate={cursorDate}
+            selectedDate={selectedDate}
+            today={today}
+            appointmentsByDate={appointmentsByDate}
+            selectedAppointment={selectedAppointment}
+            selectedDayAppointments={selectedDayAppointments}
+            user={user}
+            onDateChange={selectDate}
+            onSelectAppointment={selectAppointment}
+            onClearAppointment={() => setSelectedAppointment(null)}
+            onStatus={handleStatus}
+            onEdit={setAppointmentToEdit}
+          />
+          <div className="appointments-board">
+            <AppointmentsCalendar
+              viewMode={viewMode}
+              cursorDate={cursorDate}
+              selectedDate={selectedDate}
+              today={today}
+              selectedAppointment={selectedAppointment}
+              appointmentsByDate={appointmentsByDate}
+              onDateChange={selectDate}
+              onSelectAppointment={selectAppointment}
+            />
+          </div>
+        </div>
+      )}
+
+      <NewAppointment
+        show={showRequest}
+        onHide={() => setShowRequest(false)}
+        onSubmit={handleRequest}
+        lawyers={lawyers}
+        token={token}
+        appointments={appointments}
+      />
+      <NewAppointment
+        show={Boolean(appointmentToEdit)}
+        appointment={appointmentToEdit}
+        onHide={() => setAppointmentToEdit(null)}
+        onSubmit={handleEdit}
+        lawyers={lawyers}
+        user={user}
+      />
     </section>
   );
 };
