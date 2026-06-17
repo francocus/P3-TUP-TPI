@@ -84,7 +84,7 @@ const CaseDetails = ({ legalCase, onEditCase, onFormClosed, clients = [], lawyer
       backdropClassName="cases-modal__backdrop"
     >
       <Modal.Header className="cases-modal__header" closeButton closeVariant="white">
-        <div>
+        <div> 
           <p className="cases-modal__eyebrow">Administracion de expedientes</p>
           <Modal.Title>Editar expediente</Modal.Title>
           <p className="cases-modal__subtitle">Expediente seleccionado: {legalCase?.caseNumber}</p>

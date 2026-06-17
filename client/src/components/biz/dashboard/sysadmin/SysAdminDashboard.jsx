@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
-import "./sysdamin.css";
+import "../dashboard.css";
 
 const SysAdminDashboard = () => {
   const navigate = useNavigate();
@@ -39,20 +39,20 @@ const SysAdminDashboard = () => {
                 Inicio
               </NavLink>
               <NavLink
-                to="cases"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Expedientes
-              </NavLink>
-              <NavLink
                 to="appointments"
                 className={({ isActive }) =>
                   `dashboard-nav__link${isActive ? " is-active" : ""}`
                 }
               >
                 Turnos
+              </NavLink>
+              <NavLink
+                to="cases"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Expedientes
               </NavLink>
               <NavLink
                 to="users"

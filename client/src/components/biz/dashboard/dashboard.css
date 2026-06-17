@@ -7,7 +7,9 @@
   --dashboard-muted: #d2dce7;
   --dashboard-muted-soft: #b3bfcc;
   --dashboard-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
-  min-height: 100vh;
+
+  min-height: 100vh; 
+  width: 100%;
   padding: 0;
   color: var(--dashboard-text);
   background:
@@ -20,87 +22,41 @@
 .dashboard-card {
   width: 100%;
   min-height: 100vh;
-  padding: 0 0 clamp(18px, 3vw, 28px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 clamp(28px, 4vw, 48px);
   background: transparent;
+}
+
+.dashboard-header,
+.dashboard-content,
+.appointments-panel,
+.cases-panel,
+.users-panel,
+.dashboard-message {
+  width: 100%;
+  max-width: 1600px; 
+  margin-inline: auto;
+  padding-inline: clamp(18px, 3vw, 28px);
+  box-sizing: border-box;
 }
 
 .dashboard-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 14px;
   min-height: 72px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--dashboard-border);
-}
-
-.dashboard-header,
-.appointments-panel,
-.cases-panel {
-  width: min(1120px, 100%);
-  margin-inline: auto;
-  padding-inline: clamp(18px, 3vw, 28px);
-  box-sizing: border-box;
 }
 
 .dashboard-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.dashboard-user {
-  display: inline-block;
-  margin-top: 6px;
-  color: var(--dashboard-muted);
-  font-size: 0.9rem;
-}
-
-.dashboard-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.dashboard-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-}
-
-.dashboard-nav__link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 104px;
-  min-height: 40px;
-  padding: 0.45rem 0.8rem;
-  border-radius: 999px;
-  color: var(--dashboard-muted);
-  font-size: 0.92rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition:
-    background-color 160ms ease,
-    color 160ms ease,
-    transform 160ms ease;
-}
-
-.dashboard-nav__link:hover,
-.dashboard-nav__link:focus-visible {
-  color: var(--dashboard-text);
-  transform: translateY(-1px);
-}
-
-.dashboard-nav__link.is-active {
-  background: linear-gradient(135deg, #e7f2fb, #bfd5e7);
-  color: #0c1218;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
 }
 
 .dashboard-brand__mark {
@@ -129,8 +85,59 @@
 .dashboard-header h1 {
   margin: 2px 0 0;
   color: var(--dashboard-text);
-  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
+  font-size: clamp(1.25rem, 1.8vw, 1.7rem);
   line-height: 1;
+}
+
+.dashboard-user {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--dashboard-muted);
+  font-size: 0.9rem;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  flex-wrap: wrap;
+}
+
+.dashboard-nav__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  min-height: 40px;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  color: var(--dashboard-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.dashboard-nav__link:hover,
+.dashboard-nav__link:focus-visible {
+  color: var(--dashboard-text);
+  transform: translateY(-1px);
+}
+
+.dashboard-nav__link.is-active {
+  background: linear-gradient(135deg, #e7f2fb, #bfd5e7);
+  color: #0c1218;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
 }
 
 .dashboard-logout.btn {
@@ -152,10 +159,28 @@
 }
 
 .dashboard-content {
-  width: min(1120px, 100%);
-  margin: 24px auto 0;
-  padding-inline: clamp(18px, 3vw, 28px);
-  box-sizing: border-box;
+  flex: 1;
+  margin-top: 24px;
+}
+
+.dashboard-message {
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  font-weight: 700;
+}
+
+.dashboard-message--error {
+  background: rgba(217, 93, 93, 0.16);
+  border-color: rgba(217, 93, 93, 0.34);
+  color: #ffe0e0;
+}
+
+.dashboard-message--info {
+  background: rgba(69, 118, 236, 0.16);
+  border-color: rgba(69, 118, 236, 0.34);
+  color: #d9e7ff;
 }
 
 .dashboard-overview {
@@ -175,7 +200,7 @@
 .dashboard-overview__title {
   margin: 10px 0 0;
   color: #f2f5f8;
-  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
   line-height: 1.05;
 }
 
@@ -199,13 +224,9 @@
   min-height: 150px;
   padding: 18px;
   border-radius: 18px;
-  background:
-    radial-gradient(circle at top right, rgba(201, 208, 216, 0.09), transparent 32%),
-    rgba(255, 255, 255, 0.06);
+  background: radial-gradient(circle at top right, rgba(201, 208, 216, 0.09), transparent 32%), rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 18px 40px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px rgba(0, 0, 0, 0.16);
 }
 
 .dashboard-overview__card-label {
@@ -229,38 +250,20 @@
   line-height: 1.5;
 }
 
-.appointments-panel {
-  margin-top: 24px;
-  padding-bottom: 28px;
-}
-
+.appointments-panel,
 .cases-panel {
   margin-top: 24px;
   padding-bottom: 28px;
 }
 
-.appointments-search.form-control {
-  max-width: 420px;
-  border-radius: 16px;
-  border: 1px solid rgba(156, 184, 210, 0.24);
-  background: rgba(7, 11, 17, 0.82);
-  color: var(--dashboard-text);
-  padding: 0.78rem 0.95rem;
-  box-shadow: none;
+.users-panel {
+  margin-top: 24px;
+  padding-bottom: 40px;
 }
 
-.appointments-search.form-control::placeholder {
-  color: rgba(225, 232, 241, 0.44);
-}
-
-.appointments-search.form-control:focus {
-  color: var(--dashboard-text);
-  background: rgba(10, 16, 24, 0.92);
-  border-color: rgba(182, 204, 223, 0.52);
-  box-shadow: 0 0 0 0.22rem rgba(92, 138, 180, 0.20);
-}
-
+.appointments-search.form-control,
 .cases-search.form-control {
+  width: 100%;
   max-width: 420px;
   border-radius: 16px;
   border: 1px solid rgba(156, 184, 210, 0.24);
@@ -270,15 +273,18 @@
   box-shadow: none;
 }
 
+.appointments-search.form-control::placeholder,
 .cases-search.form-control::placeholder {
   color: rgba(225, 232, 241, 0.44);
 }
 
+.appointments-search.form-control:focus,
 .cases-search.form-control:focus {
   color: var(--dashboard-text);
   background: rgba(10, 16, 24, 0.92);
   border-color: rgba(182, 204, 223, 0.52);
   box-shadow: 0 0 0 0.22rem rgba(92, 138, 180, 0.20);
+  outline: none;
 }
 
 @media (max-width: 620px) {
@@ -287,13 +293,22 @@
   }
 
   .dashboard-card {
-    min-height: 100svh;
     padding-top: 0;
   }
 
   .dashboard-header {
     align-items: flex-start;
     flex-direction: column;
+    gap: 20px;
+  }
+
+  .dashboard-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard-nav__link {
+    flex: 1;
   }
 
   .dashboard-logout.btn,
@@ -302,4 +317,64 @@
     width: 100%;
     max-width: none;
   }
+}
+
+.delete-modal__dialog {
+  width: min(520px, calc(100vw - 32px));
+}
+
+.delete-modal__content {
+  color: #ffffff;
+  background: rgba(13, 18, 26, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.48);
+}
+
+.delete-modal__header {
+  background: rgba(13, 18, 26, 0.98);
+  border: 0;
+}
+
+.delete-modal__title {
+  color: #ffffff;
+}
+
+.delete-modal__body {
+  padding: 22px 20px;
+  color: #d8e2ee;
+}
+
+.delete-modal__footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 18px 20px 22px;
+  border: 0;
+  background: rgba(13, 18, 26, 0.98);
+}
+
+.delete-modal__danger {
+  background: linear-gradient(135deg, #ef7373, #c64c4c);
+  border-radius: 14px;
+  border-color: transparent;
+  color: #ffffff;
+  min-height: 46px;
+  font-weight: 800;
+  padding-inline: 1rem;
+}
+
+.delete-modal__danger:hover,
+.delete-modal__danger:focus-visible {
+  background: linear-gradient(135deg, #f08484, #d35a5a);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.delete-modal__content .modal-header,
+.delete-modal__content .modal-body,
+.delete-modal__content .modal-footer {
+  background: rgba(13, 18, 26, 0.98);
+  color: #ffffff;
 }

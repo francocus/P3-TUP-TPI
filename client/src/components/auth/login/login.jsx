@@ -3,7 +3,7 @@ import { Alert, Button, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthenticationContext } from '../../services/auth/authentication.context';
 import { initialLoginFormErrors } from './Login.data';
-import './login.css';
+import '../auth.css';
 
 const dashboardByRole = {
   sysadmin: '/dashboard/sysadmin',

@@ -1,7 +1,4 @@
 .cases-panel {
-  width: min(100%, 1320px);
-  margin: 24px auto 0;
-  padding: 0 clamp(16px, 2.5vw, 28px) 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -26,6 +23,7 @@
   background: rgba(10, 16, 24, 0.92);
   border-color: rgba(182, 204, 223, 0.52);
   box-shadow: 0 0 0 0.22rem rgba(92, 138, 180, 0.2);
+  outline: none;
 }
 
 .cases-list {
@@ -42,30 +40,17 @@
   gap: 10px;
   padding: 20px;
   border-radius: 20px;
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(120, 172, 214, 0.1),
-      transparent 32%
-    ),
-    rgba(12, 16, 22, 0.92);
+  background: radial-gradient(circle at top right, rgba(120, 172, 214, 0.1), transparent 32%), rgba(12, 16, 22, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-left-width: 4px;
   border-left-color: rgba(120, 172, 214, 0.3);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 18px 40px rgba(0, 0, 0, 0.18);
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    box-shadow 180ms ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px rgba(0, 0, 0, 0.18);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .cases-item:hover {
   transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 22px 46px rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 22px 46px rgba(0, 0, 0, 0.24);
 }
 
 .cases-item:has(.cases-item__status.is-active),
@@ -170,10 +155,6 @@ body.cases-modal-open {
   overflow: hidden;
 }
 
-.cases-panel {
-  gap: 18px;
-}
-
 .cases-header {
   display: flex;
   align-items: end;
@@ -213,7 +194,7 @@ body.cases-modal-open {
 .cases-filter {
   min-height: 42px;
   padding: 0 0.95rem;
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid rgba(156, 184, 210, 0.24);
   background: rgba(7, 11, 17, 0.82);
   color: #ffffff;
@@ -225,6 +206,7 @@ body.cases-modal-open {
   background: rgba(10, 16, 24, 0.92);
   color: #ffffff;
   box-shadow: 0 0 0 0.22rem rgba(92, 138, 180, 0.2);
+  outline: none;
 }
 
 .cases-create {
@@ -280,10 +262,6 @@ body.cases-modal-open {
   color: #ffb3b3;
 }
 
-.cases-list {
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-}
-
 .cases-item__header {
   display: flex;
   align-items: start;
@@ -325,10 +303,7 @@ body.cases-modal-open {
   border: 1px solid transparent;
   background: rgba(255, 255, 255, 0.05);
   color: #edf3f8;
-  transition:
-    transform 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease;
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
 .cases-item__action svg {
@@ -359,9 +334,7 @@ body.cases-modal-open {
 }
 
 .cases-item.is-selected {
-  box-shadow:
-    inset 0 0 0 1px rgba(114, 165, 224, 0.28),
-    0 22px 46px rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(114, 165, 224, 0.28), 0 22px 46px rgba(0, 0, 0, 0.24);
 }
 
 .cases-modal {
@@ -392,7 +365,7 @@ body.cases-modal-open {
   background: rgba(13, 18, 26, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
-  border-radius: 22px;
+  border-radius: 24px;
 }
 
 .cases-modal__header {
@@ -491,7 +464,7 @@ body.cases-modal-open {
 .cases-form .form-control,
 .cases-form .form-select {
   min-height: 48px;
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid rgba(160, 186, 207, 0.16);
   background: rgba(8, 12, 18, 0.95);
   color: #f7fafc;
@@ -504,6 +477,7 @@ body.cases-modal-open {
   background: rgba(10, 16, 24, 0.98);
   color: #ffffff;
   box-shadow: 0 0 0 0.22rem rgba(92, 138, 180, 0.2);
+  outline: none;
 }
 
 .cases-form .form-control::placeholder {
@@ -513,15 +487,11 @@ body.cases-modal-open {
 .cases-form__button {
   min-height: 46px;
   min-width: 110px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 800;
   padding-inline: 1rem;
   border: 1px solid transparent;
-  transition:
-    transform 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease,
-    color 160ms ease;
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .cases-form__button:hover,
@@ -550,6 +520,7 @@ body.cases-modal-open {
   background: linear-gradient(135deg, #e7f2fb, #bfd5e7);
   border-color: transparent;
   color: #0d141c;
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.28);
 }
 
 .cases-form__button--primary:hover,
@@ -558,60 +529,9 @@ body.cases-modal-open {
   color: #0d141c;
 }
 
-.cases-delete-modal__dialog {
-  width: min(520px, calc(100vw - 32px));
-}
-
-.cases-delete-modal__content {
-  color: #ffffff;
-  background: rgba(13, 18, 26, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.48);
-}
-
-.cases-delete-modal__header {
-  background: rgba(13, 18, 26, 0.98);
-  border: 0;
-}
-
-.cases-delete-modal__title {
-  color: #ffffff;
-}
-
-.cases-delete-modal__body {
-  padding: 22px 20px;
-  color: #d8e2ee;
-}
-
-.cases-delete-modal__footer {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  padding: 18px 20px 22px;
-  border: 0;
-  background: rgba(13, 18, 26, 0.98);
-}
-
-.cases-delete-modal__danger {
-  background: linear-gradient(135deg, #ef7373, #c64c4c);
-  border-color: transparent;
-  color: #ffffff;
-}
-
-.cases-delete-modal__danger:hover,
-.cases-delete-modal__danger:focus-visible {
-  background: linear-gradient(135deg, #f08484, #d35a5a);
-  color: #ffffff;
-}
-
 .cases-modal__content .modal-header,
 .cases-modal__content .modal-body,
-.cases-modal__content .modal-footer,
-.cases-delete-modal__content .modal-header,
-.cases-delete-modal__content .modal-body,
-.cases-delete-modal__content .modal-footer {
+.cases-modal__content .modal-footer, .modal-header, .modal-body, .modal-footer {
   background: rgba(13, 18, 26, 0.98);
   color: #ffffff;
 }
@@ -628,18 +548,15 @@ body.cases-modal-open {
     flex-direction: column;
     align-items: stretch;
   }
-
   .cases-header__controls {
     justify-content: flex-start;
     flex-wrap: wrap;
     flex: 1 1 auto;
   }
-
   .cases-search-wrap {
     min-width: 100%;
     max-width: none;
   }
-
   .cases-modal__dialog {
     width: min(720px, calc(100vw - 24px));
   }
@@ -650,11 +567,9 @@ body.cases-modal-open {
     width: 100%;
     padding: 0 14px 20px;
   }
-
   .cases-modal__header {
     padding: 18px 18px 12px;
   }
-
   .cases-modal__body {
     padding: 18px 18px 14px;
   }

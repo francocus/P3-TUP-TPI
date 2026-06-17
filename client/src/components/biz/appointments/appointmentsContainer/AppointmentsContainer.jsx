@@ -15,8 +15,9 @@ import {
   normalizeText,
   pad,
   parseDate,
-} from "../data/appointments.data";
+} from "../calendar/Calendar.data";
 import NewAppointment from "../newAppointment/NewAppointment";
+import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
 import "../appointments.css";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
@@ -50,6 +51,8 @@ const mapAppointment = (appointment) => ({
   dateObject: parseDate(appointment.date),
   clientName: appointment.client?.name ?? "Cliente",
   lawyerName: appointment.lawyer?.name ?? "Abogado",
+  lawyerId: appointment.lawyer?.id ?? appointment.lawyerId,
+  clientId: appointment.client?.id ?? appointment.clientId,
   caseNumber: appointment.case?.caseNumber ?? "Sin expediente",
   endTime: appointment.endTime || addHour(appointment.time),
 });
@@ -64,10 +67,12 @@ const AppointmentsContainer = () => {
   const [searchAppointment, setSearchAppointment] = useState("");
   const [appointments, setAppointments] = useState([]);
   const [lawyers, setLawyers] = useState([]);
+  const [clients, setClients] = useState([]);
   const [showRequest, setShowRequest] = useState(false);
   const [appointmentToEdit, setAppointmentToEdit] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [appointmentToDelete, setAppointmentToDelete] = useState(null);
 
   const fetchAppointments = async () => {
     try {
@@ -105,25 +110,49 @@ const AppointmentsContainer = () => {
       });
       if (response.ok) setLawyers((await response.json()).lawyers ?? []);
     };
-    if (token && ["cliente", "sysadmin"].includes(user?.role)) fetchLawyers();
+
+    const fetchClients = async () => {
+      // Ahora le pegamos a la ruta específica que acabamos de crear en Node
+      const response = await fetch(`${API_URL}/users/clients`, {
+        headers: buildHeaders(token),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setClients(data.clients ?? []);
+      } else {
+        console.error("Error al traer clientes");
+      }
+    };
+
+    if (token) {
+      if (["cliente", "client", "sysadmin"].includes(user?.role)) fetchLawyers();
+      if (["abogado", "sysadmin"].includes(user?.role)) fetchClients();
+    }
   }, [token, user]);
 
   const searchValue = normalizeText(searchAppointment.trim());
-  
+
+  const roleFilteredAppointments = appointments.filter((appointment) => {
+    if (user?.role === "abogado") return appointment.lawyerId === user.id;
+    if (user?.role === "cliente") return appointment.clientId === user.id;
+    return true;
+  });
+
   const filteredAppointments = searchValue
-    ? appointments.filter((appointment) =>
-        normalizeText(
-          [
-            appointment.clientName,
-            appointment.lawyerName,
-            appointment.reason,
-            appointment.status,
-            appointment.caseNumber,
-          ].join(" "),
-        ).includes(searchValue),
-      )
-    : appointments;
-    
+    ? roleFilteredAppointments.filter((appointment) =>
+      normalizeText(
+        [
+          appointment.clientName,
+          appointment.lawyerName,
+          appointment.reason,
+          appointment.status,
+          appointment.caseNumber,
+        ].join(" "),
+      ).includes(searchValue),
+    )
+    : roleFilteredAppointments;
+
   const appointmentsByDate = filteredAppointments.reduce(
     (grouped, appointment) => ({
       ...grouped,
@@ -197,7 +226,24 @@ const AppointmentsContainer = () => {
     setSelectedAppointment(null);
   };
 
+  const handleDeleteAppointment = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/appointments/${id}`, {
+        method: "DELETE",
+        headers: buildHeaders(token),
+      });
+
+      if (!response.ok) throw new Error(await getErrorMessage(response));
+
+      await fetchAppointments();
+      setAppointmentToDelete(null);
+    } catch (error) {
+      setMessage(error.message || "No se pudo eliminar el turno.");
+    }
+  };
+
   const calendarControls = (
+
     <div className="appointments-calendar-controls">
       <label className="appointments-search-field">
         <span>Buscar turno</span>
@@ -214,6 +260,7 @@ const AppointmentsContainer = () => {
           {">"}
         </button>
       </div>
+
       <div className="appointments-view-toggle">
         {["day", "week", "month"].map((mode) => (
           <button
@@ -244,21 +291,84 @@ const AppointmentsContainer = () => {
             {user?.role === "sysadmin" ? "Gestion de Turnos" : visibleTitle}
           </h2>
         </div>
-        {user?.role !== "sysadmin" && (
-          <div className="appointments-toolbar__actions">
-            {user?.role === "cliente" && (
-              <Button
-                type="button"
-                className="appointments-create"
-                onClick={() => setShowRequest(true)}
-              >
-                Solicitar turno
-              </Button>
-            )}
-            {calendarControls}
-          </div>
-        )}
+
+        { }
+        <div className="appointments-toolbar__actions">
+
+          { }
+
+          {(user?.role === "cliente" || user?.role === "abogado" || user?.role === "sysadmin") && (
+            <Button
+              type="button"
+              className="appointments-create"
+              onClick={() => setShowRequest(true)}
+            >
+              {user?.role === "cliente" ? "Solicitar turno" : "Agendar turno"}
+            </Button>
+          )}
+          { }
+          {user?.role !== "sysadmin"}
+        </div>
+
       </div>
+
+      {user?.role !== "sysadmin" && (
+        <div className="appointments-cards-grid">
+          {filteredAppointments.length > 0 ? (
+            filteredAppointments.map((appointment) => (
+              <div key={appointment.id} className="appointment-card">
+                <div className="appointment-card__header">
+                  <span className={`appointment-details__status ${getStatusClass(appointment.status)}`}>
+                    {appointment.status}
+                  </span>
+                  <span className="appointment-card__date">
+                    {appointment.date} • {appointment.time}
+                  </span>
+                </div>
+
+                <div className="appointment-card__body">
+                  <h3>
+                    {user?.role === "cliente"
+                      ? `Abogado: ${appointment.lawyerName}`
+                      : `Cliente: ${appointment.clientName}`}
+                  </h3>
+                  <p><strong>Motivo:</strong> {appointment.reason}</p>
+                </div>
+
+                {}
+                {user?.role === "abogado" && (
+                  <div className="appointment-card__actions">
+                    <button
+                      type="button"
+                      className="appointment-admin-action appointment-admin-action--edit"
+                      title="Editar turno"
+                      onClick={() => setAppointmentToEdit(appointment)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      className="appointment-admin-action appointment-admin-action--delete"
+                      title="Eliminar turno"
+                      onClick={() => setAppointmentToDelete(appointment)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="appointments-calendar__empty" style={{ gridColumn: "1 / -1" }}>
+              No hay turnos programados.
+            </div>
+          )}
+        </div>
+      ) }
 
       {message && (
         <Alert className="users-alert" variant="danger">
@@ -321,6 +431,17 @@ const AppointmentsContainer = () => {
                           <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
                         </svg>
                       </button>
+                      <button
+                        type="button"
+                        className="appointment-admin-action appointment-admin-action--delete"
+                        title="Eliminar turno"
+                        aria-label="Eliminar turno"
+                        onClick={() => setAppointmentToDelete(appointment)}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -370,8 +491,10 @@ const AppointmentsContainer = () => {
         onHide={() => setShowRequest(false)}
         onSubmit={handleRequest}
         lawyers={lawyers}
+        clients={clients}
         token={token}
         appointments={appointments}
+        user={user}
       />
       <NewAppointment
         show={Boolean(appointmentToEdit)}
@@ -379,8 +502,20 @@ const AppointmentsContainer = () => {
         onHide={() => setAppointmentToEdit(null)}
         onSubmit={handleEdit}
         lawyers={lawyers}
+        clients={clients}
         user={user}
       />
+
+      {appointmentToDelete && (
+        <DeleteModal
+          show={Boolean(appointmentToDelete)}
+          onHide={() => setAppointmentToDelete(null)}
+          onConfirm={() => handleDeleteAppointment(appointmentToDelete.id)}
+          title="Eliminar turno"
+          message="¿Estás seguro que deseas eliminar el turno de"
+          itemName={appointmentToDelete?.clientName || "este cliente"}
+        />
+      )}
     </section>
   );
 };

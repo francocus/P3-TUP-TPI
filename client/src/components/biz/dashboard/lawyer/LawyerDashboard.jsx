@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
-import "./lawyer.css";
+import "../dashboard.css";
 
 const LawyerDashboard = () => {
   const navigate = useNavigate();

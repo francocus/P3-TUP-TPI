@@ -1,4 +1,4 @@
-import { addDays, DAY_NAMES, getDateKey, getSunday, isSameDate, MONTH_NAMES } from "../data/appointments.data";
+import { addDays, DAY_NAMES, getDateKey, getSunday, isSameDate, MONTH_NAMES } from "../calendar/Calendar.data";
 import { getAppointmentAccent } from "./AppointmentChip";
 
 const MonthView = ({ cursorDate, selectedDate, today, appointmentsByDate, onDateChange, onSelectAppointment }) => {
