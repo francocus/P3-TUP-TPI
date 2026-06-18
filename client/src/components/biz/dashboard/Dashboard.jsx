@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import { AuthenticationContext } from "../../services/auth/authentication.context";
 import { getStatusClass } from "../appointments/appointmentDetails/AppointmentDetails";
@@ -10,11 +10,10 @@ import {
   formatMonthTitle,
   getDateKey,
   getMonday,
-  MONTH_NAMES,
-  normalizeText,
   pad,
   parseDate,
 } from "../appointments/calendar/Calendar.data";
+import { MONTH_NAMES } from "../../services/consts/calendarConsts";
 import "../appointments/appointments.css";
 import "./dashboard.css";
 
@@ -55,7 +54,7 @@ const mapAppointment = (appointment) => ({
   endTime: appointment.endTime || addHour(appointment.time),
 });
 
-const DashboardHome = () => {
+const Dashboard = () => {
   const { token, user } = useContext(AuthenticationContext);
   const [today] = useState(() => new Date());
   const [viewMode, setViewMode] = useState("week");
@@ -95,24 +94,18 @@ const DashboardHome = () => {
     if (token) fetchAppointments();
   }, [token]);
 
-  const visibleAppointments = useMemo(() => {
-    return appointments.filter((appointment) => {
-      if (user?.role === "abogado") return appointment.lawyerId === user.id;
-      if (user?.role === "cliente") return appointment.clientId === user.id;
-      return true;
-    });
-  }, [appointments, user]);
+  const visibleAppointments = appointments.filter((appointment) => {
+    if (user?.role === "abogado") return appointment.lawyerId === user.id;
+    if (user?.role === "cliente") return appointment.clientId === user.id;
+    return true;
+  });
 
-  const appointmentsByDate = useMemo(
-    () =>
-      visibleAppointments.reduce(
-        (grouped, appointment) => ({
-          ...grouped,
-          [appointment.date]: [...(grouped[appointment.date] ?? []), appointment],
-        }),
-        {},
-      ),
-    [visibleAppointments],
+  const appointmentsByDate = visibleAppointments.reduce(
+    (grouped, appointment) => ({
+      ...grouped,
+      [appointment.date]: [...(grouped[appointment.date] ?? []), appointment],
+    }),
+    {}
   );
 
   const selectedDayAppointments = appointmentsByDate[getDateKey(selectedDate)] ?? [];
@@ -149,7 +142,7 @@ const DashboardHome = () => {
       <div className="dashboard-calendar">
         <div className="dashboard-calendar__hero">
           <div>
-            <p className="dashboard-overview__eyebrow">Agenda activa</p>
+            <p className="dashboard-overview__eyebrow">Agenda del estudio</p>
             <h2 className="dashboard-calendar__title">{visibleTitle}</h2>
           </div>
 
@@ -253,7 +246,7 @@ const DashboardHome = () => {
                   );
                 })()
               ) : (
-                <p>Selecciona una cita para ver cliente, abogado, horario y motivo.</p>
+                <p>Seleccioná un turno para ver cliente, abogado, horario y motivo.</p>
               )}
             </aside>
           </div>
@@ -263,5 +256,4 @@ const DashboardHome = () => {
   );
 };
 
-export default DashboardHome;
-
+export default Dashboard;

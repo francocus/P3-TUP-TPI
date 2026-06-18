@@ -143,8 +143,8 @@ const UsersContainer = () => {
     <section className="users-panel">
       <header className="users-header">
         <div className="users-header__copy">
-          <h2>Gestión de Usuarios</h2>
-          <p>Directorio global de la plataforma y CRUD total de perfiles.</p>
+          <p>Gestión de usuarios</p>
+          <h2>Gestión de usuarios</h2>
         </div>
 
         <div className="users-header__controls">
@@ -166,11 +166,11 @@ const UsersContainer = () => {
           <Button
             type="button"
             className="users-create"
-            title="Crear perfil"
-            aria-label="Crear perfil"
+            title="Crear usuario"
+            aria-label="Crear usuario"
             onClick={handleOpenNewUser}
           >
-            <span className="users-create__text">Crear perfil</span>
+            <span className="users-create__text">Crear usuario</span>
           </Button>
         </div>
       </header>

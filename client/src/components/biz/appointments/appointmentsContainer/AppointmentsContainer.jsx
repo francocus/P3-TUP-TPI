@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, Button } from "react-bootstrap";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import { getStatusClass } from "../appointmentDetails/AppointmentDetails";
@@ -6,6 +6,7 @@ import AppointmentsSearch from "../appointmentsSearch/AppointmentsSearch";
 import { normalizeText, parseDate, pad } from "../calendar/Calendar.data";
 import NewAppointment from "../newAppointment/NewAppointment";
 import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
+import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
 import "../appointments.css";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
@@ -56,6 +57,7 @@ const AppointmentsContainer = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [appointmentToDelete, setAppointmentToDelete] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const fetchAppointments = async () => {
     try {
@@ -113,28 +115,25 @@ const AppointmentsContainer = () => {
 
   const searchValue = normalizeText(searchAppointment.trim());
 
-  const roleFilteredAppointments = useMemo(
-    () =>
-      appointments.filter((appointment) => {
-        if (user?.role === "abogado") return appointment.lawyerId === user.id;
-        if (user?.role === "cliente") return appointment.clientId === user.id;
-        return true;
-      }),
-    [appointments, user],
-  );
+  const roleFilteredAppointments = appointments.filter((appointment) => {
+    if (statusFilter !== "all" && appointment.status.toLowerCase() !== statusFilter.toLowerCase()) return false;
+    if (user?.role === "abogado") return appointment.lawyerId === user.id;
+    if (user?.role === "cliente") return appointment.clientId === user.id;
+    return true;
+  });
 
   const filteredAppointments = searchValue
     ? roleFilteredAppointments.filter((appointment) =>
-        normalizeText(
-          [
-            appointment.clientName,
-            appointment.lawyerName,
-            appointment.reason,
-            appointment.status,
-            appointment.caseNumber,
-          ].join(" "),
-        ).includes(searchValue),
-      )
+      normalizeText(
+        [
+          appointment.clientName,
+          appointment.lawyerName,
+          appointment.reason,
+          appointment.status,
+          appointment.caseNumber,
+        ].join(" "),
+      ).includes(searchValue),
+    )
     : roleFilteredAppointments;
 
   const updateAppointment = async (appointment, payload) => {
@@ -187,100 +186,118 @@ const AppointmentsContainer = () => {
   };
 
   return (
-    <section
-      className={`appointments-panel ${user?.role === "sysadmin" ? "appointments-panel--admin" : ""}`}
-    >
-      <div className="appointments-toolbar">
-        <div>
-          <p className="appointments-toolbar__eyebrow">
-            {user?.role === "sysadmin"
-              ? "Gestion de turnos"
-              : "Agenda profesional"}
-          </p>
-          <h2>{user?.role === "sysadmin" ? "Gestion de Turnos" : "Turnos programados"}</h2>
-        </div>
-
-        <div className="appointments-toolbar__actions">
-          <label className="appointments-search-field">
-            <AppointmentsSearch onSearch={setSearchAppointment} />
-          </label>
-
-          {(user?.role === "cliente" || user?.role === "abogado" || user?.role === "sysadmin") && (
-            <Button
-              type="button"
-              className="appointments-create"
-              onClick={() => setShowRequest(true)}
-            >
-              {user?.role === "cliente" ? "Solicitar turno" : "Agendar turno"}
-            </Button>
-          )}
-        </div>
+  <section
+    className={`appointments-panel ${user?.role === "sysadmin" ? "appointments-panel--admin" : ""}`}
+  >
+    <div className="appointments-toolbar">
+      <div>
+        <p className="appointments-toolbar__eyebrow">
+          {user?.role === "sysadmin" ? "Gestión de turnos" : "Visualizá y gestioná el estado de los turnos"} 
+        </p>
+        <h2>{user?.role === "sysadmin" ? "Gestión de turnos" : "Mis turnos"}
+        </h2>
       </div>
 
-      {user?.role !== "sysadmin" && (
-        <div className="appointments-cards-grid">
-          {filteredAppointments.length > 0 ? (
-            filteredAppointments.map((appointment) => (
-              <div key={appointment.id} className="appointment-card">
-                <div className="appointment-card__header">
-                  <span className={`appointment-details__status ${getStatusClass(appointment.status)}`}>
-                    {appointment.status}
-                  </span>
-                  <span className="appointment-card__date">
-                    {appointment.date} • {appointment.time}
-                  </span>
-                </div>
+      <div className="appointments-toolbar__actions">
+        <select
+          className="appointments-filter"
+          value={statusFilter}
+          onChange={(event) => setStatusFilter(event.target.value)}
+        >
+          <option value="all">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
 
-                <div className="appointment-card__body">
-                  <h3>
-                    {user?.role === "cliente"
-                      ? `Abogado: ${appointment.lawyerName}`
-                      : `Cliente: ${appointment.clientName}`}
-                  </h3>
-                  <p><strong>Motivo:</strong> {appointment.reason}</p>
-                </div>
+        <label className="appointments-search-field">
+          <AppointmentsSearch onSearch={setSearchAppointment} />
+        </label>
 
-                {user?.role === "abogado" && (
-                  <div className="appointment-card__actions">
-                    <button
-                      type="button"
-                      className="appointment-admin-action appointment-admin-action--edit"
-                      title="Editar turno"
-                      onClick={() => setAppointmentToEdit(appointment)}
-                    >
-                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
-                      </svg>
-                    </button>
+        {(user?.role === "cliente" || user?.role === "abogado" || user?.role === "sysadmin") && (
+          <Button
+            type="button"
+            className="appointments-create"
+            onClick={() => setShowRequest(true)}
+          >
+            {user?.role === "cliente" ? "Solicitar turno" : "Agendar turno"}
+          </Button>
+        )}
+      </div>
+    </div>
+
+    {user?.role !== "sysadmin" && (
+      <div className="appointments-cards-grid">
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((appointment) => (
+            <div key={appointment.id} className="appointment-card">
+              <div className="appointment-card__header">
+                <span className={`appointment-details__status ${getStatusClass(appointment.status)}`}>
+                  {appointment.status}
+                </span>
+                <span className="appointment-card__date">
+                  {appointment.date} • {appointment.time}
+                </span>
+              </div>
+
+              <div className="appointment-card__body">
+                <h3>
+                  {user?.role === "cliente"
+                    ? `Abogado: ${appointment.lawyerName}`
+                    : `Cliente: ${appointment.clientName}`}
+                </h3>
+                <p><strong>Motivo:</strong> {appointment.reason}</p>
+              </div>
+
+              {user?.role === "abogado" && (
+                <div className="appointment-card__actions">
+                  <button
+                    type="button"
+                    className="appointment-admin-action appointment-admin-action--edit"
+                    title="Editar turno"
+                    onClick={() => setAppointmentToEdit(appointment)}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
+                    </svg>
+                  </button>
+
+                  {appointment.status.toLowerCase() !== "cancelado" && (
                     <button
                       type="button"
                       className="appointment-admin-action appointment-admin-action--delete"
-                      title="Eliminar turno"
-                      onClick={() => setAppointmentToDelete(appointment)}
+                      title="Cancelar turno"
+                      onClick={() => {
+                        if (window.confirm("¿Estás seguro que querés cancelar este turno?")) {
+                          handleStatus(appointment, "Cancelado");
+                        }
+                      }}
                     >
-                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
+                        <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
                       </svg>
                     </button>
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <div className="appointments-calendar__empty" style={{ gridColumn: "1 / -1" }}>
-              No hay turnos programados.
+                  )}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      )}
+          ))
+        ) : (
+          <div className="appointments-calendar__empty" style={{ gridColumn: "1 / -1" }}>
+            No hay turnos programados.
+          </div>
+        )}
+      </div>
+    )}
 
-      {message && (
-        <Alert className="users-alert" variant="danger">
-          {message}
-        </Alert>
-      )}
+    {message && (
+      <Alert className="users-alert" variant="danger">
+        {message}
+      </Alert>
+    )}
 
-      {user?.role === "sysadmin" && (
+    {user?.role === "sysadmin" && (
+      filteredAppointments.length > 0 ? (
         <div className="appointments-table-wrap">
           <table className="appointments-table">
             <thead>
@@ -312,9 +329,7 @@ const AppointmentsContainer = () => {
                     {appointment.reason}
                   </td>
                   <td className="appointment-admin-cell">
-                    <span
-                      className={`appointment-details__status ${getStatusClass(appointment.status)}`}
-                    >
+                    <span className={`appointment-details__status ${getStatusClass(appointment.status)}`}>
                       {appointment.status}
                     </span>
                   </td>
@@ -349,40 +364,41 @@ const AppointmentsContainer = () => {
             </tbody>
           </table>
         </div>
-      )}
+      ) : (
+        <p className="appointments-empty">No se encontraron turnos.</p>
+      )
+    )}
 
-      <NewAppointment
-        show={showRequest}
-        onHide={() => setShowRequest(false)}
-        onSubmit={handleRequest}
-        lawyers={lawyers}
-        clients={clients}
-        token={token}
-        appointments={appointments}
-        user={user}
-      />
-      <NewAppointment
-        show={Boolean(appointmentToEdit)}
-        appointment={appointmentToEdit}
-        onHide={() => setAppointmentToEdit(null)}
-        onSubmit={handleEdit}
-        lawyers={lawyers}
-        clients={clients}
-        user={user}
-      />
+     <DeleteModal
+      show={Boolean(appointmentToDelete)}
+      onHide={() => setAppointmentToDelete(null)}
+      onConfirm={() => handleDeleteAppointment(appointmentToDelete.id)}
+      title="Eliminar turno"
+      message="¿Estás seguro que deseas eliminar el turno de"
+      itemName={appointmentToDelete?.clientName}
+    />
 
-      {appointmentToDelete && (
-        <DeleteModal
-          show={Boolean(appointmentToDelete)}
-          onHide={() => setAppointmentToDelete(null)}
-          onConfirm={() => handleDeleteAppointment(appointmentToDelete.id)}
-          title="Eliminar turno"
-          message="¿Estás seguro que deseas eliminar el turno de"
-          itemName={appointmentToDelete?.clientName || "este cliente"}
-        />
-      )}
-    </section>
-  );
+    <NewAppointment
+      show={showRequest}
+      onHide={() => setShowRequest(false)}
+      onSubmit={handleRequest}
+      lawyers={lawyers}
+      clients={clients}
+      token={token}
+      appointments={appointments}
+      user={user}
+    />
+    <NewAppointment
+      show={Boolean(appointmentToEdit)}
+      appointment={appointmentToEdit}
+      onHide={() => setAppointmentToEdit(null)}
+      onSubmit={handleEdit}
+      lawyers={lawyers}
+      clients={clients}
+      user={user}
+    />
+  </section>
+);
 };
 
 export default AppointmentsContainer;

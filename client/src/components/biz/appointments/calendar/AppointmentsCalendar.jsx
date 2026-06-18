@@ -1,4 +1,5 @@
-import { DAY_NAMES, pad } from "../calendar/Calendar.data";
+import { pad } from "../calendar/Calendar.data";
+import { DAY_NAMES } from "../../../services/consts/calendarConsts";
 import AppointmentChip from "./AppointmentChip";
 import MonthView from "./MonthView";
 import WeekView from "./WeekView";

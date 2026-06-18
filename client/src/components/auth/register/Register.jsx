@@ -3,6 +3,7 @@ import { Alert, Button, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthenticationContext } from '../../services/auth/authentication.context';
 import { initialRegisterFormErrors } from './Register.data';
+import ToggleTheme from "../../shared/toggleTheme/ToggleTheme.jsx";
 import '../auth.css';
 
 const Register = () => {
@@ -80,6 +81,7 @@ const Register = () => {
 
   return (
     <main className="auth-shell auth-shell--single">
+      <ToggleTheme />
       <section className="auth-card auth-card--single">
         <div className="auth-panel auth-panel--forms auth-panel--single">
           <div className="auth-form-slide is-active auth-form-slide--full">

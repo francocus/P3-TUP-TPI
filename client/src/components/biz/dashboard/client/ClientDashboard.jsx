@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
+import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
 import "../dashboard.css";
 
 const ClientDashboard = () => {
@@ -21,8 +22,8 @@ const ClientDashboard = () => {
           <div className="dashboard-brand">
             <span className="dashboard-brand__mark">LM</span>
             <div>
-              <p className="dashboard-eyebrow">Legal Manager</p>
-              <h1>Mi panel</h1>
+              <p className="dashboard-eyebrow">Mi panel</p>
+              <h1>Legal Manager</h1>
               {user?.name && <span className="dashboard-user">{user.name}</span>}
             </div>
           </div>
@@ -52,13 +53,14 @@ const ClientDashboard = () => {
                   `dashboard-nav__link${isActive ? " is-active" : ""}`
                 }
               >
-                Mi Expediente
+                Mis Expedientes
               </NavLink>
             </nav>
 
             <Button className="dashboard-logout" onClick={handleLogout}>
               Cerrar sesión
             </Button>
+            <ToggleTheme />
           </div>
         </header>
 

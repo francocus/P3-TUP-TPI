@@ -12,7 +12,7 @@ import UsersContainer from './components/biz/users/usersContainer/UsersContainer
 import SysAdminDashboard from './components/biz/dashboard/sysadmin/SysAdminDashboard.jsx';
 import LawyerDashboard from './components/biz/dashboard/lawyer/LawyerDashboard.jsx';
 import ClientDashboard from './components/biz/dashboard/client/ClientDashboard.jsx';
-import DashboardHome from './components/biz/dashboard/DashboardHome.jsx';
+import Dashboard from './components/biz/dashboard/Dashboard.jsx';
 
 const dashboardByRole = {
   sysadmin: '/dashboard/sysadmin',
@@ -48,7 +48,7 @@ function App() {
             </ProtectedByRole>
           }
         >
-          <Route index element={<DashboardHome />} />
+          <Route index element={<Dashboard/>} />
           <Route path="appointments" element={<AppointmentsContainer />} />
           <Route path="cases" element={<CasesContainer />} />
           <Route path="users" element={<UsersContainer />} />
@@ -61,7 +61,7 @@ function App() {
             </ProtectedByRole>
           }
         >
-          <Route index element={<DashboardHome />} />
+          <Route index element={<Dashboard/>} />
           <Route path="appointments" element={<AppointmentsContainer />} />
           <Route path="cases" element={<CasesContainer />} />
         </Route>
@@ -73,7 +73,7 @@ function App() {
             </ProtectedByRole>
           }
         >
-          <Route index element={<DashboardHome />} />
+          <Route index element={<Dashboard />} />
           <Route path="appointments" element={<AppointmentsContainer />} />
           <Route path="cases" element={<CasesContainer />} />
         </Route>

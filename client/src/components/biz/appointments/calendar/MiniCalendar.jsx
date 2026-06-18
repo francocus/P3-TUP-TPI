@@ -1,5 +1,6 @@
 import AppointmentDetails from "../appointmentDetails/AppointmentDetails";
-import { addMonths, DAY_NAMES, formatMonthTitle, getDateKey, getSunday, addDays, isSameDate, pad } from "../calendar/Calendar.data";
+import { addMonths, formatMonthTitle, getDateKey, getSunday, addDays, isSameDate, pad } from "../calendar/Calendar.data";
+import { DAY_NAMES } from "../../../services/consts/calendarConsts";
 import AppointmentChip from "./AppointmentChip";
 
 const MiniCalendar = ({ cursorDate, selectedDate, today, appointmentsByDate, selectedAppointment, selectedDayAppointments, user, onDateChange, onSelectAppointment, onClearAppointment, onStatus, onEdit }) => {

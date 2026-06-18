@@ -43,13 +43,15 @@ const normalizeCaseEntry = (legalCase) => ({
 const CasesContainer = () => {
   const { token, user: currentUser } = useContext(AuthenticationContext);
   const [cases, setCases] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [lawyers, setLawyers] = useState([]);
+  const [clients, setClients] = useState([]);
   const [searchCase, setSearchCase] = useState("");
   const [showNewCase, setShowNewCase] = useState(false);
   const [caseToEdit, setCaseToEdit] = useState(null);
   const [caseToDelete, setCaseToDelete] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const fetchCases = async () => {
     const response = await fetch(`${API_URL}/cases`, {
@@ -64,17 +66,32 @@ const CasesContainer = () => {
     setCases((data.cases ?? []).map(normalizeCaseEntry));
   };
 
-  const fetchUsers = async () => {
-    const response = await fetch(`${API_URL}/users`, {
-      headers: buildHeaders(token),
-    });
-
-    if (!response.ok) {
-      throw new Error(await getErrorMessage(response));
+ const fetchLawyers = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users/lawyers`, {
+        headers: buildHeaders(token),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLawyers(data.lawyers ?? []);
+      }
+    } catch (error) {
+      console.error("Error al cargar abogados", error);
     }
+  };
 
-    const data = await response.json();
-    setUsers(data.users ?? []);
+  const fetchClients = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users/clients`, {
+        headers: buildHeaders(token),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setClients(data.clients ?? []);
+      }
+    } catch (error) {
+      console.error("Error al cargar clientes", error);
+    }
   };
 
   useEffect(() => {
@@ -85,7 +102,6 @@ const CasesContainer = () => {
         setLoading(true);
         setMessage("");
         await fetchCases();
-        if (currentUser?.role === "sysadmin") await fetchUsers();
       } catch (error) {
         setMessage(error.message || "No se pudieron cargar los expedientes.");
       } finally {
@@ -94,7 +110,20 @@ const CasesContainer = () => {
     };
 
     loadCases();
-  }, [token]);
+
+    // Cargamos los usuarios específicos según el rol permitdo
+    if (["abogado", "sysadmin"].includes(currentUser?.role)) {
+      fetchClients();
+    }
+    if (["cliente", "sysadmin"].includes(currentUser?.role)) {
+      fetchLawyers();
+    }
+    // El sysadmin carga ambos para poder asignar libremente
+    if (currentUser?.role === "sysadmin") {
+      fetchLawyers();
+      fetchClients();
+    }
+  }, [token, currentUser]);
 
   const handleSearch = (searchValue) => {
     setSearchCase(searchValue);
@@ -169,11 +198,11 @@ const CasesContainer = () => {
     setCaseToDelete(null);
   };
 
-  // Opción: Sin useMemo, pero manteniendo el uso como arreglo
   const query = searchCase.trim().toLowerCase();
 
   const filteredCases = cases.filter((legalCase) => {
-    return (
+
+    const matchesSearch = 
       legalCase.caseNumber.toLowerCase().includes(query) ||
       legalCase.title.toLowerCase().includes(query) ||
       legalCase.area.toLowerCase().includes(query) ||
@@ -181,22 +210,35 @@ const CasesContainer = () => {
       legalCase.lawyerName.toLowerCase().includes(query) ||
       legalCase.status.toLowerCase().includes(query) ||
       legalCase.description.toLowerCase().includes(query) ||
-      legalCase.notes.toLowerCase().includes(query)
-    );
-  });
+      legalCase.notes.toLowerCase().includes(query);
 
-  const clients = users.filter((userEntry) => userEntry.role === "cliente");
-  const lawyers = users.filter((userEntry) => userEntry.role === "abogado");
+    const matchesStatus = 
+      statusFilter === "all" || 
+      legalCase.status.toLowerCase() === statusFilter.toLowerCase();
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <section className="cases-panel">
       <header className="cases-header">
         <div className="cases-header__copy">
-          <p>Control profesional</p>
-          <h2>Gestion de Expedientes</h2>
+          <p>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Visualizá y gestioná el estado de los expedientes"}</p>
+          <h2>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Mis expedientes"}</h2>
         </div>
 
         <div className="cases-header__controls">
+          <select
+          className="cases-filter"
+          value={statusFilter}
+          onChange={(event) => setStatusFilter(event.target.value)}
+        >
+          <option value="all">Todos los estados</option>
+          <option value="activo">Activo</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="cerrado">Cerrado</option>
+          <option value="archivado">Archivado</option>
+        </select>
           <div className="cases-search-wrap">
             <CasesSearch onSearch={handleSearch} />
           </div>
@@ -256,50 +298,131 @@ const CasesContainer = () => {
       {loading ? (
         <p className="cases-empty">Cargando expedientes...</p>
       ) : filteredCases.length > 0 ? (
-        <div className="cases-list">
-          {filteredCases.map((legalCase) => (
-            <CasesItem
-              key={legalCase.id}
-              id={legalCase.id}
-              caseNumber={legalCase.caseNumber}
-              title={legalCase.title}
-              clientName={legalCase.clientName}
-              lawyerName={legalCase.lawyerName}
-              clientId={legalCase.clientId}
-              lawyerId={legalCase.lawyerId}
-              area={legalCase.area}
-              status={legalCase.status}
-              startDate={legalCase.startDate}
-              lastUpdate={legalCase.lastUpdate}
-              description={legalCase.description}
-              notes={legalCase.notes}
-              currentUser={currentUser}
-              onEdit={(selectedCase) => {
-                setShowNewCase(false);
-                setCaseToDelete(null);
-                setCaseToEdit({
-                  ...selectedCase,
-                  clientId: selectedCase.clientId,
-                  lawyerId: selectedCase.lawyerId,
-                });
-              }}
-              onDelete={(id) => {
-                const selectedCase = filteredCases.find(
-                  (entry) => entry.id === id,
-                );
-                if (selectedCase) {
-                  setShowNewCase(false);
-                  setCaseToEdit(null);
-                  setCaseToDelete(selectedCase);
-                }
-              }}
-            />
-          ))}
-        </div>
+        <>
+          {currentUser?.role === "sysadmin" && (
+            <div className="cases-table-wrap">
+              <table className="cases-table">
+                <thead>
+                  <tr>
+                    <th>Expediente / Título</th>
+                    <th>Cliente / Abogado</th>
+                    <th>Área</th>
+                    <th>Estado</th>
+                    <th className="cases-table__actions-head">Acciones Admin</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCases.map((legalCase) => (
+                    <tr key={legalCase.id} className="case-admin-row">
+                      <td className="case-admin-cell case-admin-cell--main">
+                        <div className="case-admin-main">
+                          <span className="case-admin-main__name">{legalCase.caseNumber}</span>
+                          <span className="case-admin-main__sub">{legalCase.title}</span>
+                        </div>
+                      </td>
+                      <td className="case-admin-cell case-admin-cell--main">
+                        <div className="case-admin-main">
+                          <span className="case-admin-main__name">{legalCase.clientName}</span>
+                          <span className="case-admin-main__sub">{legalCase.lawyerName}</span>
+                        </div>
+                      </td>
+                      <td className="case-admin-cell case-admin-cell--muted">
+                        {legalCase.area}
+                      </td>
+                      <td className="case-admin-cell" style={{ textAlign: 'center' }}>
+                        <span className={`cases-item__status is-${legalCase.status.toLowerCase()}`}>
+                          {legalCase.status}
+                        </span>
+                      </td>
+                      <td className="case-admin-cell case-admin-cell--actions">
+                        <div className="case-actions">
+                          <button
+                            type="button"
+                            className="case-action case-action--edit"
+                            title="Editar expediente"
+                            onClick={() => {
+                              setShowNewCase(false);
+                              setCaseToDelete(null);
+                              setCaseToEdit({
+                                ...legalCase,
+                                clientId: legalCase.clientId,
+                                lawyerId: legalCase.lawyerId,
+                              });
+                            }}
+                          >
+                            <svg viewBox="0 0 24 24">
+                              <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            className="case-action case-action--delete"
+                            title="Eliminar expediente"
+                            onClick={() => {
+                              setShowNewCase(false);
+                              setCaseToEdit(null);
+                              setCaseToDelete(legalCase);
+                            }}
+                          >
+                            <svg viewBox="0 0 24 24">
+                              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {currentUser?.role !== "sysadmin" && (
+            <div className="cases-list">
+              {filteredCases.map((legalCase) => (
+                <CasesItem
+                  key={legalCase.id}
+                  id={legalCase.id}
+                  caseNumber={legalCase.caseNumber}
+                  title={legalCase.title}
+                  clientName={legalCase.clientName}
+                  lawyerName={legalCase.lawyerName}
+                  clientId={legalCase.clientId}
+                  lawyerId={legalCase.lawyerId}
+                  area={legalCase.area}
+                  status={legalCase.status}
+                  startDate={legalCase.startDate}
+                  lastUpdate={legalCase.lastUpdate}
+                  description={legalCase.description}
+                  notes={legalCase.notes}
+                  currentUser={currentUser}
+                  onEdit={(selectedCase) => {
+                    setShowNewCase(false);
+                    setCaseToDelete(null);
+                    setCaseToEdit({
+                      ...selectedCase,
+                      clientId: selectedCase.clientId,
+                      lawyerId: selectedCase.lawyerId,
+                    });
+                  }}
+                  onDelete={(id) => {
+                    const selectedCase = filteredCases.find(
+                      (entry) => entry.id === id,
+                    );
+                    if (selectedCase) {
+                      setShowNewCase(false);
+                      setCaseToEdit(null);
+                      setCaseToDelete(selectedCase);
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </>
       ) : (
         <p className="cases-empty">No se encontraron expedientes.</p>
       )}
-
     </section>
   );
 };
