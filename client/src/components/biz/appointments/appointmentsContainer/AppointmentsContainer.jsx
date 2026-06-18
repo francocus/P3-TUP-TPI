@@ -135,6 +135,7 @@ const AppointmentsContainer = () => {
       ).includes(searchValue),
     )
     : roleFilteredAppointments;
+  const hasScrollableContent = !loading && filteredAppointments.length > 0;
 
   const updateAppointment = async (appointment, payload) => {
     const response = await fetch(`${API_URL}/appointments/${appointment.id}`, {
@@ -187,7 +188,7 @@ const AppointmentsContainer = () => {
 
   return (
   <section
-    className={`appointments-panel ${user?.role === "sysadmin" ? "appointments-panel--admin" : ""}`}
+    className={`appointments-panel ${user?.role === "sysadmin" ? "appointments-panel--admin" : ""}${hasScrollableContent ? " has-scroll-content" : ""}`}
   >
     <div className="appointments-toolbar">
       <div>
@@ -199,16 +200,18 @@ const AppointmentsContainer = () => {
       </div>
 
       <div className="appointments-toolbar__actions">
-        <select
-          className="appointments-filter"
-          value={statusFilter}
-          onChange={(event) => setStatusFilter(event.target.value)}
-        >
-          <option value="all">Todos los estados</option>
-          <option value="pendiente">Pendiente</option>
-          <option value="confirmado">Confirmado</option>
-          <option value="cancelado">Cancelado</option>
-        </select>
+        <div className="appointments-filter-wrap">
+          <select
+            className="appointments-filter"
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+          >
+            <option value="all">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
 
         <label className="appointments-search-field">
           <AppointmentsSearch onSearch={setSearchAppointment} />

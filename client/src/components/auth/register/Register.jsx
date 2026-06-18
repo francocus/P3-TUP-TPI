@@ -191,16 +191,18 @@ const Register = () => {
                 )}
               </div>
 
-              <Button className="auth-submit" type="submit" disabled={loading}>
-                {loading ? 'Creando...' : 'Crear usuario'}
-              </Button>
-            </Form>
+              <div className="auth-actions">
+                <Button className="auth-submit" type="submit" disabled={loading}>
+                  {loading ? 'Creando...' : 'Crear usuario'}
+                </Button>
 
-            <div className="auth-footer">
-              <Button as={Link} to="/login" className="auth-switch">
-                Volver al acceso
-              </Button>
-            </div>
+                <div className="auth-footer">
+                  <Button as={Link} to="/login" className="auth-switch">
+                    Volver al acceso
+                  </Button>
+                </div>
+              </div>
+            </Form>
           </div>
         </div>
       </section>
