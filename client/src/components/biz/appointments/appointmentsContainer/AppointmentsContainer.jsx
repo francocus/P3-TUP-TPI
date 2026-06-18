@@ -1,21 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Alert, Button } from "react-bootstrap";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
-import AppointmentsCalendar from "../calendar/AppointmentsCalendar";
-import MiniCalendar from "../calendar/MiniCalendar";
 import { getStatusClass } from "../appointmentDetails/AppointmentDetails";
 import AppointmentsSearch from "../appointmentsSearch/AppointmentsSearch";
-import {
-  addDays,
-  addMonths,
-  formatMonthTitle,
-  getDateKey,
-  getMonday,
-  MONTH_NAMES,
-  normalizeText,
-  pad,
-  parseDate,
-} from "../calendar/Calendar.data";
+import { normalizeText, parseDate, pad } from "../calendar/Calendar.data";
 import NewAppointment from "../newAppointment/NewAppointment";
 import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
 import "../appointments.css";
@@ -59,11 +47,6 @@ const mapAppointment = (appointment) => ({
 
 const AppointmentsContainer = () => {
   const { token, user } = useContext(AuthenticationContext);
-  const [today] = useState(() => new Date());
-  const [viewMode, setViewMode] = useState("week");
-  const [cursorDate, setCursorDate] = useState(today);
-  const [selectedDate, setSelectedDate] = useState(today);
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [searchAppointment, setSearchAppointment] = useState("");
   const [appointments, setAppointments] = useState([]);
   const [lawyers, setLawyers] = useState([]);
@@ -112,7 +95,6 @@ const AppointmentsContainer = () => {
     };
 
     const fetchClients = async () => {
-      // Ahora le pegamos a la ruta específica que acabamos de crear en Node
       const response = await fetch(`${API_URL}/users/clients`, {
         headers: buildHeaders(token),
       });
@@ -120,8 +102,6 @@ const AppointmentsContainer = () => {
       if (response.ok) {
         const data = await response.json();
         setClients(data.clients ?? []);
-      } else {
-        console.error("Error al traer clientes");
       }
     };
 
@@ -133,63 +113,29 @@ const AppointmentsContainer = () => {
 
   const searchValue = normalizeText(searchAppointment.trim());
 
-  const roleFilteredAppointments = appointments.filter((appointment) => {
-    if (user?.role === "abogado") return appointment.lawyerId === user.id;
-    if (user?.role === "cliente") return appointment.clientId === user.id;
-    return true;
-  });
+  const roleFilteredAppointments = useMemo(
+    () =>
+      appointments.filter((appointment) => {
+        if (user?.role === "abogado") return appointment.lawyerId === user.id;
+        if (user?.role === "cliente") return appointment.clientId === user.id;
+        return true;
+      }),
+    [appointments, user],
+  );
 
   const filteredAppointments = searchValue
     ? roleFilteredAppointments.filter((appointment) =>
-      normalizeText(
-        [
-          appointment.clientName,
-          appointment.lawyerName,
-          appointment.reason,
-          appointment.status,
-          appointment.caseNumber,
-        ].join(" "),
-      ).includes(searchValue),
-    )
+        normalizeText(
+          [
+            appointment.clientName,
+            appointment.lawyerName,
+            appointment.reason,
+            appointment.status,
+            appointment.caseNumber,
+          ].join(" "),
+        ).includes(searchValue),
+      )
     : roleFilteredAppointments;
-
-  const appointmentsByDate = filteredAppointments.reduce(
-    (grouped, appointment) => ({
-      ...grouped,
-      [appointment.date]: [...(grouped[appointment.date] ?? []), appointment],
-    }),
-    {},
-  );
-  const selectedDayAppointments =
-    appointmentsByDate[getDateKey(selectedDate)] ?? [];
-  const weekStart = getMonday(cursorDate);
-  const weekEnd = addDays(weekStart, 6);
-  const visibleTitle =
-    viewMode === "day"
-      ? `${pad(selectedDate.getDate())} ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
-      : viewMode === "month"
-        ? formatMonthTitle(cursorDate)
-        : `${pad(weekStart.getDate())} - ${pad(weekEnd.getDate())} ${MONTH_NAMES[weekEnd.getMonth()]} ${weekEnd.getFullYear()}`;
-
-  const movePeriod = (amount) => {
-    const nextDate =
-      viewMode === "month"
-        ? addMonths(cursorDate, amount)
-        : addDays(cursorDate, amount * (viewMode === "day" ? 1 : 7));
-    selectDate(nextDate);
-  };
-
-  const selectDate = (date) => {
-    setSelectedDate(date);
-    setCursorDate(date);
-    setSelectedAppointment(null);
-  };
-
-  const selectAppointment = (appointment) => {
-    setSelectedAppointment(appointment);
-    setSelectedDate(appointment.dateObject);
-    setCursorDate(appointment.dateObject);
-  };
 
   const updateAppointment = async (appointment, payload) => {
     const response = await fetch(`${API_URL}/appointments/${appointment.id}`, {
@@ -204,7 +150,6 @@ const AppointmentsContainer = () => {
   const handleStatus = async (appointment, status) => {
     try {
       await updateAppointment(appointment, { status });
-      setSelectedAppointment(null);
     } catch (error) {
       setMessage(error.message);
     }
@@ -223,7 +168,6 @@ const AppointmentsContainer = () => {
   const handleEdit = async (appointment, form) => {
     await updateAppointment(appointment, form);
     setAppointmentToEdit(null);
-    setSelectedAppointment(null);
   };
 
   const handleDeleteAppointment = async (id) => {
@@ -242,40 +186,6 @@ const AppointmentsContainer = () => {
     }
   };
 
-  const calendarControls = (
-
-    <div className="appointments-calendar-controls">
-      <label className="appointments-search-field">
-        <span>Buscar turno</span>
-        <AppointmentsSearch onSearch={setSearchAppointment} />
-      </label>
-      <div className="appointments-period-controls">
-        <button type="button" onClick={() => movePeriod(-1)}>
-          {"<"}
-        </button>
-        <button type="button" onClick={() => selectDate(today)}>
-          Hoy
-        </button>
-        <button type="button" onClick={() => movePeriod(1)}>
-          {">"}
-        </button>
-      </div>
-
-      <div className="appointments-view-toggle">
-        {["day", "week", "month"].map((mode) => (
-          <button
-            key={mode}
-            type="button"
-            className={viewMode === mode ? "is-active" : ""}
-            onClick={() => setViewMode(mode)}
-          >
-            {mode === "day" ? "Dia" : mode === "week" ? "Semana" : "Mes"}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
   return (
     <section
       className={`appointments-panel ${user?.role === "sysadmin" ? "appointments-panel--admin" : ""}`}
@@ -287,15 +197,13 @@ const AppointmentsContainer = () => {
               ? "Gestion de turnos"
               : "Agenda profesional"}
           </p>
-          <h2>
-            {user?.role === "sysadmin" ? "Gestion de Turnos" : visibleTitle}
-          </h2>
+          <h2>{user?.role === "sysadmin" ? "Gestion de Turnos" : "Turnos programados"}</h2>
         </div>
 
-        { }
         <div className="appointments-toolbar__actions">
-
-          { }
+          <label className="appointments-search-field">
+            <AppointmentsSearch onSearch={setSearchAppointment} />
+          </label>
 
           {(user?.role === "cliente" || user?.role === "abogado" || user?.role === "sysadmin") && (
             <Button
@@ -306,10 +214,7 @@ const AppointmentsContainer = () => {
               {user?.role === "cliente" ? "Solicitar turno" : "Agendar turno"}
             </Button>
           )}
-          { }
-          {user?.role !== "sysadmin"}
         </div>
-
       </div>
 
       {user?.role !== "sysadmin" && (
@@ -335,7 +240,6 @@ const AppointmentsContainer = () => {
                   <p><strong>Motivo:</strong> {appointment.reason}</p>
                 </div>
 
-                {}
                 {user?.role === "abogado" && (
                   <div className="appointment-card__actions">
                     <button
@@ -368,7 +272,7 @@ const AppointmentsContainer = () => {
             </div>
           )}
         </div>
-      ) }
+      )}
 
       {message && (
         <Alert className="users-alert" variant="danger">
@@ -423,11 +327,7 @@ const AppointmentsContainer = () => {
                         aria-label="Editar turno"
                         onClick={() => setAppointmentToEdit(appointment)}
                       >
-                        <svg
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                          focusable="false"
-                        >
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                           <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
                         </svg>
                       </button>
@@ -448,41 +348,6 @@ const AppointmentsContainer = () => {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-
-      {user?.role === "sysadmin" && calendarControls}
-
-      {loading ? (
-        <p className="appointments-calendar__empty">Cargando turnos...</p>
-      ) : (
-        <div className="appointments-calendar">
-          <MiniCalendar
-            cursorDate={cursorDate}
-            selectedDate={selectedDate}
-            today={today}
-            appointmentsByDate={appointmentsByDate}
-            selectedAppointment={selectedAppointment}
-            selectedDayAppointments={selectedDayAppointments}
-            user={user}
-            onDateChange={selectDate}
-            onSelectAppointment={selectAppointment}
-            onClearAppointment={() => setSelectedAppointment(null)}
-            onStatus={handleStatus}
-            onEdit={setAppointmentToEdit}
-          />
-          <div className="appointments-board">
-            <AppointmentsCalendar
-              viewMode={viewMode}
-              cursorDate={cursorDate}
-              selectedDate={selectedDate}
-              today={today}
-              selectedAppointment={selectedAppointment}
-              appointmentsByDate={appointmentsByDate}
-              onDateChange={selectDate}
-              onSelectAppointment={selectAppointment}
-            />
-          </div>
         </div>
       )}
 

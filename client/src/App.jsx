@@ -12,6 +12,7 @@ import UsersContainer from './components/biz/users/usersContainer/UsersContainer
 import SysAdminDashboard from './components/biz/dashboard/sysadmin/SysAdminDashboard.jsx';
 import LawyerDashboard from './components/biz/dashboard/lawyer/LawyerDashboard.jsx';
 import ClientDashboard from './components/biz/dashboard/client/ClientDashboard.jsx';
+import DashboardHome from './components/biz/dashboard/DashboardHome.jsx';
 
 const dashboardByRole = {
   sysadmin: '/dashboard/sysadmin',
@@ -24,110 +25,6 @@ const DashboardRedirect = () => {
 
   return <Navigate to={dashboardByRole[user?.role] ?? '/login'} replace />;
 };
-
-const DashboardOverview = ({ eyebrow, title, description, cards }) => {
-  return (
-    <section className="dashboard-content">
-      <div className="dashboard-overview">
-        <div className="dashboard-overview__copy">
-          <p className="dashboard-overview__eyebrow">{eyebrow}</p>
-          <h2 className="dashboard-overview__title">{title}</h2>
-          <p className="dashboard-overview__text">{description}</p>
-        </div>
-
-        <div className="dashboard-overview__grid">
-          {cards.map((card) => (
-            <article key={card.title} className="dashboard-overview__card">
-              <span className="dashboard-overview__card-label">{card.label}</span>
-              <h3>{card.title}</h3>
-              <p>{card.description}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const SysAdminOverview = () => (
-  <DashboardOverview
-    eyebrow="SISTEMA"
-    title="Control global"
-    description="Acceso total a usuarios, expedientes y turnos de toda la plataforma."
-    cards={[
-      {
-        label: 'Usuarios',
-        title: 'Gestión de perfiles',
-        description: 'Alta, baja y edición de clientes, abogados y administradores.',
-      },
-      {
-        label: 'Expedientes',
-        title: 'Seguimiento centralizado',
-        description: 'Control global del estado, responsables y trazabilidad.',
-      },
-      {
-        label: 'Turnos',
-        title: 'Agenda operativa',
-        description: 'Visión completa de confirmados, pendientes y cancelados.',
-      },
-      {
-        label: 'Auditoría',
-        title: 'Actividad del sistema',
-        description: 'Registro claro de cambios y movimientos administrativos.',
-      },
-    ]}
-  />
-);
-
-const AbogadoOverview = () => (
-  <DashboardOverview
-    eyebrow="ESTUDIO JURÍDICO"
-    title="Agenda y seguimiento"
-    description="Visión rápida de la actividad diaria para atender turnos y expedientes en curso."
-    cards={[
-      {
-        label: 'Turnos',
-        title: 'Agenda del día',
-        description: 'Revisión de consultas, confirmaciones y próximas atenciones.',
-      },
-      {
-        label: 'Expedientes',
-        title: 'Casos activos',
-        description: 'Seguimiento de causas, avances y documentación asociada.',
-      },
-      {
-        label: 'Clientes',
-        title: 'Información vinculada',
-        description: 'Acceso rápido a los datos de contacto y seguimiento de cada persona.',
-      },
-    ]}
-  />
-);
-
-const ClienteOverview = () => (
-  <DashboardOverview
-    eyebrow="CLIENTE"
-    title="Mi actividad"
-    description="Acceso simple a los turnos asignados y al estado de mis expedientes."
-    cards={[
-      {
-        label: 'Mis turnos',
-        title: 'Próximas consultas',
-        description: 'Fecha, hora y estado de cada turno desde un solo lugar.',
-      },
-      {
-        label: 'Mi expediente',
-        title: 'Seguimiento del caso',
-        description: 'Consulta de avances, estado actual y observaciones del abogado.',
-      },
-      {
-        label: 'Estado',
-        title: 'Resumen personal',
-        description: 'Todo lo importante, sin ruido visual y con lectura inmediata.',
-      },
-    ]}
-  />
-);
 
 function App() {
   return (
@@ -151,7 +48,7 @@ function App() {
             </ProtectedByRole>
           }
         >
-          <Route index element={<SysAdminOverview />} />
+          <Route index element={<DashboardHome />} />
           <Route path="appointments" element={<AppointmentsContainer />} />
           <Route path="cases" element={<CasesContainer />} />
           <Route path="users" element={<UsersContainer />} />
@@ -164,7 +61,7 @@ function App() {
             </ProtectedByRole>
           }
         >
-          <Route index element={<AbogadoOverview />} />
+          <Route index element={<DashboardHome />} />
           <Route path="appointments" element={<AppointmentsContainer />} />
           <Route path="cases" element={<CasesContainer />} />
         </Route>
@@ -176,7 +73,7 @@ function App() {
             </ProtectedByRole>
           }
         >
-          <Route index element={<ClienteOverview />} />
+          <Route index element={<DashboardHome />} />
           <Route path="appointments" element={<AppointmentsContainer />} />
           <Route path="cases" element={<CasesContainer />} />
         </Route>

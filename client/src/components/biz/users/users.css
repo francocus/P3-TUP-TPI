@@ -502,17 +502,19 @@
 .users-modal__content {
   display: flex;
   flex-direction: column;
-  background: rgba(13, 18, 26, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(13, 18, 26, 0.98);
+  border: 0;
   border-radius: 24px;
   overflow: hidden;
   color: #ffffff;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
+  background-clip: padding-box;
 }
 
 .users-modal__content.modal-content {
-  background: rgba(13, 18, 26, 0.98);
+  background-color: rgba(13, 18, 26, 0.98);
   color: #ffffff;
+  border: 0;
 }
 
 .users-modal__header {
@@ -521,7 +523,7 @@
   gap: 18px;
   align-items: flex-start;
   padding: 20px 20px 12px;
-  background: rgba(13, 18, 26, 0.98);
+  background: transparent;
   border: 0;
 }
 
@@ -598,6 +600,7 @@
 .users-modal__content .modal-footer {
   background: rgba(13, 18, 26, 0.98);
   color: #ffffff;
+  border: none;
 }
 
 .users-modal__content .users-form__button--primary {

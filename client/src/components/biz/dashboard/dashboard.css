@@ -1,3 +1,9 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Esto desactiva la barra de scroll de la página completa */
+  height: 100vh;
+}
 .dashboard-shell {
   --dashboard-bg: rgba(10, 14, 20, 0.92);
   --dashboard-panel: rgba(18, 24, 33, 0.9);
@@ -161,6 +167,107 @@
 .dashboard-content {
   flex: 1;
   margin-top: 24px;
+  overflow: hidden;
+}
+
+.dashboard-calendar {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboard-calendar__hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: radial-gradient(circle at top right, rgba(201, 208, 216, 0.08), transparent 28%), rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 44px rgba(0, 0, 0, 0.20);
+}
+
+.dashboard-calendar__title {
+  margin: 8px 0 0;
+  color: #f2f5f8;
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  line-height: 1.05;
+}
+
+.dashboard-calendar__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.appointments-calendar-controls {
+  align-self: center;
+}
+
+.dashboard-calendar__board {
+  min-width: 0;
+  height: clamp(620px, 68vh, 820px);
+  min-height: 620px;
+}
+
+.dashboard-calendar__board .appointments-week-view,
+.dashboard-calendar__board .appointments-month-view {
+  height: 100%;
+}
+
+.dashboard-calendar__board .appointments-calendar,
+.dashboard-calendar__board .appointments-day-view__list {
+  height: auto;
+  overflow: visible;
+}
+
+.dashboard-calendar__board .appointments-month-view {
+  height: 100%;
+}
+
+.dashboard-calendar__board .appointments-month-view__grid {
+  height: 100%;
+  overflow: visible;
+}
+
+.dashboard-calendar__board .appointments-week-view {
+  height: 100%;
+}
+
+.dashboard-calendar__board .appointments-week-view__grid {
+  height: 100%;
+  overflow: visible;
+}
+
+.dashboard-calendar__board .appointments-week-view__column,
+.dashboard-calendar__board .appointments-week-view__appointments {
+  height: 100%;
+}
+
+.dashboard-calendar__board .appointments-week-view__grid,
+.dashboard-calendar__board .appointments-month-view__grid {
+  min-height: 0;
+}
+
+.dashboard-calendar__details {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  position: sticky;
+  top: 18px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20);
+}
+
+.dashboard-calendar__details h3 {
+  margin: 0;
+  color: #f2f5f8;
+  font-size: 1.2rem;
 }
 
 .dashboard-message {
@@ -317,6 +424,19 @@
     width: 100%;
     max-width: none;
   }
+
+  .dashboard-calendar__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-calendar__board {
+    height: auto;
+    min-height: 580px;
+  }
+
+  .dashboard-calendar__details {
+    position: static;
+  }
 }
 
 .delete-modal__dialog {
@@ -325,16 +445,25 @@
 
 .delete-modal__content {
   color: #ffffff;
-  background: rgba(13, 18, 26, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(13, 18, 26, 0.98);
+  border: 0;
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 26px 70px rgba(0, 0, 0, 0.48);
+  background-clip: padding-box;
+}
+
+.delete-modal__content.modal-content {
+  background-color: rgba(13, 18, 26, 0.98);
+  border: 0;
+  color: #ffffff;
 }
 
 .delete-modal__header {
-  background: rgba(13, 18, 26, 0.98);
+  background: transparent;
   border: 0;
+  border-bottom: 0;
+  box-shadow: none;
 }
 
 .delete-modal__title {
@@ -344,6 +473,7 @@
 .delete-modal__body {
   padding: 22px 20px;
   color: #d8e2ee;
+  background: rgba(13, 18, 26, 0.98);
 }
 
 .delete-modal__footer {
@@ -353,6 +483,7 @@
   padding: 18px 20px 22px;
   border: 0;
   background: rgba(13, 18, 26, 0.98);
+  box-shadow: none;
 }
 
 .delete-modal__danger {
@@ -377,4 +508,5 @@
 .delete-modal__content .modal-footer {
   background: rgba(13, 18, 26, 0.98);
   color: #ffffff;
+  border: none;
 }
