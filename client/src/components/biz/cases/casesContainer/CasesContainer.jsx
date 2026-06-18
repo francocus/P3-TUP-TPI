@@ -192,8 +192,8 @@ const CasesContainer = () => {
     <section className="cases-panel">
       <header className="cases-header">
         <div className="cases-header__copy">
+          <p>Control profesional</p>
           <h2>Gestion de Expedientes</h2>
-          <p>Directorio global de expedientes y CRUD total de casos.</p>
         </div>
 
         <div className="cases-header__controls">

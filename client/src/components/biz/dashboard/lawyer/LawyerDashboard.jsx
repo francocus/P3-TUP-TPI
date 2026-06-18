@@ -36,7 +36,7 @@ const LawyerDashboard = () => {
                   `dashboard-nav__link${isActive ? " is-active" : ""}`
                 }
               >
-                Inicio
+                Calendario
               </NavLink>
               <NavLink
                 to="appointments"
@@ -44,7 +44,7 @@ const LawyerDashboard = () => {
                   `dashboard-nav__link${isActive ? " is-active" : ""}`
                 }
               >
-                Agenda / Turnos
+                Gestión Turnos
               </NavLink>
               <NavLink
                 to="cases"

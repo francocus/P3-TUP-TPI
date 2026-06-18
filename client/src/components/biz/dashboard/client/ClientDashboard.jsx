@@ -36,7 +36,7 @@ const ClientDashboard = () => {
                   `dashboard-nav__link${isActive ? " is-active" : ""}`
                 }
               >
-                Inicio
+                Calendario
               </NavLink>
               <NavLink
                 to="appointments"

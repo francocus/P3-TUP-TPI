@@ -67,6 +67,18 @@ textarea:focus {
   box-shadow: 0 0 0 0.22rem rgba(130, 151, 170, 0.14);
 }
 
+.modal-content {
+  overflow: hidden;
+  border: 0;
+  background-clip: padding-box;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  border-color: transparent;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -80,6 +92,30 @@ a {
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+  -webkit-appearance: none;
+}
+
+::-webkit-scrollbar-button:single-button {
+  width: 0;
+  height: 0;
+  display: none;
+  -webkit-appearance: none;
+}
+
+::-webkit-scrollbar-button:vertical:decrement,
+::-webkit-scrollbar-button:vertical:increment,
+::-webkit-scrollbar-button:horizontal:decrement,
+::-webkit-scrollbar-button:horizontal:increment {
+  width: 0;
+  height: 0;
+  display: none;
+  -webkit-appearance: none;
 }
 
 ::-webkit-scrollbar-track {
