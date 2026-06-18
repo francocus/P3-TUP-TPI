@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
-import { addDays, DAY_NAMES, formatMonthTitle, getDateKey, getSunday, MONTH_NAMES, pad, parseDate, SLOTS } from "../calendar/Calendar.data";
+import { addDays,  formatMonthTitle, getDateKey, getSunday,  pad, parseDate} from "../calendar/Calendar.data";
+import { DAY_NAMES, SLOTS, MONTH_NAMES } from "../../../services/consts/calendarConsts";
 
 const emptyForm = { lawyerId: "", date: "", time: "", reason: "" };
 const addHour = (time) => {

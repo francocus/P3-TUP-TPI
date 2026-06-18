@@ -59,7 +59,6 @@ const UserDetails = ({ user, onEditUser, onFormClosed }) => {
         <div>
           <p className="users-modal__eyebrow">Administración de usuarios</p>
           <Modal.Title>Editar usuario</Modal.Title>
-          <p className="users-modal__subtitle">Perfil seleccionado: {user?.name}</p>
         </div>
       </Modal.Header>
 

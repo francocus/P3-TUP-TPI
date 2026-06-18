@@ -1,4 +1,5 @@
-import { addDays, getDateKey, getMonday, isSameDate, pad, WEEK_DAY_NAMES } from "../calendar/Calendar.data";
+import { addDays, getDateKey, getMonday, isSameDate, pad } from "../calendar/Calendar.data";
+import { WEEK_DAY_NAMES } from "../../../services/consts/calendarConsts";
 import AppointmentChip from "./AppointmentChip";
 
 const WeekView = ({ cursorDate, selectedDate, selectedAppointment, appointmentsByDate, onDateChange, onSelectAppointment }) => {

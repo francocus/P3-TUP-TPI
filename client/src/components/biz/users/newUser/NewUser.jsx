@@ -58,7 +58,7 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
         </div>
       </Modal.Header>
 
-      <Form className="users-form text-white" onSubmit={handleAddUser}>
+      <Form className="users-form text-white" autoComplete="off" onSubmit={handleAddUser}>
         <Modal.Body className="users-modal__body">
           {message && (
             <Alert className="mb-3" variant="danger">
@@ -100,6 +100,7 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
                   onChange={(event) => handleChangeFormAttribute(event, 'email')}
                   type="email"
                   placeholder="Ingresar correo"
+                  autoComplete="off"
                 />
               </Form.Group>
             </Col>
@@ -114,6 +115,7 @@ const NewUser = ({ onAddUser, onFormClosed }) => {
                   onChange={(event) => handleChangeFormAttribute(event, 'password')}
                   type="password"
                   placeholder="Ingresar contraseña"
+                  autoComplete="off"
                 />
               </Form.Group>
             </Col>
