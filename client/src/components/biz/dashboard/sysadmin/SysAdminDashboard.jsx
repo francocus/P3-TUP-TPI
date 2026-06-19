@@ -16,7 +16,7 @@ const SysAdminDashboard = () => {
   };
 
   return (
-    <main className="dashboard-shell">
+    <main className="dashboard-shell" >
       <section className="dashboard-card">
         <header className="dashboard-header">
           <div className="dashboard-brand">

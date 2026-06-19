@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../services/auth/authentication.context";
+import ToggleTheme from "../../shared/toggleTheme/ToggleTheme.jsx";
 import "./notFound.css";
 
 const NotFound = () => {
@@ -25,6 +26,7 @@ const NotFound = () => {
 
   return (
     <main className="not-found">
+            <ToggleTheme />
       <section className="not-found__panel">
         <p className="not-found__eyebrow">Legal Manager</p>
         <div className="not-found__code">404</div>

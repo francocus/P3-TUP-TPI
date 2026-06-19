@@ -225,7 +225,7 @@ const CasesContainer = () => {
       <header className="cases-header">
         <div className="cases-header__copy">
           <p>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Visualizá y gestioná el estado de los expedientes"}</p>
-          <h2>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Mis expedientes"}</h2>
+          <h2>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Expedientes asignados"}</h2>
         </div>
 
         <div className="cases-header__controls">
