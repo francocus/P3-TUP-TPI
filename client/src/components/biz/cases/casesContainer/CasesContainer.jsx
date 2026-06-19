@@ -66,7 +66,7 @@ const CasesContainer = () => {
     setCases((data.cases ?? []).map(normalizeCaseEntry));
   };
 
- const fetchLawyers = async () => {
+  const fetchLawyers = async () => {
     try {
       const response = await fetch(`${API_URL}/users/lawyers`, {
         headers: buildHeaders(token),
@@ -111,17 +111,11 @@ const CasesContainer = () => {
 
     loadCases();
 
-    // Cargamos los usuarios específicos según el rol permitdo
     if (["abogado", "sysadmin"].includes(currentUser?.role)) {
       fetchClients();
     }
-    if (["cliente", "sysadmin"].includes(currentUser?.role)) {
-      fetchLawyers();
-    }
-    // El sysadmin carga ambos para poder asignar libremente
     if (currentUser?.role === "sysadmin") {
       fetchLawyers();
-      fetchClients();
     }
   }, [token, currentUser]);
 
@@ -202,7 +196,7 @@ const CasesContainer = () => {
 
   const filteredCases = cases.filter((legalCase) => {
 
-    const matchesSearch = 
+    const matchesSearch =
       legalCase.caseNumber.toLowerCase().includes(query) ||
       legalCase.title.toLowerCase().includes(query) ||
       legalCase.area.toLowerCase().includes(query) ||
@@ -212,12 +206,13 @@ const CasesContainer = () => {
       legalCase.description.toLowerCase().includes(query) ||
       legalCase.notes.toLowerCase().includes(query);
 
-    const matchesStatus = 
-      statusFilter === "all" || 
+    const matchesStatus =
+      statusFilter === "all" ||
       legalCase.status.toLowerCase() === statusFilter.toLowerCase();
 
     return matchesSearch && matchesStatus;
   });
+
   const hasScrollableContent = !loading && filteredCases.length > 0;
 
   return (

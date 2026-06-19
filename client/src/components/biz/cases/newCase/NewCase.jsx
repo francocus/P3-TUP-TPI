@@ -103,12 +103,12 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
           <Row>
             <Col md={12}>
               <Form.Group className="mb-3" controlId="caseNumber">
-                <Form.Label>Numero de expediente</Form.Label>
+                <Form.Label>Número de expediente</Form.Label>
                 <Form.Control
                   value={form.caseNumber}
                   onChange={(event) => handleChangeFormAttribute(event, 'caseNumber')}
                   type="text"
-                  placeholder="Ingresar numero de expediente"
+                  placeholder="Ingresar número de expediente"
                 />
               </Form.Group>
             </Col>
@@ -117,12 +117,12 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
           <Row>
             <Col md={12}>
               <Form.Group className="mb-3" controlId="title">
-                <Form.Label>Titulo</Form.Label>
+                <Form.Label>Título</Form.Label>
                 <Form.Control
                   value={form.title}
                   onChange={(event) => handleChangeFormAttribute(event, 'title')}
                   type="text"
-                  placeholder="Ingresar titulo"
+                  placeholder="Ingresar título"
                 />
               </Form.Group>
             </Col>
@@ -131,12 +131,12 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3" controlId="area">
-                <Form.Label>Area</Form.Label>
+                <Form.Label>Área</Form.Label>
                 <Form.Control
                   value={form.area}
                   onChange={(event) => handleChangeFormAttribute(event, 'area')}
                   type="text"
-                  placeholder="Ingresar area"
+                  placeholder="Ingresar área"
                 />
               </Form.Group>
             </Col>
@@ -167,7 +167,7 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3" controlId="lastUpdate">
-                <Form.Label>Ultima actualizacion</Form.Label>
+                <Form.Label>Última actualización</Form.Label>
                 <Form.Control
                   value={form.lastUpdate}
                   onChange={(event) => handleChangeFormAttribute(event, 'lastUpdate')}
@@ -180,13 +180,13 @@ const NewCase = ({ onAddCase, onFormClosed, clients = [], lawyers = [], currentU
           <Row>
             <Col md={12}>
               <Form.Group className="mb-3" controlId="description">
-                <Form.Label>Descripcion</Form.Label>
+                <Form.Label>Descripción</Form.Label>
                 <Form.Control
                   value={form.description}
                   onChange={(event) => handleChangeFormAttribute(event, 'description')}
                   as="textarea"
                   rows={3}
-                  placeholder="Ingresar descripcion"
+                  placeholder="Ingresar descripción"
                 />
               </Form.Group>
             </Col>

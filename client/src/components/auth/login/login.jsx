@@ -59,12 +59,12 @@ const Login = () => {
     <main className="auth-page">
       <ToggleTheme />
       <div className="auth-grid">
-<aside className="auth-aside">
-  <div className="auth-brand">
-    <span className="auth-mark">⚖</span>
-    <strong>LEGAL MANAGER</strong>
-  </div>
-</aside>
+        <aside className="auth-aside">
+          <div className="auth-brand">
+            <span className="auth-mark">⚖</span>
+            <strong>LEGAL MANAGER</strong>
+          </div>
+        </aside>
 
         <section className="auth-panel">
           <div className="auth-box">

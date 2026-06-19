@@ -1,9 +1,3 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
 .dashboard-shell {
   --dashboard-bg: #05070ac0;
   --dashboard-panel: #0e131bf0;
@@ -65,13 +59,6 @@ html, body {
   display: flex;
   flex-direction: column;
   padding: 0 0 clamp(28px, 4vw, 48px);
-  background: transparent;
-}
-
-.dashboard-shell--locked .dashboard-card {
-  min-height: 100dvh;
-  height: 100dvh;
-  overflow: hidden;
 }
 
 .dashboard-header,
@@ -209,14 +196,14 @@ html, body {
   margin-top: 24px;
 }
 
-.dashboard-shell--locked .dashboard-content {
-  min-height: 0;
-  overflow: hidden;
-}
 
 .dashboard-calendar {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 18px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .dashboard-calendar__hero {
@@ -244,6 +231,7 @@ html, body {
   grid-template-columns: minmax(0, 1fr) 340px;
   gap: 18px;
   align-items: stretch;
+  min-height: 0;
 }
 
 .appointments-calendar-controls {
@@ -252,8 +240,24 @@ html, body {
 
 .dashboard-calendar__board {
   min-width: 0;
-  height: clamp(620px, 68vh, 820px);
-  min-height: 620px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-calendar__board::-webkit-scrollbar-track {
+  background: transparent !important;
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+
+.dashboard-calendar__board::-webkit-scrollbar-thumb {
+  border-radius: 22px !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
 }
 
 .dashboard-calendar__board .appointments-week-view,
@@ -300,7 +304,7 @@ html, body {
   gap: 14px;
   align-content: start;
   position: sticky;
-  top: 18px;
+  top: 0;
   padding: 18px;
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.05);
@@ -469,13 +473,23 @@ html, body {
     max-width: none;
   }
 
+  .dashboard-calendar {
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
   .dashboard-calendar__layout {
     grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
 
   .dashboard-calendar__board {
     height: auto;
     min-height: 580px;
+    overflow-y: visible;
   }
 
   .dashboard-calendar__details {
@@ -491,7 +505,9 @@ html, body {
   color: #ffffff !important;
 }
 
-.modal-header, .modal-body, .modal-footer {
+.modal-header,
+.modal-body,
+.modal-footer {
   background: transparent !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
@@ -611,8 +627,8 @@ html, body {
 [data-bs-theme="light"] .dashboard-nav {
   background: rgba(255, 255, 255, 0.34);
   border: 1px solid rgba(15, 23, 32, 0.10);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 [data-bs-theme="light"] .dashboard-nav__link.is-active {
@@ -637,8 +653,8 @@ html, body {
   background: radial-gradient(circle at top right, rgba(15, 23, 32, 0.03), transparent 28%), #ffffff;
   border: 1px solid rgba(15, 23, 32, 0.08);
   box-shadow: 0 18px 44px rgba(15, 23, 32, 0.08);
-  backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
 }
 
 [data-bs-theme="light"] .dashboard-calendar__title,
@@ -662,8 +678,8 @@ html, body {
   background: radial-gradient(circle at top right, rgba(15, 23, 32, 0.05), transparent 30%), linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(244, 247, 250, 0.52));
   border: 1px solid rgba(15, 23, 32, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 18px 40px rgba(15, 23, 32, 0.07);
-  backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
 }
 
 [data-bs-theme="light"] .dashboard-message--error {
@@ -683,8 +699,8 @@ html, body {
   background: rgba(255, 255, 255, 0.50);
   border: 1px solid rgba(15, 23, 32, 0.16);
   color: var(--dashboard-text);
-  backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
 [data-bs-theme="light"] .appointments-search.form-control::placeholder,
@@ -702,8 +718,8 @@ html, body {
 [data-bs-theme="light"] .dashboard-message {
   background: rgba(255, 255, 255, 0.55);
   border-color: rgba(15, 23, 32, 0.08);
-  backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
 .dashboard-shell--locked .appointments-panel.has-scroll-content,
@@ -824,4 +840,41 @@ html, body {
   border: 1px solid rgba(15, 23, 32, 0.1);
   color: #2c3744;
   box-shadow: none;
+}
+
+[data-bs-theme="light"] .dashboard-calendar__board {
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.8), rgba(244, 247, 250, 0.5));
+  border: 1px solid rgba(15, 23, 32, 0.08);
+  box-shadow: 0 10px 30px rgba(15, 23, 32, 0.04);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+body:has(.dashboard-calendar),
+html:has(.dashboard-calendar) {
+  overflow: hidden !important;
+}
+
+.dashboard-shell:has(.dashboard-calendar) {
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+.dashboard-shell:has(.dashboard-calendar) .dashboard-card {
+  min-height: 100dvh !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+  padding-bottom: 16px !important;
+}
+
+.dashboard-shell:has(.dashboard-calendar) .dashboard-content {
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.dashboard-calendar__board {
+  height: 100% !important;
+  min-height: 0 !important;
 }

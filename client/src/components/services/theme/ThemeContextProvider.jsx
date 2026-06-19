@@ -1,4 +1,3 @@
-// ThemeContextProvider.jsx
 import { useEffect, useState } from "react";
 import { ThemeContext } from "./theme.context";
 import { DARK_THEME, LIGHT_THEME } from "../consts/themeConsts";
@@ -6,7 +5,7 @@ import { DARK_THEME, LIGHT_THEME } from "../consts/themeConsts";
 const getInitialTheme = () => {
     const stored = localStorage.getItem("theme");
     if (stored === DARK_THEME || stored === LIGHT_THEME) return stored;
-    // fallback: preferencia del sistema, o LIGHT_THEME si no querés detectarla
+
     return window.matchMedia("(prefers-color-scheme: dark)").matches
         ? DARK_THEME
         : LIGHT_THEME;

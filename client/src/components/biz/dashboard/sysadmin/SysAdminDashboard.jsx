@@ -16,13 +16,13 @@ const SysAdminDashboard = () => {
   };
 
   return (
-    <main className="dashboard-shell" >
+    <main className="dashboard-shell">
       <section className="dashboard-card">
         <header className="dashboard-header">
           <div className="dashboard-brand">
             <span className="dashboard-brand__mark">LM</span>
             <div>
-              <p className="dashboard-eyebrow">Panel Sys Admin</p>
+              <p className="dashboard-eyebrow">Panel de Administración</p>
               <h1>Legal Manager</h1>
               {user?.name && <span className="dashboard-user">{user.name}</span>}
             </div>

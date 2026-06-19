@@ -26,7 +26,7 @@ const NotFound = () => {
 
   return (
     <main className="not-found">
-            <ToggleTheme />
+      <ToggleTheme />
       <section className="not-found__panel">
         <p className="not-found__eyebrow">Legal Manager</p>
         <div className="not-found__code">404</div>
