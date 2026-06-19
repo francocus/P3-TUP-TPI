@@ -114,17 +114,18 @@ const Login = () => {
                 {errors.password && <Form.Text className="text-danger">La contraseña es obligatoria.</Form.Text>}
               </div>
 
-              <Button className="auth-submit" type="submit" disabled={loading}>
-                {loading ? 'Ingresando...' : 'Iniciar sesión'}
-              </Button>
-            </Form>
+              <div className="auth-actions">
+                <Button className="auth-submit" type="submit" disabled={loading}>
+                  {loading ? 'Ingresando...' : 'Iniciar sesión'}
+                </Button>
 
-            <div className="auth-footer">
-              <Button as={Link} to="/register" className="auth-switch">
-                Crear cuenta
-              </Button>
-              
-            </div>
+                <div className="auth-footer">
+                  <Button as={Link} to="/register" className="auth-switch">
+                    Crear cuenta
+                  </Button>
+                </div>
+              </div>
+            </Form>
           </div>
         </div>
       </section>

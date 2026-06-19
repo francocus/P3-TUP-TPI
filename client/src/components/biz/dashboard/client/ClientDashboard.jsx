@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
@@ -9,6 +9,16 @@ const ClientDashboard = () => {
   const navigate = useNavigate();
   const { user, handleUserLogout } = useContext(AuthenticationContext);
 
+  useEffect(() => {
+    document.documentElement.classList.add("dashboard-scroll-locked");
+    document.body.classList.add("dashboard-scroll-locked");
+
+    return () => {
+      document.documentElement.classList.remove("dashboard-scroll-locked");
+      document.body.classList.remove("dashboard-scroll-locked");
+    };
+  }, []);
+
   const handleLogout = (event) => {
     event.preventDefault();
     handleUserLogout();
@@ -16,7 +26,7 @@ const ClientDashboard = () => {
   };
 
   return (
-    <main className="dashboard-shell">
+    <main className="dashboard-shell dashboard-shell--locked">
       <section className="dashboard-card">
         <header className="dashboard-header">
           <div className="dashboard-brand">

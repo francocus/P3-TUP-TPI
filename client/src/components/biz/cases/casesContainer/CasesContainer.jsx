@@ -218,9 +218,10 @@ const CasesContainer = () => {
 
     return matchesSearch && matchesStatus;
   });
+  const hasScrollableContent = !loading && filteredCases.length > 0;
 
   return (
-    <section className="cases-panel">
+    <section className={`cases-panel${hasScrollableContent ? " has-scroll-content" : ""}`}>
       <header className="cases-header">
         <div className="cases-header__copy">
           <p>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Visualizá y gestioná el estado de los expedientes"}</p>
@@ -228,17 +229,19 @@ const CasesContainer = () => {
         </div>
 
         <div className="cases-header__controls">
-          <select
-          className="cases-filter"
-          value={statusFilter}
-          onChange={(event) => setStatusFilter(event.target.value)}
-        >
-          <option value="all">Todos los estados</option>
-          <option value="activo">Activo</option>
-          <option value="pendiente">Pendiente</option>
-          <option value="cerrado">Cerrado</option>
-          <option value="archivado">Archivado</option>
-        </select>
+          <div className="cases-filter-wrap">
+            <select
+              className="cases-filter"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="all">Todos los estados</option>
+              <option value="activo">Activo</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="cerrado">Cerrado</option>
+              <option value="archivado">Archivado</option>
+            </select>
+          </div>
           <div className="cases-search-wrap">
             <CasesSearch onSearch={handleSearch} />
           </div>

@@ -22,15 +22,55 @@ html, body {
     radial-gradient(circle at 78% 18%, rgba(94, 141, 123, 0.20), transparent 22%),
     radial-gradient(circle at 50% 100%, rgba(131, 97, 164, 0.14), transparent 24%),
     linear-gradient(135deg, #050709 0%, #090c11 48%, #0c1119 100%);
+  isolation: isolate;
+}
+
+.dashboard-shell--locked {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.dashboard-shell::before,
+.dashboard-shell::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(28px);
+  z-index: 0;
+}
+
+.dashboard-shell::before {
+  width: 440px;
+  height: 440px;
+  top: -140px;
+  left: -120px;
+  background: radial-gradient(circle, rgba(144, 156, 171, 0.18), transparent 68%);
+}
+
+.dashboard-shell::after {
+  width: 380px;
+  height: 380px;
+  right: -120px;
+  bottom: -120px;
+  background: radial-gradient(circle, rgba(92, 102, 117, 0.20), transparent 70%);
 }
 
 .dashboard-card {
+  position: relative;
+  z-index: 1;
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   padding: 0 0 clamp(28px, 4vw, 48px);
   background: transparent;
+}
+
+.dashboard-shell--locked .dashboard-card {
+  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .dashboard-header,
@@ -166,6 +206,11 @@ html, body {
 .dashboard-content {
   flex: 1;
   margin-top: 24px;
+}
+
+.dashboard-shell--locked .dashboard-content {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .dashboard-calendar {
@@ -526,7 +571,7 @@ html, body {
 
 [data-bs-theme="light"] .dashboard-shell {
   --dashboard-bg: #eef2f6c0;
-  --dashboard-panel: #ffffffeb;
+  --dashboard-panel: rgba(255, 255, 255, 0.70);
   --dashboard-panel-strong: #ffffff;
   --dashboard-border: rgba(15, 23, 32, 0.10);
   --dashboard-text: #0d1117;
@@ -534,14 +579,27 @@ html, body {
   --dashboard-muted-soft: #5b6675;
   --dashboard-shadow: 0 40px 100px rgba(15, 23, 32, 0.18);
   background:
-    radial-gradient(circle at top left, rgba(76, 122, 160, 0.14), transparent 24%),
-    radial-gradient(circle at 78% 18%, rgba(94, 141, 123, 0.12), transparent 22%),
-    radial-gradient(circle at 50% 100%, rgba(131, 97, 164, 0.08), transparent 24%),
+    radial-gradient(circle at top left, rgba(76, 122, 160, 0.24), transparent 22%),
+    radial-gradient(circle at 78% 18%, rgba(94, 141, 123, 0.20), transparent 20%),
+    radial-gradient(circle at 50% 100%, rgba(131, 97, 164, 0.16), transparent 22%),
     linear-gradient(135deg, #f6f8fa 0%, #eef1f4 48%, #e7ecf1 100%);
 }
 
+[data-bs-theme="light"] .dashboard-shell--locked {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+[data-bs-theme="light"] .dashboard-shell::before {
+  background: radial-gradient(circle, rgba(214, 232, 247, 0.96), transparent 66%);
+}
+
+[data-bs-theme="light"] .dashboard-shell::after {
+  background: radial-gradient(circle, rgba(222, 219, 245, 0.90), transparent 68%);
+}
+
 [data-bs-theme="light"] .dashboard-brand__mark {
-  background: linear-gradient(145deg, #0d1117, #2a3441);
+  background: linear-gradient(145deg, #2f3945, #4a5563);
   color: #f4f6f8;
 }
 
@@ -550,24 +608,26 @@ html, body {
 }
 
 [data-bs-theme="light"] .dashboard-nav {
-  background: rgba(15, 23, 32, 0.045);
-  border: 1px solid rgba(15, 23, 32, 0.12);
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid rgba(15, 23, 32, 0.10);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 [data-bs-theme="light"] .dashboard-nav__link.is-active {
-  background: linear-gradient(135deg, #0d1117, #2a3441);
+  background: linear-gradient(135deg, #2f3945, #4a5563);
   color: #f4f6f8;
 }
 
 [data-bs-theme="light"] .dashboard-logout.btn {
-  background: linear-gradient(135deg, #0d1117, #2a3441);
+  background: linear-gradient(135deg, #2f3945, #4a5563);
   color: #f4f6f8;
   box-shadow: 0 18px 30px rgba(15, 23, 32, 0.22);
 }
 
 [data-bs-theme="light"] .dashboard-logout.btn:hover,
 [data-bs-theme="light"] .dashboard-logout.btn:focus-visible {
-  background: linear-gradient(135deg, #1a212b, #36424f);
+  background: linear-gradient(135deg, #394452, #566170);
   color: #f4f6f8;
 }
 
@@ -576,6 +636,8 @@ html, body {
   background: radial-gradient(circle at top right, rgba(15, 23, 32, 0.03), transparent 28%), #ffffff;
   border: 1px solid rgba(15, 23, 32, 0.08);
   box-shadow: 0 18px 44px rgba(15, 23, 32, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 [data-bs-theme="light"] .dashboard-calendar__title,
@@ -596,9 +658,11 @@ html, body {
 }
 
 [data-bs-theme="light"] .dashboard-overview__card {
-  background: radial-gradient(circle at top right, rgba(15, 23, 32, 0.03), transparent 32%), #ffffff;
+  background: radial-gradient(circle at top right, rgba(15, 23, 32, 0.05), transparent 30%), linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(244, 247, 250, 0.52));
   border: 1px solid rgba(15, 23, 32, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 18px 40px rgba(15, 23, 32, 0.07);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 [data-bs-theme="light"] .dashboard-message--error {
@@ -615,9 +679,11 @@ html, body {
 
 [data-bs-theme="light"] .appointments-search.form-control,
 [data-bs-theme="light"] .cases-search.form-control {
-  background: rgba(15, 23, 32, 0.035);
+  background: rgba(255, 255, 255, 0.50);
   border: 1px solid rgba(15, 23, 32, 0.16);
   color: var(--dashboard-text);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 [data-bs-theme="light"] .appointments-search.form-control::placeholder,
@@ -627,9 +693,25 @@ html, body {
 
 [data-bs-theme="light"] .appointments-search.form-control:focus,
 [data-bs-theme="light"] .cases-search.form-control:focus {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.78);
   border-color: rgba(70, 100, 130, 0.55);
   box-shadow: 0 0 0 0.22rem rgba(70, 100, 130, 0.16);
+}
+
+[data-bs-theme="light"] .dashboard-message {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(15, 23, 32, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.dashboard-shell--locked .appointments-panel.has-scroll-content,
+.dashboard-shell--locked .cases-panel.has-scroll-content {
+  max-height: calc(100dvh - 168px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
 }
 
 [data-bs-theme="light"] .form-control,
