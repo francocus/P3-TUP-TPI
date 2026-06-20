@@ -993,7 +993,7 @@
   min-height: 100%;
   height: 100%;
   border-right: 1px dashed rgba(255, 255, 255, 0.08);
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.035), transparent 1px) 0 0 / 100% 76px;
+  background: none;
   overflow: hidden;
 }
 
@@ -1015,7 +1015,7 @@
   justify-content: center;
   text-align: center;
   margin: 0;
-  padding: 24px 20px;
+  padding: 14px 25px;
   border-radius: 12px;
   border: 1px dashed rgba(160, 186, 207, 0.25);
   background: rgba(12, 16, 22, 0.3);
@@ -1030,7 +1030,7 @@
   display: grid;
   justify-items: start;
   gap: 2px;
-  width: 100%;
+  width: 100%; 
   min-height: 50px;
   padding: 9px 10px;
   overflow: hidden;
@@ -1821,11 +1821,6 @@
   color: #1c3f7a;
 }
 
-[data-bs-theme="light"] .appointments-week-view__column {
-  border-right: 1px dashed rgba(15, 23, 32, 0.1);
-  background: linear-gradient(to bottom, rgba(15, 23, 32, 0.04), transparent 1px) 0 0 / 100% 76px;
-}
-
 [data-bs-theme="light"] .appointments-month-cell {
   border-right: 1px solid rgba(15, 23, 32, 0.1);
   border-bottom: 1px solid rgba(15, 23, 32, 0.1);
@@ -2506,7 +2501,6 @@
 
 [data-bs-theme="light"] .appointments-week-view__column {
   border-right: 1px dashed rgba(15, 23, 32, 0.1);
-  background: linear-gradient(to bottom, rgba(15, 23, 32, 0.04), transparent 1px) 0 0 / 100% 76px;
 }
 
 [data-bs-theme="light"] .appointments-month-cell {

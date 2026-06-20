@@ -57,7 +57,9 @@ const Login = () => {
 
   return (
     <main className="auth-page">
-      <ToggleTheme />
+      <div className="auth-theme-toggle">
+        <ToggleTheme />
+      </div>
       <div className="auth-grid">
         <aside className="auth-aside">
           <div className="auth-brand">
