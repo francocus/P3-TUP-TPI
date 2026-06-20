@@ -8,5 +8,3 @@ assert.equal(validateEmail('usuario@estudio'), false);
 assert.equal(validateEmail('@estudio.com'), false);
 
 console.log('Validators OK');
-
-const { validateEmail } = require('./validators');

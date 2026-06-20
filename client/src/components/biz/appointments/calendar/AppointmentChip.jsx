@@ -19,4 +19,5 @@ const AppointmentChip = ({ appointment, compact = false, selected, onSelect }) =
 };
 
 export { getAppointmentAccent };
+
 export default AppointmentChip;

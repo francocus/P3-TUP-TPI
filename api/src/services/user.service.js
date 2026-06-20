@@ -31,38 +31,20 @@ const normalizeUserPayload = (payload) => ({
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, dni, email, password, role } = req.body;
+    const { name, dni, email, password } = req.body;
 
-    if (!name || !dni || !email || !password || !role) {
+    if (!name || !dni || !email || !password) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
-    }
-
-    if (!validRoles.includes(role)) {
-      return res.status(400).json({ message: 'El rol enviado no es valido.' });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedDni = dni.trim();
 
-    const existingEmail = await User.findOne({
-      where: {
-        email: normalizedEmail,
-      },
-    });
+    const existingEmail = await User.findOne({ where: { email: normalizedEmail } });
+    if (existingEmail) return res.status(409).json({ message: 'Ya existe un usuario con ese email.' });
 
-    if (existingEmail) {
-      return res.status(409).json({ message: 'Ya existe un usuario con ese email.' });
-    }
-
-    const existingDni = await User.findOne({
-      where: {
-        dni: normalizedDni,
-      },
-    });
-
-    if (existingDni) {
-      return res.status(409).json({ message: 'Ya existe un usuario con ese DNI.' });
-    }
+    const existingDni = await User.findOne({ where: { dni: normalizedDni } });
+    if (existingDni) return res.status(409).json({ message: 'Ya existe un usuario con ese DNI.' });
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -72,13 +54,10 @@ export const registerUser = async (req, res) => {
       dni: normalizedDni,
       email: normalizedEmail,
       password: hashedPassword,
-      role,
+      role: 'cliente',
     });
 
-    return res.status(201).json({
-      message: 'Usuario creado correctamente.',
-      user: buildSafeUser(newUser),
-    });
+    return res.status(201).json({ message: 'Usuario creado correctamente.', user: buildSafeUser(newUser) });
   } catch (error) {
     console.log('Error al registrar usuario:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
@@ -175,7 +154,7 @@ export const listClients = async (req, res) => {
   try {
     const clients = await User.findAll({
       where: {
-        role: 'cliente', // Cambialo a ['cliente', 'client'] si usás ambos en la base de datos
+        role: 'cliente',
         active: true,
       },
       order: [['name', 'ASC']],

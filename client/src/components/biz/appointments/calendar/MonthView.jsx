@@ -3,7 +3,9 @@ import { DAY_NAMES } from "../../../services/consts/calendarConsts";
 import { getAppointmentAccent } from "./AppointmentChip";
 
 const MonthView = ({ selectedDate, today, appointmentsByDate, onDateChange, onSelectAppointment }) => {
-  const monthGridStart = getMonday(today);
+
+  const monthGridStart = getMonday(selectedDate);
+
   const monthDays = Array.from({ length: 28 }, (_, index) => addDays(monthGridStart, index));
 
   return (
@@ -14,11 +16,16 @@ const MonthView = ({ selectedDate, today, appointmentsByDate, onDateChange, onSe
           const dateKey = getDateKey(date);
           const dayAppointments = appointmentsByDate[dateKey] ?? [];
 
+          const isCurrentMonth = date.getMonth() === selectedDate.getMonth();
+
           return (
             <button
               key={dateKey}
               type="button"
-              className={`appointments-month-cell ${isSameDate(date, selectedDate) ? "is-selected" : ""} ${isSameDate(date, today) ? "is-today" : ""}`}
+              className={`appointments-month-cell ${isSameDate(date, selectedDate) ? "is-selected" : ""
+                } ${isSameDate(date, today) ? "is-today" : ""
+                } ${!isCurrentMonth ? "is-outside-month" : ""
+                }`}
               onClick={() => onDateChange(date)}
             >
               <span className="appointments-month-cell__date">{date.getDate()}</span>
