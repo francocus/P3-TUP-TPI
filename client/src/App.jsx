@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/auth/login/Login.jsx';
 import Register from './components/auth/register/Register.jsx';
-import Protected from './components/routes/protected/Protected.jsx';
 import ProtectedByRole from './components/routes/ProtectedByRole/ProtectedByRole.jsx';
 import NotFound from './components/routes/notFound/notFound.jsx';
 import { AuthenticationContext } from './components/services/auth/authentication.context';
@@ -35,9 +34,9 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <Protected>
+            <ProtectedByRole>
               <DashboardRedirect />
-            </Protected>
+            </ProtectedByRole>
           }
         />
         <Route
