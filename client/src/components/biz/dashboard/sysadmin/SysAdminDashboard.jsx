@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
+import { Scale } from 'lucide-react';
 import "../dashboard.css";
 
 const SysAdminDashboard = () => {
@@ -16,20 +17,22 @@ const SysAdminDashboard = () => {
   };
 
   useEffect(() => {
-  document.documentElement.classList.add("dashboard-scroll-locked");
-  document.body.classList.add("dashboard-scroll-locked");
-  return () => {
-    document.documentElement.classList.remove("dashboard-scroll-locked");
-    document.body.classList.remove("dashboard-scroll-locked");
-  };
-}, []);
+    document.documentElement.classList.add("dashboard-scroll-locked");
+    document.body.classList.add("dashboard-scroll-locked");
+    return () => {
+      document.documentElement.classList.remove("dashboard-scroll-locked");
+      document.body.classList.remove("dashboard-scroll-locked");
+    };
+  }, []);
 
   return (
     <main className="dashboard-shell">
       <section className="dashboard-card">
         <header className="dashboard-header">
           <div className="dashboard-brand">
-            <span className="dashboard-brand__mark">LM</span>
+            <span className="dashboard-brand__mark">
+              <Scale size={20} />
+            </span>
             <div>
               <p className="dashboard-eyebrow">Panel de Administración</p>
               <h1>Legal Manager</h1>
