@@ -83,10 +83,20 @@ const Register = () => {
               <p>Completá tus datos para empezar.</p>
             </div>
 
-            {message && <Alert className="auth-alert" variant="danger">{message}</Alert>}
+            {message && (
+              <Alert className="auth-alert" variant="danger">
+                {message}
+              </Alert>
+            )}
 
-            <Form className="auth-form auth-form--register" onSubmit={handleRegister} noValidate>
-              <div className={`auth-field auth-field--wide ${errors.name ? 'has-error' : ''}`}>
+            <Form
+              className="auth-form auth-form--register"
+              onSubmit={handleRegister}
+              noValidate
+            >
+              <div
+                className={`auth-field auth-field--wide ${errors.name ? "has-error" : ""}`}
+              >
                 <label htmlFor="register-name">Nombre completo</label>
                 <div className="auth-input">
                   <UserIcon />
@@ -94,15 +104,20 @@ const Register = () => {
                     id="register-name"
                     ref={nameInputRef}
                     type="text"
-                    placeholder="Administrador General"
+                    placeholder="Ej: Juan Pérez"
                     value={name}
-                    onChange={(e) => { setName(e.target.value); setErrors((c) => ({ ...c, name: false })); }}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      setErrors((c) => ({ ...c, name: false }));
+                    }}
                   />
                 </div>
-                {errors.name && <span className="auth-error">El nombre es obligatorio.</span>}
+                {errors.name && (
+                  <span className="auth-error">El nombre es obligatorio.</span>
+                )}
               </div>
 
-              <div className={`auth-field ${errors.dni ? 'has-error' : ''}`}>
+              <div className={`auth-field ${errors.dni ? "has-error" : ""}`}>
                 <label htmlFor="register-dni">DNI</label>
                 <div className="auth-input">
                   <IdIcon />
@@ -110,15 +125,20 @@ const Register = () => {
                     id="register-dni"
                     ref={dniInputRef}
                     type="text"
-                    placeholder="30000000"
+                    placeholder="Ej: 30123123"
                     value={dni}
-                    onChange={(e) => { setDni(e.target.value); setErrors((c) => ({ ...c, dni: false })); }}
+                    onChange={(e) => {
+                      setDni(e.target.value);
+                      setErrors((c) => ({ ...c, dni: false }));
+                    }}
                   />
                 </div>
-                {errors.dni && <span className="auth-error">El DNI es obligatorio.</span>}
+                {errors.dni && (
+                  <span className="auth-error">El DNI es obligatorio.</span>
+                )}
               </div>
 
-              <div className={`auth-field ${errors.email ? 'has-error' : ''}`}>
+              <div className={`auth-field ${errors.email ? "has-error" : ""}`}>
                 <label htmlFor="register-email">Correo electrónico</label>
                 <div className="auth-input">
                   <MailIcon />
@@ -126,59 +146,95 @@ const Register = () => {
                     id="register-email"
                     ref={emailInputRef}
                     type="email"
-                    placeholder="admin@gmail.com"
+                    placeholder="correo@gmail.com"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value); setErrors((c) => ({ ...c, email: false })); }}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setErrors((c) => ({ ...c, email: false }));
+                    }}
                   />
                 </div>
-                {errors.email && <span className="auth-error">El correo es obligatorio.</span>}
+                {errors.email && (
+                  <span className="auth-error">El correo es obligatorio.</span>
+                )}
               </div>
 
-              <div className={`auth-field ${errors.password ? 'has-error' : ''}`}>
+              <div
+                className={`auth-field ${errors.password ? "has-error" : ""}`}
+              >
                 <label htmlFor="register-password">Crear contraseña</label>
                 <div className="auth-input">
                   <LockIcon />
                   <Form.Control
                     id="register-password"
                     ref={passwordInputRef}
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Mínimo 6 caracteres"
+                    type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => { setPassword(e.target.value); setErrors((c) => ({ ...c, password: false })); }}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setErrors((c) => ({ ...c, password: false }));
+                    }}
                   />
-                  <button type="button" className="auth-eye" onClick={() => setShowPassword((s) => !s)} aria-label="Mostrar contraseña">
+                  <button
+                    type="button"
+                    className="auth-eye"
+                    onClick={() => setShowPassword((s) => !s)}
+                    aria-label="Mostrar contraseña"
+                  >
                     <EyeIcon off={showPassword} />
                   </button>
                 </div>
-                {errors.password && <span className="auth-error">La contraseña es obligatoria.</span>}
+                {errors.password && (
+                  <span className="auth-error">
+                    La contraseña es obligatoria.
+                  </span>
+                )}
               </div>
 
-              <div className={`auth-field ${errors.confirmPassword ? 'has-error' : ''}`}>
-                <label htmlFor="register-confirm-password">Confirmar contraseña</label>
+              <div
+                className={`auth-field ${errors.confirmPassword ? "has-error" : ""}`}
+              >
+                <label htmlFor="register-confirm-password">
+                  Confirmar contraseña
+                </label>
                 <div className="auth-input">
                   <LockIcon />
                   <Form.Control
                     id="register-confirm-password"
                     ref={confirmPasswordInputRef}
-                    type={showConfirm ? 'text' : 'password'}
-                    placeholder="Repite la contraseña"
+                    type={showConfirm ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) => { setConfirmPassword(e.target.value); setErrors((c) => ({ ...c, confirmPassword: false })); }}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setErrors((c) => ({ ...c, confirmPassword: false }));
+                    }}
                   />
-                  <button type="button" className="auth-eye" onClick={() => setShowConfirm((s) => !s)} aria-label="Mostrar contraseña">
+                  <button
+                    type="button"
+                    className="auth-eye"
+                    onClick={() => setShowConfirm((s) => !s)}
+                    aria-label="Mostrar contraseña"
+                  >
                     <EyeIcon off={showConfirm} />
                   </button>
                 </div>
-                {errors.confirmPassword && <span className="auth-error">Las contraseñas deben coincidir.</span>}
+                {errors.confirmPassword && (
+                  <span className="auth-error">
+                    Las contraseñas deben coincidir.
+                  </span>
+                )}
               </div>
 
               <Button className="auth-submit" type="submit" disabled={loading}>
-                {loading ? 'Creando…' : 'Crear usuario'}
+                {loading ? "Creando…" : "Crear usuario"}
               </Button>
             </Form>
 
             <p className="auth-switch-text">
-              ¿Ya tenés cuenta? <Link to="/login" className="auth-link">Volver al acceso</Link>
+              ¿Ya tenés cuenta?{" "}
+              <Link to="/login" className="auth-link">
+                Volver al acceso
+              </Link>
             </p>
           </div>
         </section>

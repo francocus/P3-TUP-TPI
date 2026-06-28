@@ -26,13 +26,16 @@ const NotFound = () => {
 
   return (
     <main className="not-found">
-      <ToggleTheme />
+      <div className="not-found-toggle-theme">
+        <ToggleTheme />
+      </div>
       <section className="not-found__panel">
         <p className="not-found__eyebrow">Legal Manager</p>
         <div className="not-found__code">404</div>
         <h1>La página solicitada no fue encontrada</h1>
         <p className="not-found__copy">
-          La ruta que intentaste abrir no existe o no tenés acceso directo a ese contenido.
+          La ruta que intentaste abrir no existe o no tenés acceso directo a ese
+          contenido.
         </p>
 
         <div className="not-found__actions">
