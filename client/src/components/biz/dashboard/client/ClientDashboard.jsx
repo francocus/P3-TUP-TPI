@@ -39,33 +39,9 @@ const ClientDashboard = () => {
           </div>
 
           <div className="dashboard-actions">
-            <nav className="dashboard-nav" aria-label="Navegación del Client">
-              <NavLink
-                to="."
-                end
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Calendario
-              </NavLink>
-              <NavLink
-                to="appointments"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Mis Turnos
-              </NavLink>
-              <NavLink
-                to="cases"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Mis Expedientes
-              </NavLink>
-            </nav>
+          <NavLink to="/dashboard/calendar" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Calendario</NavLink>
+          <NavLink to="/dashboard/appointments" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Mis Turnos</NavLink>
+          <NavLink to="/dashboard/cases" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Mis Expedientes</NavLink>
 
             <Button className="dashboard-logout" onClick={handleLogout}>
               Cerrar sesión

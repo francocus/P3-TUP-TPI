@@ -38,41 +38,10 @@ const SysAdminDashboard = () => {
           </div>
 
           <div className="dashboard-actions">
-            <nav className="dashboard-nav" aria-label="Navegación del sysadmin">
-              <NavLink
-                to="."
-                end
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Calendario
-              </NavLink>
-              <NavLink
-                to="appointments"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Turnos
-              </NavLink>
-              <NavLink
-                to="cases"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Expedientes
-              </NavLink>
-              <NavLink
-                to="users"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Usuarios
-              </NavLink>
-            </nav>
+            <NavLink to="/dashboard/calendar" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Calendario</NavLink>
+            <NavLink to="/dashboard/appointments" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Turnos</NavLink>
+            <NavLink to="/dashboard/cases" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Expedientes</NavLink>
+            <NavLink to="/dashboard/users" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Usuarios</NavLink>
 
             <Button className="dashboard-logout" onClick={handleLogout}>
               Cerrar sesión
