@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
 import "../dashboard.css";
@@ -14,6 +14,15 @@ const SysAdminDashboard = () => {
     handleUserLogout();
     navigate("/login");
   };
+
+  useEffect(() => {
+  document.documentElement.classList.add("dashboard-scroll-locked");
+  document.body.classList.add("dashboard-scroll-locked");
+  return () => {
+    document.documentElement.classList.remove("dashboard-scroll-locked");
+    document.body.classList.remove("dashboard-scroll-locked");
+  };
+}, []);
 
   return (
     <main className="dashboard-shell">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
-import { addDays, addMonths, formatMonthTitle, getDateKey, getSunday, pad, parseDate } from "../calendar/Calendar.data";
+import { addDays, addMonths, formatMonthTitle, getDateKey, getSunday, pad, parseDate } from "../../calendar/Calendar.data";
 import { DAY_NAMES, SLOTS, MONTH_NAMES } from "../../../services/consts/calendarConsts";
 
 const emptyForm = { lawyerId: "", date: "", time: "", reason: "" };
@@ -28,25 +28,34 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token,
     setForm(
       isEdit
         ? {
-            date: appointment.date,
-            time: appointment.time,
-            reason: appointment.reason,
-            status: appointment.status,
-            lawyerId: String(appointment.lawyerId),
-          }
+          date: appointment.date,
+          time: appointment.time,
+          reason: appointment.reason,
+          status: appointment.status,
+          lawyerId: String(appointment.lawyerId),
+        }
         : emptyForm,
     );
   }, [show, appointment, isEdit]);
 
-  useEffect(() => {
-    const loadSlots = async () => {
-      setSlots([]);
-      if (isEdit || !form.lawyerId || !form.date) return;
-      const response = await fetch(`${import.meta.env.VITE_API_URL ?? "http://localhost:4000/api"}/appointments/availability?lawyerId=${form.lawyerId}&date=${form.date}`, { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } });
+useEffect(() => {
+  const loadSlots = async () => {
+    setSlots([]);
+    if (isEdit || !form.lawyerId || !form.date) return;
+    try {
+      const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+      const response = await fetch(
+        `${API_URL}/appointments/availability?lawyerId=${form.lawyerId}&date=${form.date}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       if (response.ok) setSlots((await response.json()).slots ?? []);
-    };
-    loadSlots();
-  }, [form.date, form.lawyerId, isEdit, token]);
+    } catch (_error) {
+      setSlots([]);
+    }
+  };
+
+  loadSlots();
+}, [form.date, form.lawyerId, isEdit, token]);
 
   const monthStart = calendarMonth;
   const monthGridStart = getSunday(monthStart);

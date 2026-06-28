@@ -611,13 +611,33 @@
 }
 
 .cases-table-wrap {
-  overflow: hidden;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
   margin-top: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 260px);
+}
+
+.cases-table thead {
+  display: table;
   width: 100%;
+  table-layout: fixed;
+}
+
+.cases-table tbody {
+  display: block;
+  overflow-y: auto;
+  max-height: calc(100vh - 340px);
+}
+
+.cases-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .cases-table {
@@ -629,16 +649,19 @@
 .cases-table th:nth-child(1),
 .cases-table td:nth-child(1) {
   width: 28%;
+  text-align: left;
 }
 
 .cases-table th:nth-child(2),
 .cases-table td:nth-child(2) {
   width: 28%;
+  text-align: left;
 }
 
 .cases-table th:nth-child(3),
 .cases-table td:nth-child(3) {
   width: 17%;
+  text-align: left;
 }
 
 .cases-table th:nth-child(4),
@@ -731,15 +754,15 @@
 }
 
 .case-action {
-  width: 40px;
+width: 40px;
   height: 40px;
   display: inline-grid;
   place-items: center;
   padding: 0;
   border-radius: 12px;
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.05);
-  color: #edf3f8;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4f6f8;
   transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
@@ -755,13 +778,13 @@
 }
 
 .case-action--edit {
-  background: rgba(50, 91, 169, 0.32);
-  border-color: rgba(80, 126, 219, 0.42);
+  background: rgba(55, 100, 185, 0.38);
+  border-color: rgba(90, 140, 235, 0.5);
 }
 
 .case-action--delete {
-  background: rgba(123, 58, 72, 0.34);
-  border-color: rgba(204, 96, 112, 0.42);
+  background: rgba(140, 60, 76, 0.4);
+  border-color: rgba(220, 100, 116, 0.5);
 }
 
 .modal-footer .btn-secondary,

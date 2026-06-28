@@ -2,17 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import { AuthenticationContext } from "../../services/auth/authentication.context";
 import { getStatusClass } from "../appointments/appointmentDetails/AppointmentDetails";
-import MonthView from "../appointments/calendar/MonthView";
-import WeekView from "../appointments/calendar/WeekView";
-import {
-  addDays,
-  addMonths,
-  formatMonthTitle,
-  getDateKey,
-  getMonday,
-  pad,
-  parseDate,
-} from "../appointments/calendar/Calendar.data";
+import MonthView from "../calendar/monthView/MonthView";
+import WeekView from "../calendar/weekView/WeekView";
+import { addDays, addMonths, formatMonthTitle, getDateKey, getMonday, pad, parseDate } from "../calendar/Calendar.data";
 import { MONTH_NAMES } from "../../services/consts/calendarConsts";
 import "../appointments/appointments.css";
 import "./dashboard.css";

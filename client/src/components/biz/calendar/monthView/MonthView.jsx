@@ -1,11 +1,6 @@
-import {
-  addDays,
-  getDateKey,
-  getMonday,
-  isSameDate,
-} from "../calendar/Calendar.data";
+import { addDays, getDateKey, getMonday, isSameDate } from "../Calendar.data";
+import { getAppointmentAccent } from "../appointmentChip/AppointmentChip";
 import { WEEK_DAY_NAMES } from "../../../services/consts/calendarConsts";
-import { getAppointmentAccent } from "./AppointmentChip";
 
 const MonthView = ({
   cursorDate,

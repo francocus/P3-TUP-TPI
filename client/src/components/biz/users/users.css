@@ -161,6 +161,27 @@
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
   margin-top: 12px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 260px);
+}
+
+.users-table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.users-table tbody {
+  display: block;
+  overflow-y: auto;
+  max-height: calc(100vh - 340px);
+}
+
+.users-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .users-table {
