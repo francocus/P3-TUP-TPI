@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
+import { Scale } from 'lucide-react';
 import "../dashboard.css";
 
 const LawyerDashboard = () => {
@@ -30,7 +31,9 @@ const LawyerDashboard = () => {
       <section className="dashboard-card">
         <header className="dashboard-header">
           <div className="dashboard-brand">
-            <span className="dashboard-brand__mark">LM</span>
+            <span className="dashboard-brand__mark">
+              <Scale size={20} />
+            </span>
             <div>
               <p className="dashboard-eyebrow">Panel del estudio</p>
               <h1>Legal Manager</h1>

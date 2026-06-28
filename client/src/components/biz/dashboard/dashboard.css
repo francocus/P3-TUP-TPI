@@ -93,17 +93,20 @@
 }
 
 .dashboard-brand__mark {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: inline-grid;
   place-items: center;
   border-radius: 14px;
-  background: linear-gradient(145deg, #f5f8fb, #b9c4d0);
-  color: #060809;
-  font-size: 0.9rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(145deg, #e8edf3, #c5cdd8);
+  color: #0d1117;
+  font-size: 1.1rem;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.55) inset,
+    0 -1px 0 rgba(0,0,0,0.15) inset,
+    0 8px 24px rgba(0,0,0,0.45),
+    0 2px 6px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .dashboard-eyebrow {
@@ -616,8 +619,14 @@
 }
 
 [data-bs-theme="light"] .dashboard-brand__mark {
-  background: linear-gradient(145deg, #2f3945, #4a5563);
-  color: #f4f6f8;
+  background: linear-gradient(145deg, #1a2030, #2d3a4a);
+  color: #f0f4f8;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.08) inset,
+    0 -1px 0 rgba(0,0,0,0.3) inset,
+    0 8px 24px rgba(0,0,0,0.22),
+    0 2px 6px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.1);
 }
 
 [data-bs-theme="light"] .dashboard-eyebrow {

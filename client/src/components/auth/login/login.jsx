@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import { AuthenticationContext } from '../../services/auth/authentication.context.jsx';
 import ToggleTheme from '../../shared/toggleTheme/ToggleTheme.jsx';
 import { initialLoginFormErrors } from './Login.data.js';
+import { Scale } from 'lucide-react';
 import '../auth.css';
 
 const MailIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M3 6.5h18v11H3z" /><path d="m3 7 9 6 9-6" /></svg>;
@@ -61,7 +62,9 @@ const Login = () => {
       <div className="auth-grid">
         <aside className="auth-aside">
           <div className="auth-brand">
-            <span className="auth-mark">⚖</span>
+            <span className="dashboard-brand__mark">
+              <Scale size={20} />
+            </span>
             <strong>LEGAL MANAGER</strong>
           </div>
         </aside>
