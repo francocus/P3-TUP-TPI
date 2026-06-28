@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { AuthenticationContext } from '../../services/auth/authentication.context';
 import ToggleTheme from '../../shared/toggleTheme/ToggleTheme.jsx';
 import { initialRegisterFormErrors } from './Register.data';
@@ -162,10 +162,13 @@ const Register = () => {
               <div
                 className={`auth-field ${errors.password ? "has-error" : ""}`}
               >
-                <label htmlFor="register-password">Crear contraseña</label>
+                <label htmlFor="register-password">
+                  Crear contraseña
+                </label>
                 <div className="auth-input">
                   <LockIcon />
                   <Form.Control
+                  placeholder="••••••••"
                     id="register-password"
                     ref={passwordInputRef}
                     type={showPassword ? "text" : "password"}
@@ -201,6 +204,7 @@ const Register = () => {
                   <LockIcon />
                   <Form.Control
                     id="register-confirm-password"
+                    placeholder="••••••••"
                     ref={confirmPasswordInputRef}
                     type={showConfirm ? "text" : "password"}
                     value={confirmPassword}

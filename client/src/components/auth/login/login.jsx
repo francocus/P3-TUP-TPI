@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { AuthenticationContext } from '../../services/auth/authentication.context.jsx';
 import ToggleTheme from '../../shared/toggleTheme/ToggleTheme.jsx';
 import { initialLoginFormErrors } from './Login.data.js';

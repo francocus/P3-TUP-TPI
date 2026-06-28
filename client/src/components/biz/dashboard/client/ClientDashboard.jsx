@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
 import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
 import "../dashboard.css";

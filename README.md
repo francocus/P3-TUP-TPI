@@ -1,18 +1,37 @@
-# React + Vite
+# LegalManager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web para la gestión de un estudio jurídico. Desarrollada como Trabajo Práctico Integrador para la materia Programación III — TUP UTN FRRO.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend:** React 19 + Vite, React Router, Bootstrap 5
+- **Backend:** Node.js + Express 5, Sequelize, SQLite
 
-## React Compiler
+## Funcionalidades
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- Autenticación con JWT y 3 roles: `sysadmin`, `abogado`, `cliente`
+- ABM de usuarios, expedientes y turnos
+- Calendario de turnos
+- Tema claro/oscuro
 
-Note: This will impact Vite dev & build performances.
+## Instalación
 
-## Expanding the ESLint configuration
+### Backend
+```bash
+cd api
+npm install
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Frontend
+```bash
+cd client
+npm install
+npm run dev
+```
+
+## Integrantes
+
+- Agustín Angelini
+- Franco Cuscianna
+- Thiago Cuscianna

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { AuthenticationContext } from "../../services/auth/authentication.context";
+import { useNavigate } from "react-router";
+import { AuthenticationContext } from "../../services/auth/authentication.context.jsx";
 import ToggleTheme from "../../shared/toggleTheme/ToggleTheme.jsx";
 import "./notFound.css";
 

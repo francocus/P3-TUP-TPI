@@ -3,7 +3,7 @@ import { Alert, Button } from 'react-bootstrap';
 import { AuthenticationContext } from '../../../services/auth/authentication.context';
 import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
 import NewUser from '../newUser/NewUser';
-import UserDetails from '../userDetails/userDetails';
+import UserDetails from '../userDetails/UserDetails.jsx';
 import UserItem from '../userItem/UserItem';
 import UsersSearch from '../usersSearch/UsersSearch';
 import '../users.css';

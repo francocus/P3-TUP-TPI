@@ -1,4 +1,4 @@
-import { MONTH_NAMES } from "../../../services/consts/calendarConsts";
+import { MONTH_NAMES } from "../../services/consts/calendarConsts";
 
 export const pad = (value) => String(value).padStart(2, "0");
 export const parseDate = (date) => {

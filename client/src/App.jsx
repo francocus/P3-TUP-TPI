@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import Login from './components/auth/login/Login.jsx';
 import Register from './components/auth/register/Register.jsx';
-import ProtectedByRole from './components/routes/ProtectedByRole/ProtectedByRole.jsx';
-import NotFound from './components/routes/notFound/notFound.jsx';
+import ProtectedByRole from './components/routes/protectedByRole/ProtectedByRole.jsx';
+import NotFound from './components/routes/notFound/NotFound.jsx';
 import { AuthenticationContext } from './components/services/auth/authentication.context';
 import AppointmentsContainer from './components/biz/appointments/appointmentsContainer/AppointmentsContainer.jsx';
 import CasesContainer from './components/biz/cases/casesContainer/CasesContainer.jsx';

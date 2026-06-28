@@ -94,8 +94,8 @@ export const AuthenticationContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthenticationContext.Provider value={contextValue}>
+    <AuthenticationContext value={contextValue}>
       {children}
-    </AuthenticationContext.Provider>
+    </AuthenticationContext>
   );
 };

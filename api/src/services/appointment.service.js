@@ -2,9 +2,9 @@ import { Appointment } from '../models/appointment/Appointment.js';
 import { Case } from '../models/case/Case.js';
 import { User } from '../models/user/User.js';
 import { Op } from 'sequelize';
+import { APPOINTMENT_SLOTS } from '../utils/consts/appointmentConsts.js';
 
 const writableRoles = ['sysadmin', 'abogado', 'cliente'];
-const appointmentSlots = ['09:00', '10:30', '12:00', '14:00', '15:30', '17:00'];
 
 const buildAppointmentInclude = [
   {
@@ -54,7 +54,7 @@ const getAvailableSlots = async (lawyerId, date, appointmentId = null) => {
   });
 
   const busySlots = new Set(busyAppointments.map((appointment) => appointment.time));
-  return appointmentSlots.filter((slot) => !busySlots.has(slot));
+  return APPOINTMENT_SLOTS.filter((slot) => !busySlots.has(slot));
 };
 
 const assertAvailableSlot = async (lawyerId, date, time, appointmentId = null) => {
