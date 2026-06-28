@@ -115,7 +115,6 @@ const Dashboard = () => {
     viewMode === "month"
       ? formatMonthTitle(cursorDate)
       : `${pad(weekStart.getDate())} - ${pad(weekEnd.getDate())} ${MONTH_NAMES[weekEnd.getMonth()]} ${weekEnd.getFullYear()}`;
-  const currentViewLabel = viewMode === "week" ? "Semana" : "Mes";
 
   const selectDate = (date) => {
     setSelectedDate(date);
@@ -130,11 +129,11 @@ const Dashboard = () => {
   };
 
   const movePeriod = (amount) => {
-    const nextDate =
+    setCursorDate((prev) =>
       viewMode === "month"
-        ? addMonths(cursorDate, amount)
-        : addDays(cursorDate, amount * 7);
-    selectDate(nextDate);
+        ? addMonths(prev, amount)
+        : addDays(prev, amount * 7),
+    );
   };
 
   return (
@@ -152,7 +151,7 @@ const Dashboard = () => {
                 {"<"}
               </button>
               <button type="button" onClick={() => selectDate(today)}>
-                {currentViewLabel}
+                Hoy
               </button>
               <button type="button" onClick={() => movePeriod(1)}>
                 {">"}
