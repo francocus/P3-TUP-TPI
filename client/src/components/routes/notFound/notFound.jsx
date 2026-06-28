@@ -10,18 +10,7 @@ const NotFound = () => {
   const { isAuthenticated, user } = useContext(AuthenticationContext);
 
   const handleGoBack = () => {
-    const dashboardByRole = {
-      sysadmin: "/dashboard/sysadmin",
-      abogado: "/dashboard/abogado",
-      cliente: "/dashboard/cliente",
-    };
-
-    if (!isAuthenticated) {
-      navigate("/login", { replace: true });
-      return;
-    }
-
-    navigate(dashboardByRole[user?.role] ?? "/dashboard", { replace: true });
+    navigate(isAuthenticated ? "/dashboard" : "/login", { replace: true }); 
   };
 
   return (

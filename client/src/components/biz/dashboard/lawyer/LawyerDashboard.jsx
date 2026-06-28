@@ -39,33 +39,9 @@ const LawyerDashboard = () => {
           </div>
 
           <div className="dashboard-actions">
-            <nav className="dashboard-nav" aria-label="Navegación del abogado">
-              <NavLink
-                to="."
-                end
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Calendario
-              </NavLink>
-              <NavLink
-                to="appointments"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Turnos
-              </NavLink>
-              <NavLink
-                to="cases"
-                className={({ isActive }) =>
-                  `dashboard-nav__link${isActive ? " is-active" : ""}`
-                }
-              >
-                Expedientes
-              </NavLink>
-            </nav>
+          <NavLink to="/dashboard/calendar" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Calendario</NavLink>
+          <NavLink to="/dashboard/appointments" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Turnos</NavLink>
+          <NavLink to="/dashboard/cases" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Expedientes</NavLink>
 
             <Button className="dashboard-logout" onClick={handleLogout}>
               Cerrar sesión

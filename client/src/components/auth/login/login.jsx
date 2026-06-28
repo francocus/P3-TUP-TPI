@@ -6,8 +6,6 @@ import ToggleTheme from '../../shared/toggleTheme/ToggleTheme.jsx';
 import { initialLoginFormErrors } from './Login.data.js';
 import '../auth.css';
 
-const dashboardByRole = { sysadmin: '/dashboard/sysadmin', abogado: '/dashboard/abogado', cliente: '/dashboard/cliente' };
-
 const MailIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M3 6.5h18v11H3z" /><path d="m3 7 9 6 9-6" /></svg>;
 const LockIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="4" y="10.5" width="16" height="10" rx="2" /><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5" /></svg>;
 const EyeIcon = ({ off }) => off
@@ -47,7 +45,7 @@ const Login = () => {
       setLoading(true);
       setErrors(initialLoginFormErrors);
       const response = await handleUserLogin({ email: email.trim(), password });
-      navigate(dashboardByRole[response?.user?.role] ?? '/dashboard', { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       setMessage(error.message || 'No se pudo iniciar sesión.');
     } finally {
