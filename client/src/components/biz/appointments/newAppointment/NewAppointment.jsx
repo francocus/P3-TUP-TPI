@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
-import { addDays, formatMonthTitle, getDateKey, getSunday, pad, parseDate } from "../calendar/Calendar.data";
+import { addDays, addMonths, formatMonthTitle, getDateKey, getSunday, pad, parseDate } from "../calendar/Calendar.data";
 import { DAY_NAMES, SLOTS, MONTH_NAMES } from "../../../services/consts/calendarConsts";
 
 const emptyForm = { lawyerId: "", date: "", time: "", reason: "" };
@@ -8,24 +8,34 @@ const addHour = (time) => {
   const [hours, minutes] = time.split(":").map(Number);
   return `${pad(hours + 1)}:${pad(minutes)}`;
 };
-
+const todayKey = getDateKey(addDays(new Date(), 1));
 const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token, appointments = [], appointment }) => {
   const isEdit = Boolean(appointment);
   const [form, setForm] = useState(emptyForm);
   const [slots, setSlots] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), 1);
+  });
 
   useEffect(() => {
     if (!show) return;
     setMessage("");
-    setForm(isEdit ? {
-      date: appointment.date,
-      time: appointment.time,
-      reason: appointment.reason,
-      status: appointment.status,
-      lawyerId: String(appointment.lawyerId),
-    } : emptyForm);
+    const n = new Date();
+    setCalendarMonth(new Date(n.getFullYear(), n.getMonth(), 1));
+    setForm(
+      isEdit
+        ? {
+            date: appointment.date,
+            time: appointment.time,
+            reason: appointment.reason,
+            status: appointment.status,
+            lawyerId: String(appointment.lawyerId),
+          }
+        : emptyForm,
+    );
   }, [show, appointment, isEdit]);
 
   useEffect(() => {
@@ -38,8 +48,7 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token,
     loadSlots();
   }, [form.date, form.lawyerId, isEdit, token]);
 
-  const selectedDate = form.date ? parseDate(form.date) : null;
-  const monthStart = selectedDate ? new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1) : new Date();
+  const monthStart = calendarMonth;
   const monthGridStart = getSunday(monthStart);
   const monthDays = Array.from({ length: 35 }, (_, index) => addDays(monthGridStart, index));
   const busyDates = appointments.filter(({ lawyerId, status }) => String(lawyerId) === form.lawyerId && status !== "cancelado").reduce((dates, { date }) => ({ ...dates, [date]: true }), {});
@@ -48,6 +57,8 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token,
     event.preventDefault();
     setMessage("");
     if (!form.date || !form.time || !form.reason.trim() || (!isEdit && !form.lawyerId)) return setMessage(isEdit ? "Completa fecha, horario y motivo." : "Completa abogado, fecha, horario y motivo.");
+    if (!isEdit && form.date < todayKey)
+      return setMessage("La fecha no puede ser anterior al día de hoy.");
     try {
       setLoading(true);
       await onSubmit(isEdit ? appointment : {
@@ -126,24 +137,25 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token,
             </Form.Group>
           )}
 
-          {user?.role !== "abogado" && (!isEdit || user?.role === "sysadmin") && (
-            <Form.Group className="mb-3">
-              <Form.Label>Abogado</Form.Label>
-              <Form.Select
-                value={form.lawyerId || ""}
-                onChange={(event) =>
-                  setForm({ ...form, lawyerId: event.target.value, time: "" })
-                }
-              >
-                {!isEdit && <option value="">Seleccionar abogado</option>}
-                {lawyers?.map((lawyer) => (
-                  <option key={lawyer.id} value={lawyer.id}>
-                    {lawyer.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          )}
+          {user?.role !== "abogado" &&
+            (!isEdit || user?.role === "sysadmin") && (
+              <Form.Group className="mb-3">
+                <Form.Label>Abogado</Form.Label>
+                <Form.Select
+                  value={form.lawyerId || ""}
+                  onChange={(event) =>
+                    setForm({ ...form, lawyerId: event.target.value, time: "" })
+                  }
+                >
+                  {!isEdit && <option value="">Seleccionar abogado</option>}
+                  {lawyers?.map((lawyer) => (
+                    <option key={lawyer.id} value={lawyer.id}>
+                      {lawyer.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            )}
 
           {isEdit ? (
             <>
@@ -189,8 +201,48 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token,
           ) : (
             <div className="appointment-request-modal__grid">
               <div>
-                <div className="appointment-request-modal__month">
-                  {formatMonthTitle(monthStart)}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <button
+                    type="button"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#9fb8cc",
+                      cursor: "pointer",
+                      fontSize: "1.1rem",
+                      padding: "0 6px",
+                    }}
+                    onClick={() => setCalendarMonth((m) => addMonths(m, -1))}
+                  >
+                    {"<"}
+                  </button>
+                  <span
+                    className="appointment-request-modal__month"
+                    style={{ margin: 0 }}
+                  >
+                    {formatMonthTitle(monthStart)}
+                  </span>
+                  <button
+                    type="button"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#9fb8cc",
+                      cursor: "pointer",
+                      fontSize: "1.1rem",
+                      padding: "0 6px",
+                    }}
+                    onClick={() => setCalendarMonth((m) => addMonths(m, 1))}
+                  >
+                    {">"}
+                  </button>
                 </div>
                 <div className="appointment-request-modal__calendar">
                   {DAY_NAMES.map((dayName) => (
@@ -202,7 +254,8 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token,
                       <button
                         key={dateKey}
                         type="button"
-                        className={`${form.date === dateKey ? "is-selected" : ""} ${busyDates[dateKey] ? "has-appointments" : ""} ${date.getMonth() !== monthStart.getMonth() ? "is-muted" : ""}`}
+                        disabled={dateKey < todayKey}
+                        className={`${form.date === dateKey ? "is-selected" : ""} ${busyDates[dateKey] ? "has-appointments" : ""} ${date.getMonth() !== monthStart.getMonth() || dateKey < todayKey ? "is-muted" : ""}`}
                         onClick={() =>
                           setForm({ ...form, date: dateKey, time: "" })
                         }
