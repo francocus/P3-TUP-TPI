@@ -16,13 +16,13 @@ const SysAdminDashboard = () => {
   };
 
   useEffect(() => {
-  document.documentElement.classList.add("dashboard-scroll-locked");
-  document.body.classList.add("dashboard-scroll-locked");
-  return () => {
-    document.documentElement.classList.remove("dashboard-scroll-locked");
-    document.body.classList.remove("dashboard-scroll-locked");
-  };
-}, []);
+    document.documentElement.classList.add("dashboard-scroll-locked");
+    document.body.classList.add("dashboard-scroll-locked");
+    return () => {
+      document.documentElement.classList.remove("dashboard-scroll-locked");
+      document.body.classList.remove("dashboard-scroll-locked");
+    };
+  }, []);
 
   return (
     <main className="dashboard-shell">
@@ -33,16 +33,47 @@ const SysAdminDashboard = () => {
             <div>
               <p className="dashboard-eyebrow">Panel de Administración</p>
               <h1>Legal Manager</h1>
-              {user?.name && <span className="dashboard-user">{user.name}</span>}
+              {user?.name && (
+                <span className="dashboard-user">{user.name}</span>
+              )}
             </div>
           </div>
 
           <div className="dashboard-actions">
-            <NavLink to="/dashboard/calendar" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Calendario</NavLink>
-            <NavLink to="/dashboard/appointments" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Turnos</NavLink>
-            <NavLink to="/dashboard/cases" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Expedientes</NavLink>
-            <NavLink to="/dashboard/users" className={({ isActive }) => `dashboard-nav__link${isActive ? " is-active" : ""}`}>Usuarios</NavLink>
-
+            <nav className="dashboard-nav" aria-label="Navegación del sysadmin">
+              <NavLink
+                to="/dashboard/calendar"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Calendario
+              </NavLink>
+              <NavLink
+                to="/dashboard/appointments"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Turnos
+              </NavLink>
+              <NavLink
+                to="/dashboard/cases"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Expedientes
+              </NavLink>
+              <NavLink
+                to="/dashboard/users"
+                className={({ isActive }) =>
+                  `dashboard-nav__link${isActive ? " is-active" : ""}`
+                }
+              >
+                Usuarios
+              </NavLink>
+            </nav>
             <Button className="dashboard-logout" onClick={handleLogout}>
               Cerrar sesión
             </Button>
@@ -51,7 +82,6 @@ const SysAdminDashboard = () => {
         </header>
 
         <Outlet />
-
       </section>
     </main>
   );
