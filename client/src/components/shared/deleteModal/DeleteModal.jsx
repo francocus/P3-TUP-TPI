@@ -1,6 +1,6 @@
 import { Button, Modal } from 'react-bootstrap';
 
-const DeleteModal = ({ show, onHide, onConfirm, title, message, itemName }) => {
+const DeleteModal = ({ show, onHide, onConfirm, title, message, itemName, confirmLabel }) => {
   const handleDelete = () => {
     onConfirm?.();
     onHide?.();
@@ -36,7 +36,7 @@ const DeleteModal = ({ show, onHide, onConfirm, title, message, itemName }) => {
           className="btn delete-modal__danger"
           onClick={handleDelete}
         >
-          Sí, deseo eliminarlo
+          {confirmLabel}
         </Button>
       </Modal.Footer>
     </Modal>

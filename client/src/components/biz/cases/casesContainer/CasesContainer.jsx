@@ -217,11 +217,21 @@ const fetchClients = async () => {
   const hasScrollableContent = !loading && filteredCases.length > 0;
 
   return (
-    <section className={`cases-panel${hasScrollableContent ? " has-scroll-content" : ""}`}>
+    <section
+      className={`cases-panel${hasScrollableContent ? " has-scroll-content" : ""}`}
+    >
       <header className="cases-header">
         <div className="cases-header__copy">
-          <p>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Visualizá y gestioná el estado de los expedientes"}</p>
-          <h2>{currentUser?.role === "sysadmin" ? "Gestión de expedientes" : "Expedientes asignados"}</h2>
+          <p>
+            {currentUser?.role === "sysadmin"
+              ? "Gestión de expedientes"
+              : "Visualizá y gestioná el estado de los expedientes"}
+          </p>
+          <h2>
+            {currentUser?.role === "sysadmin"
+              ? "Gestión de expedientes"
+              : "Expedientes asignados"}
+          </h2>
         </div>
 
         <div className="cases-header__controls">
@@ -242,7 +252,8 @@ const fetchClients = async () => {
             <CasesSearch onSearch={handleSearch} />
           </div>
 
-          {currentUser?.role === "abogado" || currentUser?.role === "sysadmin" ? (
+          {currentUser?.role === "abogado" ||
+          currentUser?.role === "sysadmin" ? (
             <Button
               type="button"
               className="cases-create"
@@ -291,6 +302,7 @@ const fetchClients = async () => {
           title="Eliminar expediente"
           message="¿Estás seguro que deseas eliminar el expediente"
           itemName={caseToDelete?.caseNumber}
+          confirmLabel="Sí, deseo eliminarlo"
         />
       )}
 
@@ -307,7 +319,9 @@ const fetchClients = async () => {
                     <th>Cliente / Abogado</th>
                     <th>Área</th>
                     <th>Estado</th>
-                    <th className="cases-table__actions-head">Acciones Admin</th>
+                    <th className="cases-table__actions-head">
+                      Acciones Admin
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -315,21 +329,34 @@ const fetchClients = async () => {
                     <tr key={legalCase.id} className="case-admin-row">
                       <td className="case-admin-cell case-admin-cell--main">
                         <div className="case-admin-main">
-                          <span className="case-admin-main__name">{legalCase.caseNumber}</span>
-                          <span className="case-admin-main__sub">{legalCase.title}</span>
+                          <span className="case-admin-main__name">
+                            {legalCase.caseNumber}
+                          </span>
+                          <span className="case-admin-main__sub">
+                            {legalCase.title}
+                          </span>
                         </div>
                       </td>
                       <td className="case-admin-cell case-admin-cell--main">
                         <div className="case-admin-main">
-                          <span className="case-admin-main__name">{legalCase.clientName}</span>
-                          <span className="case-admin-main__sub">{legalCase.lawyerName}</span>
+                          <span className="case-admin-main__name">
+                            {legalCase.clientName}
+                          </span>
+                          <span className="case-admin-main__sub">
+                            {legalCase.lawyerName}
+                          </span>
                         </div>
                       </td>
                       <td className="case-admin-cell case-admin-cell--muted">
                         {legalCase.area}
                       </td>
-                      <td className="case-admin-cell" style={{ textAlign: 'center' }}>
-                        <span className={`cases-item__status is-${legalCase.status.toLowerCase()}`}>
+                      <td
+                        className="case-admin-cell"
+                        style={{ textAlign: "center" }}
+                      >
+                        <span
+                          className={`cases-item__status is-${legalCase.status.toLowerCase()}`}
+                        >
                           {legalCase.status}
                         </span>
                       </td>
@@ -363,7 +390,11 @@ const fetchClients = async () => {
                               setCaseToDelete(legalCase);
                             }}
                           >
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <svg
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                              focusable="false"
+                            >
                               <path d="M9 3.75h6l1 1.5H20v1.5H4v-1.5h4l1-1.5Zm1.5 5.25h1.5v7.5h-1.5v-7.5Zm4.5 0h1.5v7.5H15v-7.5Zm-8.25 0h1.5v7.5h-1.5v-7.5Zm1.5 11.25h9A1.75 1.75 0 0 0 19 18v-8.25H5V18c0 .97.78 1.75 1.75 1.75Z" />
                             </svg>
                           </button>

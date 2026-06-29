@@ -40,6 +40,17 @@ const parseId = (value) => Number.parseInt(value, 10);
 
 const assertWritableRole = (role) => writableRoles.includes(role);
 
+const computeStatus = (appointment) => {
+  if (appointment.status !== "confirmado") return appointment.status;
+  const end = new Date(`${appointment.date}T${appointment.time}`);
+  return end < new Date() ? "finalizado" : appointment.status;
+};
+
+const serializeAppointment = (appointment) => ({
+  ...appointment.toJSON(),
+  status: computeStatus(appointment),
+});
+
 const getAvailableSlots = async (lawyerId, date, appointmentId = null) => {
   const busyAppointments = await Appointment.findAll({
     where: {
@@ -67,40 +78,36 @@ export const listAppointments = async (req, res) => {
     const appointments = await Appointment.findAll({
       where: buildScope(req.user),
       include: buildAppointmentInclude,
-      order: [['date', 'ASC'], ['time', 'ASC']],
+      order: [["date", "ASC"], ["time", "ASC"]],
     });
 
-    return res.json({ appointments });
+    return res.json({ appointments: appointments.map(serializeAppointment) });
   } catch (error) {
-    console.error('Error al obtener turnos:', error);
-    return res.status(500).json({ message: 'Error interno del servidor.' });
+    console.error("Error al obtener turnos:", error);
+    return res.status(500).json({ message: "Error interno del servidor." });
   }
 };
 
 export const getAppointmentById = async (req, res) => {
   try {
     const appointmentId = parseId(req.params.id);
-
     if (Number.isNaN(appointmentId)) {
-      return res.status(400).json({ message: 'El id del turno no es valido.' });
+      return res.status(400).json({ message: "El id del turno no es valido." });
     }
 
     const appointment = await Appointment.findOne({
-      where: {
-        id: appointmentId,
-        ...buildScope(req.user),
-      },
+      where: { id: appointmentId, ...buildScope(req.user) },
       include: buildAppointmentInclude,
     });
 
     if (!appointment) {
-      return res.status(404).json({ message: 'Turno no encontrado.' });
+      return res.status(404).json({ message: "Turno no encontrado." });
     }
 
-    return res.json({ appointment });
+    return res.json({ appointment: serializeAppointment(appointment) });
   } catch (error) {
-    console.error('Error al obtener turno:', error);
-    return res.status(500).json({ message: 'Error interno del servidor.' });
+    console.error("Error al obtener turno:", error);
+    return res.status(500).json({ message: "Error interno del servidor." });
   }
 };
 
@@ -128,7 +135,9 @@ export const listAvailability = async (req, res) => {
 export const createAppointment = async (req, res) => {
   try {
     if (!assertWritableRole(req.user.role)) {
-      return res.status(403).json({ message: 'No tiene permisos para crear turnos.' });
+      return res
+        .status(403)
+        .json({ message: "No tiene permisos para crear turnos." });
     }
 
     const {
@@ -137,7 +146,7 @@ export const createAppointment = async (req, res) => {
       time,
       endTime,
       reason,
-      status = 'pendiente',
+      status = "pendiente",
       area,
       location,
       notes,
@@ -147,42 +156,50 @@ export const createAppointment = async (req, res) => {
     } = req.body;
 
     if (!title || !date || !time || !reason) {
-      return res.status(400).json({ message: 'Faltan campos obligatorios.' });
+      return res.status(400).json({ message: "Faltan campos obligatorios." });
     }
 
     const assignedClientId =
-      req.user.role === 'cliente' ? req.user.id : clientId;
+      req.user.role === "cliente" ? req.user.id : clientId;
 
     if (!assignedClientId) {
-      return res.status(400).json({ message: 'Debe indicar un cliente.' });
+      return res.status(400).json({ message: "Debe indicar un cliente." });
     }
 
     const client = await User.findByPk(assignedClientId);
-    if (!client || client.role !== 'cliente') {
-      return res.status(400).json({ message: 'El cliente indicado no es valido.' });
+    if (!client || client.role !== "cliente") {
+      return res
+        .status(400)
+        .json({ message: "El cliente indicado no es valido." });
     }
 
     const assignedLawyerId =
-      req.user.role === 'abogado' ? req.user.id : lawyerId;
+      req.user.role === "abogado" ? req.user.id : lawyerId;
 
     if (!assignedLawyerId) {
-      return res.status(400).json({ message: 'Debe indicar un abogado.' });
+      return res.status(400).json({ message: "Debe indicar un abogado." });
     }
 
     const lawyer = await User.findByPk(assignedLawyerId);
-    if (!lawyer || lawyer.role !== 'abogado') {
-      return res.status(400).json({ message: 'El abogado indicado no es valido.' });
+    if (!lawyer || lawyer.role !== "abogado") {
+      return res
+        .status(400)
+        .json({ message: "El abogado indicado no es valido." });
     }
 
     if (!(await assertAvailableSlot(lawyer.id, date, time))) {
-      return res.status(409).json({ message: 'El horario seleccionado no esta disponible.' });
+      return res
+        .status(409)
+        .json({ message: "El horario seleccionado no esta disponible." });
     }
 
     let linkedCaseId = caseId || null;
     if (linkedCaseId) {
       const linkedCase = await Case.findByPk(linkedCaseId);
       if (!linkedCase) {
-        return res.status(400).json({ message: 'El expediente indicado no existe.' });
+        return res
+          .status(400)
+          .json({ message: "El expediente indicado no existe." });
       }
     }
 
@@ -206,12 +223,12 @@ export const createAppointment = async (req, res) => {
     });
 
     return res.status(201).json({
-      message: 'Turno creado correctamente.',
-      appointment: createdAppointment,
+      message: "Turno creado correctamente.",
+      appointment: serializeAppointment(createdAppointment),
     });
   } catch (error) {
-    console.error('Error al crear turno:', error);
-    return res.status(500).json({ message: 'Error interno del servidor.' });
+    console.log("Error al crear turno:", error);
+    return res.status(500).json({ message: "Error interno del servidor." });
   }
 };
 
@@ -306,8 +323,8 @@ export const updateAppointment = async (req, res) => {
     });
 
     return res.json({
-      message: 'Turno actualizado correctamente.',
-      appointment: updatedAppointment,
+      message: "Turno actualizado correctamente.",
+      appointment: serializeAppointment(updatedAppointment),
     });
   } catch (error) {
     console.error('Error al actualizar turno:', error);

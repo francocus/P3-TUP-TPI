@@ -13,7 +13,7 @@ const addHour = (time) => {
 const todayKey = getDateKey(addDays(new Date(), 1));
 const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, appointments = [], appointment }) => {
   const { token } = useContext(AuthenticationContext);
-  const isEdit = Boolean(appointment);
+  const [isEdit, setIsEdit] = useState(Boolean(appointment));
   const [form, setForm] = useState(emptyForm);
   const [slots, setSlots] = useState([]);
   const [message, setMessage] = useState("");
@@ -25,21 +25,22 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, appoin
 
   useEffect(() => {
     if (!show) return;
+    setIsEdit(Boolean(appointment));
     setMessage("");
     const n = new Date();
     setCalendarMonth(new Date(n.getFullYear(), n.getMonth(), 1));
     setForm(
-      isEdit
+      appointment
         ? {
-          date: appointment.date,
-          time: appointment.time,
-          reason: appointment.reason,
-          status: appointment.status,
-          lawyerId: String(appointment.lawyerId),
-        }
+            date: appointment.date,
+            time: appointment.time,
+            reason: appointment.reason,
+            status: appointment.status,
+            lawyerId: String(appointment.lawyerId),
+          }
         : emptyForm,
     );
-  }, [show, appointment, isEdit]);
+  }, [show, appointment]);
 
   useEffect(() => {
     const loadSlots = async () => {
@@ -79,7 +80,7 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, appoin
         status: "pendiente",
         endTime: addHour(form.time),
       }, isEdit ? {
-        ...form,
+        date: form.date, time: form.time, reason: form.reason, status: form.status,
         lawyerId: user?.role === "sysadmin" ? Number(form.lawyerId) : undefined,
         endTime: addHour(form.time),
       } : undefined);
@@ -180,6 +181,7 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, appoin
                   }
                 />
               </Form.Group>
+              
               <Form.Group className="mb-3">
                 <Form.Label>Horario</Form.Label>
                 <Form.Select
@@ -195,19 +197,22 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, appoin
                   ))}
                 </Form.Select>
               </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Estado</Form.Label>
-                <Form.Select
-                  value={form.status}
-                  onChange={(event) =>
-                    setForm({ ...form, status: event.target.value })
-                  }
-                >
-                  <option value="pendiente">Pendiente</option>
-                  <option value="confirmado">Confirmado</option>
-                  <option value="cancelado">Cancelado</option>
-                </Form.Select>
-              </Form.Group>
+              {user?.role === "sysadmin" && (
+                <Form.Group className="mb-3">
+                  <Form.Label>Estado</Form.Label>
+                  <Form.Select
+                    value={form.status}
+                    onChange={(event) =>
+                      setForm({ ...form, status: event.target.value })
+                    }
+                  >
+                    <option value="pendiente">Pendiente</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="finalizado">Finalizado</option>
+                    <option value="cancelado">Cancelado</option>
+                  </Form.Select>
+                </Form.Group>
+              )}
             </>
           ) : (
             <div className="appointment-request-modal__grid">

@@ -19,6 +19,7 @@ const AppointmentDetails = ({ appointment, user, onClose, onStatus, onEdit }) =>
     );
   }
 
+  const isFinalized = normalizeText(appointment.status) === "finalizado";
   const canManage = user?.role === "sysadmin" || user?.role === "abogado";
   const canCancel = canManage || user?.role === "cliente";
 
@@ -40,11 +41,13 @@ const AppointmentDetails = ({ appointment, user, onClose, onStatus, onEdit }) =>
         <div><dt>Motivo</dt><dd>{appointment.reason}</dd></div>
       </dl>
       {appointment.notes && <p className="appointment-details__notes">{appointment.notes}</p>}
-      <div className="appointment-details__actions">
-        {canManage && <button type="button" onClick={() => onEdit(appointment)}>Modificar</button>}
-        {user?.role !== "sysadmin" && canManage && appointment.status !== "confirmado" && <button type="button" onClick={() => onStatus(appointment, "confirmado")}>Confirmar</button>}
-        {user?.role !== "sysadmin" && canCancel && appointment.status !== "cancelado" && <button type="button" onClick={() => onStatus(appointment, "cancelado")}>Cancelar</button>}
-      </div>
+      {!isFinalized && (
+        <div className="appointment-details__actions">
+          {canManage && <button type="button" onClick={() => onEdit(appointment)}>Modificar</button>}
+          {user?.role !== "sysadmin" && canManage && appointment.status !== "confirmado" && <button type="button" onClick={() => onStatus(appointment, "confirmado")}>Confirmar</button>}
+          {user?.role !== "sysadmin" && canCancel && appointment.status !== "cancelado" && <button type="button" onClick={() => onStatus(appointment, "cancelado")}>Cancelar</button>}
+        </div>
+      )}
     </aside>
   );
 };
