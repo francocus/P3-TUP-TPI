@@ -264,6 +264,11 @@ export const updateUser = async (req, res) => {
 
     const user = await User.findByPk(userId);
 
+    if (req.body.active === false && user.id === req.user.id) {
+      return res.status(403).json({ message: 'No puede desactivar su propio usuario.' });
+    }
+
+
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
