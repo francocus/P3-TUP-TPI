@@ -155,12 +155,11 @@
 }
 
 .users-table-wrap {
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
-  margin-top: 12px;
   overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
   max-height: calc(100vh - 260px);
@@ -204,7 +203,7 @@
 
 .users-table th:nth-child(3),
 .users-table td:nth-child(3) {
-  width: 28%;
+  width: 25%;
   text-align: left;
 }
 

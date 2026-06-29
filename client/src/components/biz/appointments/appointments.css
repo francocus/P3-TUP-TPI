@@ -1903,7 +1903,7 @@ width: 40px;
 }
 
 [data-bs-theme="light"] .appointment-admin-action--delete {
-  background: rgba(190, 60, 76, 0.14);
+ background: rgba(190, 60, 76, 0.14);
   border-color: rgba(190, 60, 76, 0.3);
 }
 
@@ -2579,11 +2579,6 @@ width: 40px;
   border-color: rgba(55, 100, 185, 0.3);
 }
 
-[data-bs-theme="light"] .appointment-admin-action--delete {
-  background: rgba(190, 60, 76, 0.14);
-  border-color: rgba(190, 60, 76, 0.3);
-}
-
 [data-bs-theme="light"] .appointment-card {
   background: #ffffff;
   border: 1px solid rgba(15, 23, 32, 0.1);
@@ -2971,9 +2966,8 @@ width: 40px;
 }
 
 [data-bs-theme="light"] .appointment-admin-action--delete {
-  background: rgba(123, 58, 72, 0.1);
-  border-color: rgba(204, 96, 112, 0.32);
-  color: #7a1f2b;
+ background: rgba(190, 60, 76, 0.14);
+  border-color: rgba(190, 60, 76, 0.3);
 }
 
 [data-bs-theme="light"] .appointments-table-wrap {
