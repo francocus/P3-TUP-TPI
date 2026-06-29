@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import Login from "./components/auth/login/Login.jsx";
 import Register from "./components/auth/register/Register.jsx";
-import ProtectedByRole from "./components/routes/protectedByRole/ProtectedByRole.jsx";
+import Protected from "./components/routes/protected/Protected.jsx";
 import NotFound from "./components/routes/notFound/NotFound.jsx";
 import { AuthenticationContext } from "./components/services/auth/authentication.context";
 import AppointmentsContainer from "./components/biz/appointments/appointmentsContainer/AppointmentsContainer.jsx";
@@ -29,9 +29,9 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedByRole>
+            <Protected>
               <DashboardLayout />
-            </ProtectedByRole>
+            </Protected>
           }
         >
           <Route index element={<Navigate to="calendar" replace />} />
@@ -41,9 +41,9 @@ function App() {
           <Route
             path="users"
             element={
-              <ProtectedByRole allowedRoles={["sysadmin"]}>
+              <Protected allowedRoles={["sysadmin"]}>
                 <UsersContainer />
-              </ProtectedByRole>
+              </Protected>
             }
           />
         </Route>
