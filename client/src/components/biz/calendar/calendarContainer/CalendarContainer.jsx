@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import { AuthenticationContext } from "../../../services/auth/authentication.context";
-import { getStatusClass } from "../../appointments/appointmentDetails/AppointmentDetails";
+import { getStatusClass } from "../../appointments/Appointments.data";
 import MonthView from "../monthView/MonthView";
 import WeekView from "../weekView/WeekView";
 import { addDays, addMonths, formatMonthTitle, getDateKey, getMonday, pad, parseDate } from "../Calendar.data";
