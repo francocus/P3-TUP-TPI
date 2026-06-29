@@ -8,7 +8,7 @@ import NewAppointment from "../newAppointment/NewAppointment";
 import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
 import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
 import "../appointments.css";
-import { API_URL } from '../../../services/consts/apiConsts';
+import { API_URL } from "../../../services/consts/apiConsts";
 
 const buildHeaders = (token) => ({
   Authorization: `Bearer ${token}`,
@@ -58,6 +58,7 @@ const AppointmentsContainer = () => {
   const [appointmentToDelete, setAppointmentToDelete] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
   const [expandedIds, setExpandedIds] = useState(() => new Set());
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null);
 
   const toggleExpanded = (id) =>
     setExpandedIds((prev) => {
@@ -106,8 +107,8 @@ const AppointmentsContainer = () => {
           setLawyers(data.lawyers ?? []);
         }
       } catch (error) {
-        console.error('Error al cargar abogados', error);
-        setMessage('No se pudieron cargar los abogados disponibles.');
+        console.error("Error al cargar abogados", error);
+        setMessage("No se pudieron cargar los abogados disponibles.");
       }
     };
 
@@ -121,13 +122,14 @@ const AppointmentsContainer = () => {
           setClients(data.clients ?? []);
         }
       } catch (error) {
-        console.error('Error al cargar clientes', error);
-        setMessage('No se pudieron cargar los clientes disponibles.');
+        console.error("Error al cargar clientes", error);
+        setMessage("No se pudieron cargar los clientes disponibles.");
       }
     };
 
     if (token) {
-      if (["cliente", "client", "sysadmin"].includes(user?.role)) fetchLawyers();
+      if (["cliente", "client", "sysadmin"].includes(user?.role))
+        fetchLawyers();
       if (["abogado", "sysadmin"].includes(user?.role)) fetchClients();
     }
   }, [token, user]);
@@ -135,7 +137,11 @@ const AppointmentsContainer = () => {
   const searchValue = normalizeText(searchAppointment.trim());
 
   const roleFilteredAppointments = appointments.filter((appointment) => {
-    if (statusFilter !== "all" && appointment.status.toLowerCase() !== statusFilter.toLowerCase()) return false;
+    if (
+      statusFilter !== "all" &&
+      appointment.status.toLowerCase() !== statusFilter.toLowerCase()
+    )
+      return false;
     if (user?.role === "abogado") return appointment.lawyerId === user.id;
     if (user?.role === "cliente") return appointment.clientId === user.id;
     return true;
@@ -143,16 +149,16 @@ const AppointmentsContainer = () => {
 
   const filteredAppointments = searchValue
     ? roleFilteredAppointments.filter((appointment) =>
-      normalizeText(
-        [
-          appointment.clientName,
-          appointment.lawyerName,
-          appointment.reason,
-          appointment.status,
-          appointment.caseNumber,
-        ].join(" "),
-      ).includes(searchValue),
-    )
+        normalizeText(
+          [
+            appointment.clientName,
+            appointment.lawyerName,
+            appointment.reason,
+            appointment.status,
+            appointment.caseNumber,
+          ].join(" "),
+        ).includes(searchValue),
+      )
     : roleFilteredAppointments;
 
   const updateAppointment = async (appointment, payload) => {
@@ -213,9 +219,15 @@ const AppointmentsContainer = () => {
       <div className="appointments-toolbar">
         <div>
           <p className="appointments-toolbar__eyebrow">
-            {user?.role === "sysadmin" ? "Gestión de turnos" : "Visualizá y gestioná los turnos"}
+            {user?.role === "sysadmin"
+              ? "Gestión de turnos"
+              : "Visualizá y gestioná los turnos"}
           </p>
-          <h2>{user?.role === "sysadmin" ? "Gestión de turnos" : "Turnos programados"}</h2>
+          <h2>
+            {user?.role === "sysadmin"
+              ? "Gestión de turnos"
+              : "Turnos programados"}
+          </h2>
         </div>
 
         <div className="appointments-toolbar__actions">
@@ -227,6 +239,7 @@ const AppointmentsContainer = () => {
             <option value="all">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
             <option value="confirmado">Confirmado</option>
+            <option value="finalizado">Finalizado</option>
             <option value="cancelado">Cancelado</option>
           </select>
 
@@ -234,7 +247,9 @@ const AppointmentsContainer = () => {
             <AppointmentsSearch onSearch={setSearchAppointment} />
           </label>
 
-          {(user?.role === "cliente" || user?.role === "abogado" || user?.role === "sysadmin") && (
+          {(user?.role === "cliente" ||
+            user?.role === "abogado" ||
+            user?.role === "sysadmin") && (
             <Button
               type="button"
               className="appointments-create"
@@ -252,7 +267,10 @@ const AppointmentsContainer = () => {
             filteredAppointments.map((appointment) => {
               const isExpanded = expandedIds.has(appointment.id);
               return (
-                <div key={appointment.id} className={`appointment-card ${isExpanded ? "is-expanded" : ""}`}>
+                <div
+                  key={appointment.id}
+                  className={`appointment-card ${isExpanded ? "is-expanded" : ""}`}
+                >
                   <button
                     type="button"
                     className="appointment-card__summary"
@@ -261,17 +279,33 @@ const AppointmentsContainer = () => {
                   >
                     <span className="appointment-card__summary-top">
                       <span className="appointment-card__summary-text">
-                        {user?.role === "cliente" ? appointment.lawyerName : appointment.clientName}
+                        {user?.role === "cliente"
+                          ? appointment.lawyerName
+                          : appointment.clientName}
                       </span>
-                      <svg className="appointment-card__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M7 10l5 5 5-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                      <svg
+                        className="appointment-card__chevron"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path
+                          d="M7 10l5 5 5-5"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     </span>
                     <span className="appointment-card__summary-bottom">
                       <span className="appointment-card__summary-date">
                         {appointment.date} • {appointment.time}
                       </span>
-                      <span className={`appointment-details__status ${getStatusClass(appointment.status)}`}>
+                      <span
+                        className={`appointment-details__status ${getStatusClass(appointment.status)}`}
+                      >
                         {appointment.status}
                       </span>
                     </span>
@@ -280,51 +314,89 @@ const AppointmentsContainer = () => {
                   {isExpanded && (
                     <div className="appointment-card__content">
                       <div className="appointment-card__body">
-                        <span className="appointment-card__field-label">Motivo</span>
+                        <span className="appointment-card__field-label">
+                          Motivo
+                        </span>
                         <p>{appointment.reason}</p>
                       </div>
 
-                      {user?.role === "abogado" && (
-                        <div className="appointment-card__actions">
-                          <span className="appointment-card__actions-label">Acciones</span>
-                          <div className="appointment-card__actions-buttons">
-                            <button
-                              type="button"
-                              className="appointment-admin-action appointment-admin-action--edit"
-                              title="Editar turno"
-                              onClick={() => setAppointmentToEdit(appointment)}
-                            >
-                              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
-                              </svg>
-                            </button>
+                      {user?.role === "abogado" &&
+                        appointment.status.toLowerCase() !== "finalizado" && (
+                          <div className="appointment-card__actions">
+                            <span className="appointment-card__actions-label">
+                              Acciones
+                            </span>
+                            <div className="appointment-card__actions-buttons">
+                              {appointment.status.toLowerCase() ===
+                                "pendiente" && (
+                                <button
+                                  type="button"
+                                  className="appointment-admin-action appointment-admin-action--confirm"
+                                  title="Confirmar turno"
+                                  onClick={() =>
+                                    handleStatus(appointment, "confirmado")
+                                  }
+                                >
+                                  <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
+                                  </svg>
+                                </button>
+                              )}
 
-                            {appointment.status.toLowerCase() !== "cancelado" && (
+                              {appointment.status.toLowerCase() !==
+                                "cancelado" && (
+                                <button
+                                  type="button"
+                                  className="appointment-admin-action appointment-admin-action--delete"
+                                  title="Cancelar turno"
+                                  onClick={() =>
+                                    setAppointmentToCancel(appointment)
+                                  }
+                                >
+                                  <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
+                                  </svg>
+                                </button>
+                              )}
                               <button
                                 type="button"
-                                className="appointment-admin-action appointment-admin-action--delete"
-                                title="Cancelar turno"
-                                onClick={() => {
-                                  if (window.confirm("¿Estás seguro que querés cancelar este turno?")) {
-                                    handleStatus(appointment, "Cancelado");
-                                  }
-                                }}
+                                className="appointment-admin-action appointment-admin-action--edit"
+                                title="Editar turno"
+                                onClick={() =>
+                                  setAppointmentToEdit(appointment)
+                                }
                               >
-                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
-                                  <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                >
+                                  <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
                                 </svg>
                               </button>
-                            )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </div>
                   )}
                 </div>
               );
             })
           ) : (
-            <div className="appointments-calendar__empty" style={{ gridColumn: "1 / -1" }}>
+            <div
+              className="appointments-calendar__empty"
+              style={{ gridColumn: "1 / -1" }}
+            >
               No hay turnos programados.
             </div>
           )}
@@ -337,8 +409,8 @@ const AppointmentsContainer = () => {
         </Alert>
       )}
 
-      {user?.role === "sysadmin" && (
-        filteredAppointments.length > 0 ? (
+      {user?.role === "sysadmin" &&
+        (filteredAppointments.length > 0 ? (
           <div className="appointments-table-wrap">
             <table className="appointments-table">
               <thead>
@@ -370,36 +442,40 @@ const AppointmentsContainer = () => {
                       {appointment.reason}
                     </td>
                     <td className="appointment-admin-cell">
-                      <span className={`appointment-details__status ${getStatusClass(appointment.status)}`}>
+                      <span
+                        className={`appointment-details__status ${getStatusClass(appointment.status)}`}
+                      >
                         {appointment.status}
                       </span>
                     </td>
                     <td className="appointment-admin-cell appointment-admin-cell--actions">
-                      <div className="appointment-admin-actions">
-                        <button
-                          type="button"
-                          className="appointment-admin-action appointment-admin-action--edit"
-                          title="Editar turno"
-                          aria-label="Editar turno"
-                          onClick={() => setAppointmentToEdit(appointment)}
-                        >
-                          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          className="appointment-admin-action appointment-admin-action--delete"
-                          title="Eliminar turno"
-                          aria-label="Eliminar turno"
-                          onClick={() => setAppointmentToDelete(appointment)}
-                        >
-                          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M9 3.75h6l1 1.5H20v1.5H4v-1.5h4l1-1.5Zm1.5 5.25h1.5v7.5h-1.5v-7.5Zm4.5 0h1.5v7.5H15v-7.5Zm-8.25 0h1.5v7.5h-1.5v-7.5Zm1.5 11.25h9A1.75 1.75 0 0 0 19 18v-8.25H5V18c0 .97.78 1.75 1.75 1.75Z" />
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
+                        <div className="appointment-admin-actions">
+                          {appointment.status.toLowerCase() !== "finalizado" && (
+                            <button
+                              type="button"
+                              className="appointment-admin-action appointment-admin-action--edit"
+                              title="Editar turno"
+                              aria-label="Editar turno"
+                              onClick={() => setAppointmentToEdit(appointment)}
+                            >
+                              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M4 17.25V20h2.75L18.81 7.94l-2.75-2.75L4 17.25Zm14.71-9.54a.996.996 0 0 0 0-1.41l-1.01-1.01a.996.996 0 1 0-1.41 1.41l1.01 1.01c.39.39 1.03.39 1.41 0Z" />
+                              </svg>
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="appointment-admin-action appointment-admin-action--delete"
+                            title="Eliminar turno"
+                            aria-label="Eliminar turno"
+                            onClick={() => setAppointmentToDelete(appointment)}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                              <path d="M9 3.75h6l1 1.5H20v1.5H4v-1.5h4l1-1.5Zm1.5 5.25h1.5v7.5h-1.5v-7.5Zm4.5 0h1.5v7.5H15v-7.5Zm-8.25 0h1.5v7.5h-1.5v-7.5Zm1.5 11.25h9A1.75 1.75 0 0 0 19 18v-8.25H5V18c0 .97.78 1.75 1.75 1.75Z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
                   </tr>
                 ))}
               </tbody>
@@ -407,8 +483,7 @@ const AppointmentsContainer = () => {
           </div>
         ) : (
           <p className="appointments-empty">No se encontraron turnos.</p>
-        )
-      )}
+        ))}
 
       <DeleteModal
         show={Boolean(appointmentToDelete)}
@@ -417,6 +492,17 @@ const AppointmentsContainer = () => {
         title="Eliminar turno"
         message="¿Estás seguro que deseas eliminar el turno de"
         itemName={appointmentToDelete?.clientName}
+        confirmLabel="Sí, deseo eliminarlo"
+      />
+
+      <DeleteModal
+        show={Boolean(appointmentToCancel)}
+        onHide={() => setAppointmentToCancel(null)}
+        onConfirm={() => handleStatus(appointmentToCancel, "cancelado")}
+        title="Cancelar turno"
+        message="¿Estás seguro que deseas cancelar el turno de"
+        itemName={appointmentToCancel?.clientName}
+        confirmLabel="Sí, deseo cancelarlo"
       />
 
       <NewAppointment

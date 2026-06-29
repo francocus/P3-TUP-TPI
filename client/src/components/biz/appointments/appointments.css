@@ -2984,3 +2984,12 @@ width: 40px;
 [data-bs-theme="light"] .appointment-admin-cell--muted {
   color: #5b6675;
 }
+
+.appointment-admin-action--confirm {
+  background: rgba(45, 130, 64, 0.4);
+  border-color: rgba(80, 195, 100, 0.5);
+}
+[data-bs-theme="light"] .appointment-admin-action--confirm {
+  background: rgba(45, 130, 64, 0.14);
+  border-color: rgba(45, 130, 64, 0.3);
+}

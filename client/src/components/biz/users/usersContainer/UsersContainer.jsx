@@ -200,6 +200,7 @@ const UsersContainer = () => {
           title="Eliminar usuario"
           message="¿Estás seguro que deseas eliminar al usuario"
           itemName={userToDelete?.name}
+          confirmLabel="Sí, deseo eliminarlo"
         />
       )}
 
