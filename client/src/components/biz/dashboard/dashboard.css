@@ -206,7 +206,7 @@
   gap: 18px;
   height: 100%;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .dashboard-calendar__hero {
