@@ -72,7 +72,7 @@ export const listAppointments = async (req, res) => {
 
     return res.json({ appointments });
   } catch (error) {
-    console.log('Error al obtener turnos:', error);
+    console.error('Error al obtener turnos:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -99,7 +99,7 @@ export const getAppointmentById = async (req, res) => {
 
     return res.json({ appointment });
   } catch (error) {
-    console.log('Error al obtener turno:', error);
+    console.error('Error al obtener turno:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -120,7 +120,7 @@ export const listAvailability = async (req, res) => {
 
     return res.json({ slots: await getAvailableSlots(lawyerId, date) });
   } catch (error) {
-    console.log('Error al obtener disponibilidad:', error);
+    console.error('Error al obtener disponibilidad:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -210,7 +210,7 @@ export const createAppointment = async (req, res) => {
       appointment: createdAppointment,
     });
   } catch (error) {
-    console.log('Error al crear turno:', error);
+    console.error('Error al crear turno:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -310,7 +310,7 @@ export const updateAppointment = async (req, res) => {
       appointment: updatedAppointment,
     });
   } catch (error) {
-    console.log('Error al actualizar turno:', error);
+    console.error('Error al actualizar turno:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -342,7 +342,7 @@ export const deleteAppointment = async (req, res) => {
 
     return res.json({ message: 'Turno eliminado correctamente.' });
   } catch (error) {
-    console.log('Error al eliminar turno:', error);
+    console.error('Error al eliminar turno:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };

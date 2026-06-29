@@ -8,8 +8,7 @@ import NewAppointment from "../newAppointment/NewAppointment";
 import DeleteModal from "../../../shared/deleteModal/DeleteModal.jsx";
 import ToggleTheme from "../../../shared/toggleTheme/ToggleTheme.jsx";
 import "../appointments.css";
-
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+import { API_URL } from '../../../services/consts/apiConsts';
 
 const buildHeaders = (token) => ({
   Authorization: `Bearer ${token}`,
@@ -98,20 +97,32 @@ const AppointmentsContainer = () => {
 
   useEffect(() => {
     const fetchLawyers = async () => {
-      const response = await fetch(`${API_URL}/users/lawyers`, {
-        headers: buildHeaders(token),
-      });
-      if (response.ok) setLawyers((await response.json()).lawyers ?? []);
+      try {
+        const response = await fetch(`${API_URL}/users/lawyers`, {
+          headers: buildHeaders(token),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setLawyers(data.lawyers ?? []);
+        }
+      } catch (error) {
+        console.error('Error al cargar abogados', error);
+        setMessage('No se pudieron cargar los abogados disponibles.');
+      }
     };
 
     const fetchClients = async () => {
-      const response = await fetch(`${API_URL}/users/clients`, {
-        headers: buildHeaders(token),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setClients(data.clients ?? []);
+      try {
+        const response = await fetch(`${API_URL}/users/clients`, {
+          headers: buildHeaders(token),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setClients(data.clients ?? []);
+        }
+      } catch (error) {
+        console.error('Error al cargar clientes', error);
+        setMessage('No se pudieron cargar los clientes disponibles.');
       }
     };
 

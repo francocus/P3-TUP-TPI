@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { AuthenticationContext } from "../../services/auth/authentication.context.jsx";
 import ToggleTheme from "../../shared/toggleTheme/ToggleTheme.jsx";
-import "./notFound.css";
+import "./NotFound.css";
 
 const NotFound = () => {
   const navigate = useNavigate();

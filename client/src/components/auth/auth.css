@@ -126,11 +126,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    linear-gradient(130deg, transparent 0 35%, var(--auth-sheen) 45%, transparent 58%),
-    linear-gradient(var(--auth-grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--auth-grid-line) 1px, transparent 1px);
-  background-size: auto, 100% 36px, 36px 100%;
+  background: linear-gradient(130deg, transparent 0 35%, var(--auth-sheen) 45%, transparent 58%);
   pointer-events: none;
 }
 
@@ -158,23 +154,30 @@
 
 .auth-brand {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
+  text-align: center;
+  width: 100%;
 }
 
 .auth-mark {
   position: relative;
   overflow: hidden;
-  width: 72px;
-  height: 72px;
+  width: 90px;
+  height: 90px;
   display: grid;
   place-items: center;
-  border-radius: 20px;
-  font-size: 2.1rem;
+  border-radius: 24px;
   background: var(--auth-mark-bg);
   color: var(--auth-mark-color);
   box-shadow: 0 0 36px var(--auth-mark-glow), 0 14px 30px rgba(0, 0, 0, .35);
   flex-shrink: 0;
+}
+
+.auth-mark svg {
+  width: 48px;
+  height: 48px;
 }
 
 .auth-mark::after {
@@ -199,10 +202,11 @@
 }
 
 .auth-brand strong {
-  font-size: 2.1rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  letter-spacing: .04em;
+  letter-spacing: .1em;
   line-height: 1.1;
+  color: var(--auth-ink);
 }
 
 .auth-panel {
@@ -237,7 +241,7 @@
 }
 
 .auth-box__head {
-  margin-bottom: 26px;
+  margin-bottom: 45px;
 }
 
 .auth-eyebrow {

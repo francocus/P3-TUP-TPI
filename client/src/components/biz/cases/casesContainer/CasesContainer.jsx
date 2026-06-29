@@ -7,8 +7,7 @@ import NewCase from "../newCase/NewCase";
 import CasesItem from "../casesItem/CasesItem";
 import CasesSearch from "../casesSearch/CasesSearch";
 import "../cases.css";
-
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+import { API_URL } from '../../../services/consts/apiConsts';
 
 const buildHeaders = (token) => ({
   Authorization: `Bearer ${token}`,
@@ -66,33 +65,35 @@ const CasesContainer = () => {
     setCases((data.cases ?? []).map(normalizeCaseEntry));
   };
 
-  const fetchLawyers = async () => {
-    try {
-      const response = await fetch(`${API_URL}/users/lawyers`, {
-        headers: buildHeaders(token),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setLawyers(data.lawyers ?? []);
-      }
-    } catch (error) {
-      console.error("Error al cargar abogados", error);
+ const fetchLawyers = async () => {
+  try {
+    const response = await fetch(`${API_URL}/users/lawyers`, {
+      headers: buildHeaders(token),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setLawyers(data.lawyers ?? []);
     }
-  };
+  } catch (error) {
+    console.error('Error al cargar abogados', error);
+    setMessage('No se pudieron cargar los abogados disponibles.');
+  }
+};
 
-  const fetchClients = async () => {
-    try {
-      const response = await fetch(`${API_URL}/users/clients`, {
-        headers: buildHeaders(token),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setClients(data.clients ?? []);
-      }
-    } catch (error) {
-      console.error("Error al cargar clientes", error);
+const fetchClients = async () => {
+  try {
+    const response = await fetch(`${API_URL}/users/clients`, {
+      headers: buildHeaders(token),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setClients(data.clients ?? []);
     }
-  };
+  } catch (error) {
+    console.error('Error al cargar clientes', error);
+    setMessage('No se pudieron cargar los clientes disponibles.');
+  }
+};
 
   useEffect(() => {
     if (!token) return;

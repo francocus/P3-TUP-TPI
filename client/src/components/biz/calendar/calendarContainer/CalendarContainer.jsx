@@ -1,15 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
-import { AuthenticationContext } from "../../services/auth/authentication.context";
-import { getStatusClass } from "../appointments/appointmentDetails/AppointmentDetails";
-import MonthView from "../calendar/monthView/MonthView";
-import WeekView from "../calendar/weekView/WeekView";
-import { addDays, addMonths, formatMonthTitle, getDateKey, getMonday, pad, parseDate } from "../calendar/Calendar.data";
-import { MONTH_NAMES } from "../../services/consts/calendarConsts";
-import "../appointments/appointments.css";
-import "./dashboard.css";
-
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+import { AuthenticationContext } from "../../../services/auth/authentication.context";
+import { getStatusClass } from "../../appointments/appointmentDetails/AppointmentDetails";
+import MonthView from "../monthView/MonthView";
+import WeekView from "../weekView/WeekView";
+import { addDays, addMonths, formatMonthTitle, getDateKey, getMonday, pad, parseDate } from "../Calendar.data";
+import { MONTH_NAMES } from "../../../services/consts/calendarConsts";
+import "../../appointments/appointments.css";
+import "../../dashboard/dashboard.css";
+import { API_URL } from '../../../services/consts/apiConsts';
 
 const buildHeaders = (token) => ({
   Authorization: `Bearer ${token}`,
@@ -46,7 +45,7 @@ const mapAppointment = (appointment) => ({
   endTime: appointment.endTime || addHour(appointment.time),
 });
 
-const Dashboard = () => {
+const CalendarContainer = () => {
   const { token, user } = useContext(AuthenticationContext);
   const [today] = useState(() => new Date());
   const [viewMode, setViewMode] = useState("week");
@@ -247,4 +246,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default CalendarContainer;

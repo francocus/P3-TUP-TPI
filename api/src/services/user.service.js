@@ -59,7 +59,7 @@ export const registerUser = async (req, res) => {
 
     return res.status(201).json({ message: 'Usuario creado correctamente.', user: buildSafeUser(newUser) });
   } catch (error) {
-    console.log('Error al registrar usuario:', error);
+    console.error('Error al registrar usuario:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -94,7 +94,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Error en las credenciales.' });
     }
 
-    const secretKey = process.env.JWT_SECRET || 'programacion3-1C-2026';
+    const secretKey = process.env.JWT_SECRET;
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
@@ -107,7 +107,7 @@ export const loginUser = async (req, res) => {
       user: buildSafeUser(user),
     });
   } catch (error) {
-    console.log('Error al iniciar sesion:', error);
+    console.error('Error al iniciar sesion:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -126,7 +126,7 @@ export const listUsers = async (req, res) => {
       users: users.map(buildSafeUser),
     });
   } catch (error) {
-    console.log('Error al obtener usuarios:', error);
+    console.error('Error al obtener usuarios:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -145,7 +145,7 @@ export const listLawyers = async (req, res) => {
       lawyers: lawyers.map(buildSafeUser),
     });
   } catch (error) {
-    console.log('Error al obtener abogados:', error);
+    console.error('Error al obtener abogados:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -164,7 +164,7 @@ export const listClients = async (req, res) => {
       clients: clients.map(buildSafeUser),
     });
   } catch (error) {
-    console.log('Error al obtener clientes:', error);
+    console.error('Error al obtener clientes:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -189,7 +189,7 @@ export const getUserById = async (req, res) => {
 
     return res.json({ user: buildSafeUser(user) });
   } catch (error) {
-    console.log('Error al obtener usuario:', error);
+    console.error('Error al obtener usuario:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -245,7 +245,7 @@ export const createAdminUser = async (req, res) => {
       user: buildSafeUser(createdUser),
     });
   } catch (error) {
-    console.log('Error al crear usuario:', error);
+    console.error('Error al crear usuario:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -317,7 +317,7 @@ export const updateUser = async (req, res) => {
       user: buildSafeUser(user),
     });
   } catch (error) {
-    console.log('Error al actualizar usuario:', error);
+    console.error('Error al actualizar usuario:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -344,7 +344,7 @@ export const deleteUser = async (req, res) => {
 
     return res.json({ message: 'Usuario eliminado correctamente.' });
   } catch (error) {
-    console.log('Error al eliminar usuario:', error);
+    console.error('Error al eliminar usuario:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
