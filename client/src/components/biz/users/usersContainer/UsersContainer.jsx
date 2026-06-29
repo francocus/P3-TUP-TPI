@@ -7,8 +7,7 @@ import UserDetails from '../userDetails/UserDetails.jsx';
 import UserItem from '../userItem/UserItem';
 import UsersSearch from '../usersSearch/UsersSearch';
 import '../users.css';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
+import { API_URL } from '../../../services/consts/apiConsts';
 
 const buildHeaders = (token) => ({
   Authorization: `Bearer ${token}`,

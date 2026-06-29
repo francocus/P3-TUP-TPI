@@ -62,8 +62,8 @@ const Login = () => {
       <div className="auth-grid">
         <aside className="auth-aside">
           <div className="auth-brand">
-            <span className="dashboard-brand__mark">
-              <Scale size={20} />
+            <span className="auth-mark">
+              <Scale size={48}/>
             </span>
             <strong>LEGAL MANAGER</strong>
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
 import { addDays, addMonths, formatMonthTitle, getDateKey, getSunday, pad, parseDate } from "../../calendar/Calendar.data";
 import { DAY_NAMES, SLOTS, MONTH_NAMES } from "../../../services/consts/calendarConsts";
+import { API_URL } from '../../../services/consts/apiConsts';
 
 const emptyForm = { lawyerId: "", date: "", time: "", reason: "" };
 const addHour = (time) => {
@@ -43,7 +44,6 @@ useEffect(() => {
     setSlots([]);
     if (isEdit || !form.lawyerId || !form.date) return;
     try {
-      const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
       const response = await fetch(
         `${API_URL}/appointments/availability?lawyerId=${form.lawyerId}&date=${form.date}`,
         { headers: { Authorization: `Bearer ${token}` } }

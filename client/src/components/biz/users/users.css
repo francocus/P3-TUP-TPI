@@ -197,25 +197,25 @@
 
 .users-table th:nth-child(2),
 .users-table td:nth-child(2) {
-  width: 18%;
+  width: 19%;
   text-align: left;
 }
 
 .users-table th:nth-child(3),
 .users-table td:nth-child(3) {
-  width: 25%;
+  width: 28%;
   text-align: left;
 }
 
 .users-table th:nth-child(4),
 .users-table td:nth-child(4) {
-  width: 15%;
+  width: 20%;
   text-align: center;
 }
 
 .users-table th:nth-child(5),
 .users-table td:nth-child(5) {
-  width: 12%;
+  width: 13%;
   text-align: center;
 }
 

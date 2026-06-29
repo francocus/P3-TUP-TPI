@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AuthenticationContext } from './authentication.context';
+import { API_URL } from '../../services/consts/apiConsts';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
 const TOKEN_KEY = 'legal-manager-token';
 const USER_KEY = 'legal-manager-user';
 

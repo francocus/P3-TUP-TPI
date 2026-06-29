@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import { AuthenticationContext } from '../../services/auth/authentication.context';
 import ToggleTheme from '../../shared/toggleTheme/ToggleTheme.jsx';
 import { initialRegisterFormErrors } from './Register.data';
+import { Scale } from 'lucide-react';
 import '../auth.css';
 
 const UserIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="12" cy="8" r="3.6" /><path d="M4.5 20c1.4-3.8 4.3-5.8 7.5-5.8s6.1 2 7.5 5.8" /></svg>;
@@ -70,7 +71,9 @@ const Register = () => {
       <div className="auth-grid">
         <aside className="auth-aside">
           <div className="auth-brand">
-            <span className="auth-mark">⚖</span>
+            <span className="auth-mark">
+              <Scale size={48}/>
+            </span>
             <strong>LEGAL MANAGER</strong>
           </div>
         </aside>
@@ -168,7 +171,7 @@ const Register = () => {
                 <div className="auth-input">
                   <LockIcon />
                   <Form.Control
-                  placeholder="••••••••"
+                    placeholder="••••••••"
                     id="register-password"
                     ref={passwordInputRef}
                     type={showPassword ? "text" : "password"}

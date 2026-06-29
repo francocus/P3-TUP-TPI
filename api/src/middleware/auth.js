@@ -9,7 +9,7 @@ export const verifyToken = (req, res, next) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'programacion3-1C-2026');
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.user = payload;
     return next();
   } catch (_error) {

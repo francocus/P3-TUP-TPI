@@ -268,17 +268,17 @@
 
 .appointments-table th:nth-child(1),
 .appointments-table td:nth-child(1) {
-  width: 27%;
+  width: 20%;
 }
 
 .appointments-table th:nth-child(2),
 .appointments-table td:nth-child(2) {
-  width: 18%;
+  width: 20%;
 }
 
 .appointments-table th:nth-child(3),
 .appointments-table td:nth-child(3) {
-  width: 28%;
+  width: 30%;
 }
 
 .appointments-table th:nth-child(4),

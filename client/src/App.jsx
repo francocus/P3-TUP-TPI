@@ -1,5 +1,3 @@
-// reemplazar todo el contenido de App.jsx
-
 import { useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import Login from "./components/auth/login/Login.jsx";
@@ -13,7 +11,7 @@ import UsersContainer from "./components/biz/users/usersContainer/UsersContainer
 import SysAdminDashboard from "./components/biz/dashboard/sysadmin/SysAdminDashboard.jsx";
 import LawyerDashboard from "./components/biz/dashboard/lawyer/LawyerDashboard.jsx";
 import ClientDashboard from "./components/biz/dashboard/client/ClientDashboard.jsx";
-import Dashboard from "./components/biz/dashboard/Dashboard.jsx";
+import CalendarContainer from "./components/biz/calendar/calendarContainer/CalendarContainer.jsx";
 
 const DashboardLayout = () => {
   const { user } = useContext(AuthenticationContext);
@@ -37,7 +35,7 @@ function App() {
           }
         >
           <Route index element={<Navigate to="calendar" replace />} />
-          <Route path="calendar" element={<Dashboard />} />
+          <Route path="calendar" element={<CalendarContainer />} />
           <Route path="appointments" element={<AppointmentsContainer />} />
           <Route path="cases" element={<CasesContainer />} />
           <Route

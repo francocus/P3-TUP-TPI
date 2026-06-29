@@ -42,7 +42,7 @@ export const listCases = async (req, res) => {
 
     return res.json({ cases });
   } catch (error) {
-    console.log('Error al obtener expedientes:', error);
+    console.error('Error al obtener expedientes:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -69,7 +69,7 @@ export const getCaseById = async (req, res) => {
 
     return res.json({ case: legalCase });
   } catch (error) {
-    console.log('Error al obtener expediente:', error);
+    console.error('Error al obtener expediente:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -148,7 +148,7 @@ export const createCase = async (req, res) => {
       case: createdCase,
     });
   } catch (error) {
-    console.log('Error al crear expediente:', error);
+    console.error('Error al crear expediente:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -220,7 +220,7 @@ export const updateCase = async (req, res) => {
       case: updatedCase,
     });
   } catch (error) {
-    console.log('Error al actualizar expediente:', error);
+    console.error('Error al actualizar expediente:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
@@ -252,7 +252,7 @@ export const deleteCase = async (req, res) => {
 
     return res.json({ message: 'Expediente eliminado correctamente.' });
   } catch (error) {
-    console.log('Error al eliminar expediente:', error);
+    console.error('Error al eliminar expediente:', error);
     return res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };

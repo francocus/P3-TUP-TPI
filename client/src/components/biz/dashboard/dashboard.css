@@ -68,9 +68,9 @@
 .users-panel,
 .dashboard-message {
   width: 100%;
-  max-width: 1600px;
+  max-width: 100%;
   margin-inline: auto;
-  padding-inline: clamp(18px, 3vw, 28px);
+  padding-inline: clamp(24px, 4vw, 48px);
   box-sizing: border-box;
 }
 
