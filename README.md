@@ -1,4 +1,4 @@
-# LegalManager
+# Legal Manager
 
 Aplicación web para la gestión de un estudio jurídico. Desarrollada como Trabajo Práctico Integrador para la materia Programación III — TUP UTN FRRO.
 
