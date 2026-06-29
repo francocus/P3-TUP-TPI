@@ -1,30 +1,4 @@
-const getRoleClass = (role) => {
-  switch (role) {
-    case 'sysadmin':
-      return 'is-sysadmin';
-    case 'abogado':
-      return 'is-abogado';
-    case 'cliente':
-      return 'is-cliente';
-    default:
-      return '';
-  }
-};
-
-const getActiveClass = (active) => (active ? 'is-active' : 'is-inactive');
-
-const getRoleLabel = (role) => {
-  switch (role) {
-    case 'sysadmin':
-      return 'Sys Admin';
-    case 'abogado':
-      return 'Abogado';
-    case 'cliente':
-      return 'Cliente';
-    default:
-      return role;
-  }
-};
+import { getRoleClass, getActiveClass, getRoleLabel } from '../../users/User.data.js';
 
 const UserItem = ({ id, name, dni, email, role, active, onEdit, onDelete, isCurrentUser }) => {
   return (
