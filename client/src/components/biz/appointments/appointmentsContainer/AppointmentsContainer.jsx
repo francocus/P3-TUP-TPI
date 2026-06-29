@@ -420,22 +420,16 @@ const AppointmentsContainer = () => {
       />
 
       <NewAppointment
-        show={showRequest}
-        onHide={() => setShowRequest(false)}
-        onSubmit={handleRequest}
-        lawyers={lawyers}
-        clients={clients}
-        token={token}
-        appointments={appointments}
-        user={user}
-      />
-      <NewAppointment
-        show={Boolean(appointmentToEdit)}
+        show={showRequest || Boolean(appointmentToEdit)}
         appointment={appointmentToEdit}
-        onHide={() => setAppointmentToEdit(null)}
-        onSubmit={handleEdit}
+        onHide={() => {
+          setShowRequest(false);
+          setAppointmentToEdit(null);
+        }}
+        onSubmit={appointmentToEdit ? handleEdit : handleRequest}
         lawyers={lawyers}
         clients={clients}
+        appointments={appointments}
         user={user}
       />
     </section>

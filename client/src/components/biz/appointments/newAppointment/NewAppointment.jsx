@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
 import { addDays, addMonths, formatMonthTitle, getDateKey, getSunday, pad, parseDate } from "../../calendar/Calendar.data";
 import { DAY_NAMES, SLOTS, MONTH_NAMES } from "../../../services/consts/calendarConsts";
 import { API_URL } from '../../../services/consts/apiConsts';
+import { AuthenticationContext } from '../../../services/auth/authentication.context';
 
 const emptyForm = { lawyerId: "", date: "", time: "", reason: "" };
 const addHour = (time) => {
@@ -10,7 +11,8 @@ const addHour = (time) => {
   return `${pad(hours + 1)}:${pad(minutes)}`;
 };
 const todayKey = getDateKey(addDays(new Date(), 1));
-const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token, appointments = [], appointment }) => {
+const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, appointments = [], appointment }) => {
+  const { token } = useContext(AuthenticationContext);
   const isEdit = Boolean(appointment);
   const [form, setForm] = useState(emptyForm);
   const [slots, setSlots] = useState([]);
@@ -39,23 +41,23 @@ const NewAppointment = ({ show, onHide, onSubmit, lawyers, clients, user, token,
     );
   }, [show, appointment, isEdit]);
 
-useEffect(() => {
-  const loadSlots = async () => {
-    setSlots([]);
-    if (isEdit || !form.lawyerId || !form.date) return;
-    try {
-      const response = await fetch(
-        `${API_URL}/appointments/availability?lawyerId=${form.lawyerId}&date=${form.date}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      if (response.ok) setSlots((await response.json()).slots ?? []);
-    } catch (_error) {
+  useEffect(() => {
+    const loadSlots = async () => {
       setSlots([]);
-    }
-  };
+      if (isEdit || !form.lawyerId || !form.date) return;
+      try {
+        const response = await fetch(
+          `${API_URL}/appointments/availability?lawyerId=${form.lawyerId}&date=${form.date}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (response.ok) setSlots((await response.json()).slots ?? []);
+      } catch (_error) {
+        setSlots([]);
+      }
+    };
 
-  loadSlots();
-}, [form.date, form.lawyerId, isEdit, token]);
+    loadSlots();
+  }, [form.date, form.lawyerId, isEdit, token]);
 
   const monthStart = calendarMonth;
   const monthGridStart = getSunday(monthStart);
