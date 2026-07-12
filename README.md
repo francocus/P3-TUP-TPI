@@ -20,15 +20,15 @@ Here you can find the walkthrough videos showing the system's workflow for each 
 
 ### ⚖️ Lawyer Role (Appointments & Cases)
 *Shows how a lawyer can view their calendar, manage appointments, and track legal cases.*
-<video src="./assets/lawyer_view.mp4" controls width="100%"></video>
+https://github.com/user-attachments/assets/fdcca43c-3748-4c50-88f0-f06ed5a0aeaa
 
 ### 👥 Client Role (Portal & Appointment Tracking)
 *Shows the client view, their active cases, and scheduling.*
-<video src="./assets/client_view.mp4" controls width="100%"></video>
+https://github.com/user-attachments/assets/570b5696-d9f4-4ab3-a390-a1cf8f71026e
 
 ### ⚙️ Admin Role (User & Role Management)
 *Shows user management and role assignment under the system administrator account.*
-<video src="./assets/admin_view.mp4" controls width="100%"></video>
+https://github.com/user-attachments/assets/7ecad9c1-8853-41b7-909d-840bd43d5359
 
 ## Prerequisites
 
